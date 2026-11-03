@@ -1,4 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- O build de release também precisa de internet (Firebase). O template
+         do Flutter só declara essa permissão nos manifests de debug e profile. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:label="IaGo"
         android:name="${applicationName}"

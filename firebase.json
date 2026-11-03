@@ -1,7 +1,14 @@
 {
   "firestore": {
+    "database": "(default)",
+    "location": "southamerica-east1",
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
+  },
+  "auth": {
+    "providers": {
+      "emailPassword": true
+    }
   },
   "hosting": {
     "public": "build/web",

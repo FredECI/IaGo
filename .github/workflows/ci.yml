@@ -51,11 +51,31 @@ jobs:
             echo "Sem FIREBASE_ENV_JSON: builds em modo demonstração."
           fi
 
+      # Opcional: com o secret ANDROID_DEBUG_KEYSTORE (keystore em base64), todo
+      # APK sai com a mesma assinatura, e a versão nova instala por cima da antiga.
+      # Sem ele, cada execução gera uma chave nova.
+      - name: Chave de assinatura estável (opcional)
+        env:
+          ANDROID_DEBUG_KEYSTORE: ${{ secrets.ANDROID_DEBUG_KEYSTORE }}
+        run: |
+          if [ -n "$ANDROID_DEBUG_KEYSTORE" ]; then
+            mkdir -p "$HOME/.android"
+            printf '%s' "$ANDROID_DEBUG_KEYSTORE" | base64 -d > "$HOME/.android/debug.keystore"
+            echo "ANDROID_USER_HOME=$HOME/.android" >> "$GITHUB_ENV"
+          else
+            echo "Sem ANDROID_DEBUG_KEYSTORE: chave de debug nova nesta execução."
+          fi
+
       - name: Build web (CanvasKit embutido, funciona sem CDN)
         run: flutter build web --release --no-web-resources-cdn $DEFINES
 
       - name: Build APK de release (chave de debug)
         run: flutter build apk --release $DEFINES
+
+      - name: Assinatura do APK
+        run: |
+          APKSIGNER="$(ls -d "$ANDROID_HOME"/build-tools/*/ | sort -V | tail -1)apksigner"
+          "$APKSIGNER" verify --print-certs build/app/outputs/flutter-apk/app-release.apk | grep -i "SHA-256"
 
       - uses: actions/upload-artifact@v4
         with:
