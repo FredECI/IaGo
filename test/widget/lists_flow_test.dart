@@ -4,13 +4,8 @@ import 'package:material_ui/material_ui.dart';
 
 import '../helpers/test_app.dart';
 
-Future<void> tapKey(WidgetTester tester, String key) async {
-  final finder = find.byKey(Key(key));
-  await tester.ensureVisible(finder);
-  await tester.pumpAndSettle();
-  await tester.tap(finder);
-  await tester.pumpAndSettle();
-}
+Future<void> tapKey(WidgetTester tester, String key) =>
+    tapVisible(tester, find.byKey(Key(key)));
 
 Future<void> nameList(WidgetTester tester, String name) async {
   await tester.enterText(find.byKey(const Key('list-name-field')), name);

@@ -105,8 +105,7 @@ void main() {
     await pumpIagoApp(tester);
     await enterDemo(tester);
 
-    await tester.tap(find.byKey(const Key('shortcut-save-question')));
-    await tester.pumpAndSettle();
+    await tapVisible(tester, find.byKey(const Key('shortcut-save-question')));
     await tester.enterText(
       find.byKey(const Key('field-statement')),
       pastedQuestion,
@@ -142,6 +141,8 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.textContaining('Questão salva em'), findsOneWidget);
     expect(find.textContaining('meta: menos de 30 s'), findsOneWidget);
+    // O painel já compara: 9 agora, 4 a mais que nos 7 dias anteriores.
+    expect(find.text('4 a mais que nos 7 dias anteriores'), findsOneWidget);
 
     await openQuestionsTab(tester);
     expect(find.text('41 questões'), findsOneWidget);
@@ -156,8 +157,7 @@ void main() {
   testWidgets('desfazer a separação devolve o texto colado', (tester) async {
     await pumpIagoApp(tester);
     await enterDemo(tester);
-    await tester.tap(find.byKey(const Key('shortcut-save-question')));
-    await tester.pumpAndSettle();
+    await tapVisible(tester, find.byKey(const Key('shortcut-save-question')));
     await tester.enterText(
       find.byKey(const Key('field-statement')),
       pastedQuestion,
@@ -179,8 +179,7 @@ void main() {
   testWidgets('formulário aponta os campos obrigatórios', (tester) async {
     await pumpIagoApp(tester);
     await enterDemo(tester);
-    await tester.tap(find.byKey(const Key('shortcut-save-question')));
-    await tester.pumpAndSettle();
+    await tapVisible(tester, find.byKey(const Key('shortcut-save-question')));
 
     await tester.tap(find.byKey(const Key('save-question-top')));
     await tester.pumpAndSettle();

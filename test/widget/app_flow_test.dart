@@ -15,8 +15,11 @@ void main() {
     expect(find.text('Beta 0.1'), findsOneWidget);
     await enterDemo(tester);
 
-    // Painel: saudação, atalhos e o roteiro "Em breve".
+    // Painel: saudação, resumo relativo, atalhos e o roteiro "Em breve".
     expect(find.text('Olá, Pedro'), findsOneWidget);
+    expect(find.byKey(const Key('saved-this-week')), findsOneWidget);
+    expect(find.text('3 a mais que nos 7 dias anteriores'), findsOneWidget);
+    await reveal(tester, find.text('Em breve: Conecta'));
     expect(find.text('Salvar questão'), findsOneWidget);
     expect(find.text('Em breve: Direciona'), findsOneWidget);
     expect(find.text('Em breve: Conecta'), findsOneWidget);

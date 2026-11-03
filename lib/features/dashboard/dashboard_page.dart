@@ -6,6 +6,7 @@ import '../../app/router.dart';
 import '../../data/providers.dart';
 import '../../shared/brand.dart';
 import '../questions/selection.dart';
+import 'weekly_summary_card.dart';
 
 /// Painel inicial: atalhos e o roteiro dos próximos pilares.
 class DashboardPage extends ConsumerWidget {
@@ -36,6 +37,8 @@ class DashboardPage extends ConsumerWidget {
                 ),
               ),
             ),
+          const SizedBox(height: 16),
+          const WeeklySummaryCard(),
           const SizedBox(height: 20),
           Text('Atalhos', style: theme.textTheme.titleMedium),
           const SizedBox(height: 8),

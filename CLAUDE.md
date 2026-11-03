@@ -54,6 +54,7 @@ Protótipo do **IaGo** (Inteligência Artificial de Gerenciamento e Organizaçã
   - Web: "Abrir PDF" abre um blob numa nova aba, e precisa rodar no toque, sem `await` antes. "Baixar PDF" baixa o arquivo.
   - Android: `layoutPdf` para visualizar ou imprimir e `sharePdf` para compartilhar.
   - A exportação conta (`registerExport`), mas o arquivo não é guardado.
+- **Painel:** janelas móveis de 7 dias (`domain/dashboard_summary.dart`), justas em qualquer dia, inclusive na segunda-feira. Para conta nova, um convite substitui os números zerados.
 - **FABs com `heroTag: null`:** com `StatefulShellRoute.indexedStack`, todas as abas ficam na mesma rota, e a hero tag padrão repetida quebra a transição de saída.
 - **Categorização:** área (4, padrão ENEM) → matéria (catálogo fixo) → assunto (1 tag livre, opcional). Matemática tem uma matéria só, que entra preenchida automaticamente.
 - **Offline:**
@@ -129,6 +130,6 @@ Passos do `drive.js`:
 | 3. Categorização (autocompletar, hierarquia, contadores) | **Pronta (03/11)**: tela "Por conteúdo" (área → matéria → assunto com contagens; tocar aplica o filtro). 66 testes |
 | 4. Listas e PDF | **Pronta (03/11)**: 82 testes; filtro → lista → PDF verificado no build web (aba nova + download), PDF conferido página a página |
 | 5. Firebase Auth + Firestore | **Pronta nos emuladores (03/11)**: 87 testes Flutter e 6 de regras. Cadastro → salvar → recarregar → sair/entrar → excluir conta verificado no navegador. **Falta o projeto real (Fred)** |
-| 6. Painel (resumo relativo) | — |
+| 6. Painel (resumo relativo) | **Pronta (03/11)**: "8 questões nos últimos 7 dias, 3 a mais que nos 7 anteriores" (vira "9, 4 a mais" depois de salvar ao vivo), barras de comparação, listas e área com mais questões. 90 testes |
 | 7. Métricas (desejável) | — |
 | 8. Deploy (desejável) | — |

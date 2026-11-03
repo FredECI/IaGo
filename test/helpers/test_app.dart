@@ -76,3 +76,21 @@ Future<void> enterDemo(WidgetTester tester) async {
   await tester.tap(find.byKey(const Key('enter-demo')));
   await tester.pumpAndSettle();
 }
+
+/// Rola a tela atual até o widget existir e ficar visível (listas preguiçosas
+/// e a fonte larga dos testes empurram itens para baixo).
+Future<void> reveal(WidgetTester tester, Finder finder) async {
+  await tester.scrollUntilVisible(
+    finder,
+    200,
+    scrollable: find.byType(Scrollable).first,
+  );
+  await tester.pumpAndSettle();
+}
+
+/// Rola até o widget e toca nele.
+Future<void> tapVisible(WidgetTester tester, Finder finder) async {
+  await reveal(tester, finder);
+  await tester.tap(finder);
+  await tester.pumpAndSettle();
+}
