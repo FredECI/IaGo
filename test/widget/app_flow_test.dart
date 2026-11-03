@@ -38,8 +38,7 @@ void main() {
     // Conta: sair volta para a tela inicial.
     await tester.tap(find.text('Conta').last);
     await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const Key('sign-out')));
-    await tester.pumpAndSettle();
+    await tapVisible(tester, find.byKey(const Key('sign-out')));
     expect(find.byKey(const Key('enter-demo')), findsOneWidget);
   });
 

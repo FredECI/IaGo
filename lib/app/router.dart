@@ -9,6 +9,7 @@ import '../features/auth/sign_up_page.dart';
 import '../features/auth/terms_page.dart';
 import '../features/dashboard/dashboard_page.dart';
 import '../features/lists/list_editor_page.dart';
+import '../features/metrics/metrics_page.dart';
 import '../features/lists/lists_page.dart';
 import '../features/questions/content_tree_page.dart';
 import '../features/questions/question_detail_page.dart';
@@ -38,6 +39,9 @@ abstract final class Routes {
 
   /// Editor de uma lista (aba Listas).
   static String list(String id) => '$lists/$id';
+
+  /// H1–H4 do piloto (administradores; na demo, dados simulados).
+  static const String metrics = '/metricas';
 }
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -64,6 +68,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: Routes.login, builder: (_, _) => const LoginPage()),
       GoRoute(path: Routes.signUp, builder: (_, _) => const SignUpPage()),
       GoRoute(path: Routes.terms, builder: (_, _) => const TermsPage()),
+      GoRoute(path: Routes.metrics, builder: (_, _) => const MetricsPage()),
       GoRoute(
         path: Routes.newQuestion,
         builder: (_, _) => const QuestionFormPage(),

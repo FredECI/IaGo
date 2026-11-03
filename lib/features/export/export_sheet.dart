@@ -6,6 +6,7 @@ import '../../core/clock.dart';
 import '../../data/providers.dart';
 import '../../domain/list_builder.dart';
 import '../lists/lists_providers.dart';
+import '../metrics/satisfaction_survey.dart';
 import '../questions/questions_providers.dart';
 import 'list_pdf.dart';
 import 'pdf_exporter.dart';
@@ -81,7 +82,16 @@ class _ExportSheetState extends ConsumerState<ExportSheet> {
         : await exporter.share(pdf.bytes, filename);
     if (delivered && !_counted) {
       _counted = true;
+      final exportsBefore = (ref.read(listsProvider).value ?? const [])
+          .fold<int>(0, (sum, l) => sum + l.exportCount);
       await actions.registerExport(list);
+      if (mounted) {
+        await maybeAskSatisfaction(
+          context,
+          ref,
+          totalExports: exportsBefore + 1,
+        );
+      }
     }
   }
 

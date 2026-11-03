@@ -10,6 +10,7 @@ import '../../domain/session.dart';
 import '../../domain/user_profile.dart';
 import '../../shared/brand.dart';
 import '../../shared/common_widgets.dart';
+import '../metrics/metrics_providers.dart';
 
 /// Conta: perfil, aparência, sobre e saída.
 class AccountPage extends ConsumerWidget {
@@ -69,6 +70,22 @@ class AccountPage extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 8),
+          if (ref.watch(isAdminProvider).value ?? false) ...[
+            const Divider(),
+            const _SectionTitle('Piloto'),
+            ListTile(
+              key: const Key('open-metrics'),
+              leading: const Icon(Icons.insights_outlined),
+              title: const Text('Métricas do piloto'),
+              subtitle: Text(
+                isDemo
+                    ? 'H1–H4 com dados simulados'
+                    : 'H1–H4 com os dados reais (administrador)',
+              ),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.push(Routes.metrics),
+            ),
+          ],
           const Divider(),
           const _SectionTitle('Sobre'),
           const ListTile(

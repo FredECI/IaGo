@@ -4,7 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/clock.dart';
 import '../../data/providers.dart';
 import '../../domain/list_builder.dart';
+import '../../domain/metric_event.dart';
 import '../../domain/question_list.dart';
+import '../metrics/metrics_providers.dart';
 
 /// Todas as listas do usuário atual, mais recentes primeiro.
 final listsProvider = StreamProvider<List<QuestionList>>(
@@ -62,6 +64,9 @@ class ListActions {
           ),
         );
     _ref.read(listAssemblyTimerProvider.notifier).reset();
+    _ref.read(metricsLoggerProvider).log(MetricEventType.listCreated, {
+      'questionCount': list.length,
+    });
     return list;
   }
 
@@ -92,7 +97,22 @@ class ListActions {
   Future<void> delete(QuestionList list) =>
       _ref.read(listRepositoryProvider).delete(list.id);
 
-  /// Conta uma exportação (o PDF em si não é guardado em lugar nenhum).
-  Future<QuestionList> registerExport(QuestionList list) =>
-      _ref.read(listRepositoryProvider).registerExport(list.id);
+  /// Conta uma exportação (o PDF em si não é guardado em lugar nenhum). Na
+  /// 1ª exportação, registra o tempo de montagem da lista (H2).
+  Future<QuestionList> registerExport(QuestionList list) async {
+    final now = _ref.read(clockProvider)();
+    final startedAt = list.assemblyStartedAt;
+    final assemblySeconds = list.exportCount == 0 && startedAt != null
+        ? now.difference(startedAt).inSeconds
+        : null;
+    final saved = await _ref
+        .read(listRepositoryProvider)
+        .registerExport(list.id);
+    _ref.read(metricsLoggerProvider).log(MetricEventType.listExported, {
+      'questionCount': list.length,
+      'exportIndex': list.exportCount + 1,
+      'assemblySeconds': ?assemblySeconds,
+    });
+    return saved;
+  }
 }

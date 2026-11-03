@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../core/clock.dart';
+import '../../domain/metric_event.dart';
 import '../../domain/user_profile.dart';
 import '../auth_repository.dart';
 
@@ -66,6 +67,13 @@ class FirebaseAuthRepository implements AuthRepository {
       'termsVersion': data.termsVersion,
       'termsAcceptedAt': now,
       'createdAt': now,
+    });
+    // H4 (origem) e H2 (plataformas antes): evento de cadastro.
+    await _db.collection('users').doc(user.uid).collection('events').add({
+      'type': MetricEventType.signedUp.code,
+      'at': now,
+      'referralSource': data.referralSource.name,
+      'platformsBefore': ?data.platformsBefore,
     });
   });
 

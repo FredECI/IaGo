@@ -12,10 +12,12 @@ import '../../core/clock.dart';
 import '../../core/image_compressor.dart';
 import '../../data/providers.dart';
 import '../../domain/area.dart';
+import '../../domain/metric_event.dart';
 import '../../domain/paste_parser.dart';
 import '../../domain/question.dart';
 import '../../domain/suggestions.dart';
 import '../../shared/common_widgets.dart';
+import '../metrics/metrics_providers.dart';
 import 'questions_providers.dart';
 
 /// Salvar (ou editar) uma questão vinda de qualquer plataforma.
@@ -269,6 +271,13 @@ class _QuestionFormPageState extends ConsumerState<QuestionFormPage> {
     if (!mounted) return;
     final seconds = now.difference(_openedAt).inSeconds;
     final goal = AppInfo.saveQuestionGoal.inSeconds;
+    if (existing == null) {
+      ref.read(metricsLoggerProvider).log(MetricEventType.questionSaved, {
+        'seconds': seconds,
+        'questionType': question.type.name,
+        'hasImage': question.hasImage,
+      });
+    }
     final messenger = ScaffoldMessenger.of(context);
     context.pop();
     messenger

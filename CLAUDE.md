@@ -78,6 +78,20 @@ Protótipo do **IaGo** (Inteligência Artificial de Gerenciamento e Organizaçã
 - **Emuladores:** projeto `demo-iago`, que não precisa de conta nem login.
   - Auth na porta 9099 e Firestore na **8085**: a 8080 está ocupada nesta máquina por outro programa.
   - Na web, com emulador, o SDK tenta `accounts:lookup` em produção ao restaurar a sessão, porque isso acontece antes do `useAuthEmulator`. É inofensivo e só ocorre no emulador.
+- **Métricas do piloto** (fatia 7, desejável):
+  - Eventos em `users/{uid}/events`, via `MetricsLogger`, que nunca trava a tela:
+    - `signed_up`: origem e plataformas antes;
+    - `question_saved`: segundos e `questionType`;
+    - `list_created`;
+    - `list_exported`: `assemblySeconds` na 1ª exportação, `questionCount`, `exportIndex`;
+    - `active`: id `active-AAAA-MM-DD`, no máximo um por dia;
+    - `satisfaction` / `satisfaction_dismissed`.
+  - `MetricEvent.toMap` grava `type`/`at` por último, porque um dado chamado `type` já sobrescreveu o tipo uma vez.
+  - Pesquisa de satisfação (0–10 + plataformas agora) uma única vez, depois da 3ª exportação (`maybeAskSatisfaction`). Na demo, a seed tem 1 exportação, então a do roteiro (a 2ª) não abre a pesquisa.
+  - Tela `/metricas`: H1–H4 calculadas na hora (`domain/pilot_metrics.dart`), cada valor ao lado da meta, com "Meta atingida", "Abaixo da meta" ou "Sem dados ainda".
+    - Na demo: 20 usuários fictícios (`data/local/simulated_pilot.dart`, determinístico) e a faixa "DADOS SIMULADOS". Resultado de propósito misto: retenção 38% e listas/semana 0,8 ficam abaixo da meta.
+    - Nas contas: só admin. Para virar admin, criar no console do Firestore o documento `admins/{uid}`, com qualquer campo.
+  - **Linha de base da H2: 30 min é provisório** (`realPilotParameters` em `features/metrics/metrics_providers.dart`). O grupo deve trocar pelo número das entrevistas.
 - **Identidade visual** (sem o deck oficial): índigo `#4F46E5` com a variante `fidelity` do M3, selo Beta âmbar, logo com degradê fixo. Os tokens estão em `lib/app/theme.dart`.
 - **Git:** commits pequenos por fatia, com mensagem em português; `flutter analyze` sem avisos e `flutter test` verde antes de cada um. Autor local: Fred <frediro1910@gmail.com>.
 
@@ -131,5 +145,5 @@ Passos do `drive.js`:
 | 4. Listas e PDF | **Pronta (03/11)**: 82 testes; filtro → lista → PDF verificado no build web (aba nova + download), PDF conferido página a página |
 | 5. Firebase Auth + Firestore | **Pronta nos emuladores (03/11)**: 87 testes Flutter e 6 de regras. Cadastro → salvar → recarregar → sair/entrar → excluir conta verificado no navegador. **Falta o projeto real (Fred)** |
 | 6. Painel (resumo relativo) | **Pronta (03/11)**: "8 questões nos últimos 7 dias, 3 a mais que nos 7 anteriores" (vira "9, 4 a mais" depois de salvar ao vivo), barras de comparação, listas e área com mais questões. 90 testes |
-| 7. Métricas (desejável) | — |
+| 7. Métricas (desejável) | **Pronta (03/11)**: 97 testes; tela com dados simulados verificada no web; eventos e visão de admin com dados reais verificados nos emuladores |
 | 8. Deploy (desejável) | — |

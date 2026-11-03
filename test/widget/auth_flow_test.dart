@@ -5,8 +5,10 @@ import 'package:iago/data/auth_repository.dart';
 import 'package:iago/data/firebase/firebase_bootstrap.dart';
 import 'package:iago/data/local/memory_list_repository.dart';
 import 'package:iago/data/local/memory_question_repository.dart';
+import 'package:iago/data/metrics_repository.dart';
 import 'package:iago/data/providers.dart';
 import 'package:iago/domain/user_profile.dart';
+import 'package:iago/features/metrics/metrics_providers.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../helpers/test_app.dart';
@@ -68,6 +70,9 @@ Future<FakeAuthRepository> pumpWithAuth(WidgetTester tester) async {
       ),
       listRepositoryProvider.overrideWithValue(
         MemoryListRepository(clock: () => testNow),
+      ),
+      metricsRepositoryProvider.overrideWithValue(
+        MemoryMetricsRepository(clock: () => testNow),
       ),
     ],
   );
