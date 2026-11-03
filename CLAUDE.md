@@ -87,7 +87,7 @@ Passos do `drive.js`:
 | --- | --- |
 | 1. Esqueleto, tema, navegação, modo demo | **Pronta (03/11)**: 46 testes verdes, analyze limpo, build web sem nenhum pedido externo |
 | 2. Salvar, listar, buscar, filtrar | **Pronta (03/11)**: 61 testes; fluxo de colar e salvar, busca "função" + filtros = 9 verificados no build web |
-| 3. Categorização (autocompletar, hierarquia, contadores) | Parcial: área → matéria → assunto, sugestões e contadores já entraram na fatia 2. Falta revisar a hierarquia na tela de filtros |
+| 3. Categorização (autocompletar, hierarquia, contadores) | **Pronta (03/11)**: tela "Por conteúdo" (área → matéria → assunto com contagens; tocar aplica o filtro). 66 testes |
 | 4. Listas e PDF | — |
 | 5. Firebase Auth + Firestore | — |
 | 6. Painel (resumo relativo) | — |

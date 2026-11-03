@@ -60,6 +60,9 @@ class QuestionFilterController extends Notifier<QuestionFilter> {
   };
 
   void clearAll() => state = const QuestionFilter();
+
+  /// Troca o filtro inteiro (ex.: tocar num assunto na tela "Por conteúdo").
+  void replace(QuestionFilter filter) => state = filter;
 }
 
 /// Questões que passam na busca e nos filtros atuais.

@@ -7,6 +7,7 @@ import '../features/account/account_page.dart';
 import '../features/auth/login_page.dart';
 import '../features/dashboard/dashboard_page.dart';
 import '../features/lists/lists_page.dart';
+import '../features/questions/content_tree_page.dart';
 import '../features/questions/question_detail_page.dart';
 import '../features/questions/question_form_page.dart';
 import '../features/questions/questions_page.dart';
@@ -26,6 +27,9 @@ abstract final class Routes {
 
   /// Detalhe dentro da aba Questões.
   static String question(String id) => '$questions/$id';
+
+  /// Acervo organizado por área → matéria → assunto.
+  static const String contentTree = '$questions/conteudos';
 }
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -72,6 +76,11 @@ final routerProvider = Provider<GoRouter>((ref) {
                 path: Routes.questions,
                 builder: (_, _) => const QuestionsPage(),
                 routes: [
+                  // Antes de ':id', senão "conteudos" viraria um id.
+                  GoRoute(
+                    path: 'conteudos',
+                    builder: (_, _) => const ContentTreePage(),
+                  ),
                   GoRoute(
                     path: ':id',
                     builder: (_, state) => QuestionDetailPage(

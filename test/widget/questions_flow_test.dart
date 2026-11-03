@@ -81,6 +81,24 @@ void main() {
     expect(find.text('Plataforma · 1'), findsOneWidget);
   });
 
+  testWidgets('tela "Por conteúdo" leva ao assunto já filtrado', (
+    tester,
+  ) async {
+    await pumpIagoApp(tester);
+    await enterDemo(tester);
+    await openQuestionsTab(tester);
+
+    await tester.tap(find.byKey(const Key('open-content-tree')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('tree-area-mathematics')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('tree-topic-Funções')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('11 de 40 questões'), findsOneWidget);
+    expect(find.text('Assunto · 1'), findsOneWidget);
+  });
+
   testWidgets('salva questão colada em segundos e ela entra na busca', (
     tester,
   ) async {

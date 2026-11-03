@@ -46,9 +46,24 @@ class _QuestionsPageState extends ConsumerState<QuestionsPage> {
     final filtered = ref.watch(filteredQuestionsProvider);
     final total = ref.watch(questionsProvider).value?.length;
     final theme = Theme.of(context);
+    // Se o filtro mudar por fora (tela "Por conteúdo"), o campo acompanha.
+    ref.listen(questionFilterProvider, (_, next) {
+      if (next.query != _search.text) _search.text = next.query;
+    });
 
     return Scaffold(
-      appBar: AppBar(title: const PageTitle('Questões')),
+      appBar: AppBar(
+        title: const PageTitle('Questões'),
+        actions: [
+          TextButton.icon(
+            key: const Key('open-content-tree'),
+            onPressed: () => context.push(Routes.contentTree),
+            icon: const Icon(Icons.account_tree_outlined),
+            label: const Text('Conteúdos'),
+          ),
+          const SizedBox(width: 4),
+        ],
+      ),
       floatingActionButton: FloatingActionButton.extended(
         key: const Key('fab-new-question'),
         onPressed: () => context.push(Routes.newQuestion),
