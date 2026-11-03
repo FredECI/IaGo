@@ -67,3 +67,7 @@ ui-debug.log
 /tool/screenshots/node_modules/
 /tool/screenshots/package-lock.json
 /tool/screenshots/shots/
+# Configuração dos emuladores locais (só valores de demonstração): pode versionar.
+!/env/emulator.json
+# Testes das regras (Node)
+/firestore-tests/node_modules/

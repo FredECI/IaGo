@@ -1,10 +1,15 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../../app/router.dart';
 import '../../app/theme_mode_controller.dart';
 import '../../core/app_info.dart';
 import '../../data/providers.dart';
+import '../../domain/session.dart';
+import '../../domain/user_profile.dart';
 import '../../shared/brand.dart';
+import '../../shared/common_widgets.dart';
 
 /// Conta: perfil, aparência, sobre e saída.
 class AccountPage extends ConsumerWidget {
@@ -30,11 +35,11 @@ class AccountPage extends ConsumerWidget {
               ),
             ),
             title: Text(isDemo ? '$name (demonstração)' : name),
-            subtitle: Text(
-              isDemo
-                  ? 'Dados de exemplo, guardados só neste aparelho'
-                  : 'Conta IaGo',
-            ),
+            subtitle: Text(switch (session) {
+              DemoSession() => 'Dados de exemplo, guardados só neste aparelho',
+              AccountSession(:final email) => email,
+              null => '',
+            }),
           ),
           const Divider(),
           const _SectionTitle('Aparência'),
@@ -71,6 +76,12 @@ class AccountPage extends ConsumerWidget {
             title: Text('Versão'),
             subtitle: Text('${AppInfo.name} ${AppInfo.versionLabel}'),
           ),
+          ListTile(
+            leading: const Icon(Icons.privacy_tip_outlined),
+            title: const Text('Termos e privacidade'),
+            subtitle: const Text('O que guardamos e como excluir'),
+            onTap: () => context.push(Routes.terms),
+          ),
           const Divider(),
           ListTile(
             key: const Key('sign-out'),
@@ -81,8 +92,103 @@ class AccountPage extends ConsumerWidget {
                 : null,
             onTap: () => ref.read(sessionProvider.notifier).signOut(),
           ),
+          if (session is AccountSession)
+            ListTile(
+              key: const Key('delete-account'),
+              leading: Icon(
+                Icons.delete_forever_outlined,
+                color: theme.colorScheme.error,
+              ),
+              title: Text(
+                'Excluir minha conta',
+                style: TextStyle(color: theme.colorScheme.error),
+              ),
+              subtitle: const Text(
+                'Apaga questões, listas, registros e a conta',
+              ),
+              onTap: () => _deleteAccount(context, ref),
+            ),
         ],
       ),
+    );
+  }
+}
+
+/// LGPD: confirma com a senha e apaga tudo (dados e conta).
+Future<void> _deleteAccount(BuildContext context, WidgetRef ref) async {
+  final auth = ref.read(authRepositoryProvider);
+  if (auth == null) {
+    showMessage(context, 'Sem conexão com o servidor de contas.');
+    return;
+  }
+  final password = await showDialog<String>(
+    context: context,
+    builder: (context) => const _DeleteAccountDialog(),
+  );
+  if (password == null || password.isEmpty || !context.mounted) return;
+  final messenger = ScaffoldMessenger.of(context);
+  try {
+    await auth.deleteAccount(password: password);
+    messenger.showSnackBar(
+      const SnackBar(content: Text('Conta e dados excluídos.')),
+    );
+  } on AuthFailure catch (failure) {
+    messenger.showSnackBar(SnackBar(content: Text(failure.message)));
+  }
+}
+
+class _DeleteAccountDialog extends StatefulWidget {
+  const _DeleteAccountDialog();
+
+  @override
+  State<_DeleteAccountDialog> createState() => _DeleteAccountDialogState();
+}
+
+class _DeleteAccountDialogState extends State<_DeleteAccountDialog> {
+  final _password = TextEditingController();
+
+  @override
+  void dispose() {
+    _password.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Excluir conta?'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text(
+            'Suas questões, listas e registros serão apagados para sempre. '
+            'Digite sua senha para confirmar.',
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            key: const Key('delete-account-password'),
+            controller: _password,
+            obscureText: true,
+            autofocus: true,
+            decoration: const InputDecoration(labelText: 'Senha'),
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Cancelar'),
+        ),
+        FilledButton(
+          key: const Key('delete-account-confirm'),
+          style: FilledButton.styleFrom(
+            backgroundColor: Theme.of(context).colorScheme.error,
+            foregroundColor: Theme.of(context).colorScheme.onError,
+          ),
+          onPressed: () => Navigator.of(context).pop(_password.text),
+          child: const Text('Excluir tudo'),
+        ),
+      ],
     );
   }
 }

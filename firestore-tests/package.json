@@ -1,0 +1,13 @@
+{
+  "name": "iago-firestore-rules-tests",
+  "private": true,
+  "type": "module",
+  "description": "Testes das regras do Firestore do IaGo no emulador local.",
+  "scripts": {
+    "test": "node --test"
+  },
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "^6.0.0",
+    "firebase": "^13.2.0"
+  }
+}

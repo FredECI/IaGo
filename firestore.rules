@@ -1,0 +1,51 @@
+rules_version = '2';
+
+// Regras do IaGo Beta 0.1. Sem servidor próprio: estas regras são a
+// segurança dos dados. Testadas em firestore-tests/rules.test.mjs.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    // Administradores são definidos no console (documento admins/{uid}).
+    function isAdmin() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    // Cada usuário lê e escreve só os próprios dados.
+    match /users/{uid} {
+      allow read, write: if isOwner(uid);
+
+      // Questões, listas e eventos de métrica do próprio usuário.
+      match /{collection}/{docId} {
+        allow read, write: if isOwner(uid) && collection != 'questionImages';
+      }
+
+      // Imagem compactada da questão: no máximo 350 KB por documento.
+      match /questionImages/{questionId} {
+        allow read, delete: if isOwner(uid);
+        allow create, update: if isOwner(uid)
+          && request.resource.data.bytes is bytes
+          && request.resource.data.bytes.size() <= 358400;
+      }
+    }
+
+    // Métricas do piloto: leitura agregada (collection group) só para admins.
+    match /{path=**}/events/{eventId} {
+      allow read: if isAdmin();
+    }
+
+    // Marca de administrador: o app só confere a própria; ninguém escreve.
+    match /admins/{uid} {
+      allow read: if isOwner(uid);
+      allow write: if false;
+    }
+  }
+}

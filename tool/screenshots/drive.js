@@ -30,6 +30,9 @@ const CHROME = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
     if (u.startsWith('http://127.0.0.1') || u.startsWith('http://localhost') || u.startsWith('data:') || u.startsWith('blob:')) {
       return route.continue();
     }
+    // ALLOW_HOSTS=www.gstatic.com libera hosts externos (ex.: SDK do Firebase).
+    const allowed = (process.env.ALLOW_HOSTS || '').split(',').filter(Boolean);
+    if (allowed.some((h) => new URL(u).host.endsWith(h))) return route.continue();
     blocked.push(u);
     return route.abort();
   });
@@ -72,6 +75,12 @@ const CHROME = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
     const arg = rest.join(':');
     if (kind === 'shot') await shot(arg);
     else if (kind === 'click') await clickText(arg);
+    else if (kind === 'reload') {
+      await page.reload({ waitUntil: 'load' });
+      await page.waitForSelector('flutter-view, flt-glass-pane', { timeout: 30000 });
+      await page.waitForTimeout(3000);
+      await enableSemantics();
+    }
     else if (kind === 'tap') {
       // Toque por coordenada (em px CSS), útil para focar campos de texto.
       const [x, y] = arg.split(',').map(Number);

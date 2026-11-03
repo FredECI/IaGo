@@ -1,0 +1,10 @@
+{
+  "FIREBASE_API_KEY": "cole aqui a apiKey do app Web (console do Firebase)",
+  "FIREBASE_ANDROID_API_KEY": "apiKey do app Android (google-services.json, current_key)",
+  "FIREBASE_PROJECT_ID": "id-do-projeto",
+  "FIREBASE_MESSAGING_SENDER_ID": "000000000000",
+  "FIREBASE_AUTH_DOMAIN": "id-do-projeto.firebaseapp.com",
+  "FIREBASE_WEB_APP_ID": "1:000000000000:web:xxxxxxxxxxxxxxxx",
+  "FIREBASE_ANDROID_APP_ID": "1:000000000000:android:xxxxxxxxxxxxxxxx",
+  "FIREBASE_EMULATOR_HOST": ""
+}

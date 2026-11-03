@@ -63,6 +63,20 @@ Protótipo do **IaGo** (Inteligência Artificial de Gerenciamento e Organizaçã
   - Nada de emoji na interface (o glifo viria de CDN).
 - **Cloud Storage exige o plano Blaze desde 03/02/2026**, então fica de fora. A imagem vai compactada (até ~300 KB) para um documento separado do Firestore; na demo, fica na memória.
 - **Config do Firebase fora do git:** `--dart-define-from-file=env/firebase.json`. Sem esse arquivo, o app roda só em modo demo.
+- **Firebase, o mais simples possível** (fatia 5): Auth com e-mail e senha e Firestore com regras por usuário.
+  - Inicialização em segundo plano, com timeout de 12 s (`data/firebase/firebase_bootstrap.dart`). Na web, o SDK vem do CDN gstatic; sem internet, o status fica `unavailable` e a demo segue normal.
+  - A sessão **escuta** o Auth (`ref.listen`) e nunca derruba uma `DemoSession` ativa; há teste de widget para isso.
+  - Os repositórios dependem de `dataOwnerProvider` (o `uid`), então mudar o nome não os recria. O Auth é lido via `userChanges()`, para o nome gravado no cadastro aparecer na hora.
+  - Escritas no Firestore esperam no máximo 4 s (`commitOrQueue`): sem rede, ficam na fila e a tela não trava.
+  - Modelo de dados:
+    - `users/{uid}`: perfil (nome, e-mail, `referralSource` da H4, `platformsBefore`, `termsVersion`, `termsAcceptedAt`);
+    - `/questions`, `/questionImages` (Blob até 350 KB), `/lists` e `/events`;
+    - `admins/{uid}`: criado no console.
+  - Excluir a conta (LGPD) pede a senha, reautentica, apaga as subcoleções e o perfil, e por fim o usuário do Auth.
+  - Mensagens de erro do Auth em português (`FirebaseAuthRepository.messageFor`).
+- **Emuladores:** projeto `demo-iago`, que não precisa de conta nem login.
+  - Auth na porta 9099 e Firestore na **8085**: a 8080 está ocupada nesta máquina por outro programa.
+  - Na web, com emulador, o SDK tenta `accounts:lookup` em produção ao restaurar a sessão, porque isso acontece antes do `useAuthEmulator`. É inofensivo e só ocorre no emulador.
 - **Identidade visual** (sem o deck oficial): índigo `#4F46E5` com a variante `fidelity` do M3, selo Beta âmbar, logo com degradê fixo. Os tokens estão em `lib/app/theme.dart`.
 - **Git:** commits pequenos por fatia, com mensagem em português; `flutter analyze` sem avisos e `flutter test` verde antes de cada um. Autor local: Fred <frediro1910@gmail.com>.
 
@@ -82,6 +96,13 @@ flutter test                         # unitários + widget
 flutter run -d chrome                # desenvolvimento na web
 flutter build web --release --no-web-resources-cdn
 python -m http.server 8765 --bind 127.0.0.1 --directory build/web   # serve o build
+# Firebase local (emuladores, sem conta):
+firebase emulators:start --only auth,firestore --project demo-iago
+flutter run -d chrome --dart-define-from-file=env/emulator.json
+# Testes das regras do Firestore (cd firestore-tests && npm install na 1ª vez):
+firebase emulators:exec --only firestore --project demo-iago "node --test firestore-tests/rules.test.mjs"
+# Firebase de verdade (env/firebase.json fora do git, modelo em env/firebase.example.json):
+flutter run -d chrome --dart-define-from-file=env/firebase.json
 # Capturas a 360 px, bloqueando pedidos externos (prova de offline):
 cd tool/screenshots && npm install && node drive.js http://127.0.0.1:8765/ shots "click:Entrar como Pedro" "shot:painel"
 ```
@@ -94,6 +115,8 @@ Passos do `drive.js`:
 - `paste:<texto com \n>`: cola de uma vez, como Ctrl+V.
 - `scroll:<px>`, `wait:<ms>`, `shot:<nome>`, `dump`: lista a árvore de semântica.
 - `focus`: mostra o elemento focado.
+- `reload`: recarrega a página.
+- Variável `ALLOW_HOSTS=www.gstatic.com` libera o SDK do Firebase, necessária para testar contas.
 - `newtab:<texto>`: toca e confirma que abriu uma aba nova.
 - `download:<texto>|<arquivo>`: toca e salva o download (por exemplo, o PDF).
 
@@ -105,7 +128,7 @@ Passos do `drive.js`:
 | 2. Salvar, listar, buscar, filtrar | **Pronta (03/11)**: 61 testes; fluxo de colar e salvar, busca "função" + filtros = 9 verificados no build web |
 | 3. Categorização (autocompletar, hierarquia, contadores) | **Pronta (03/11)**: tela "Por conteúdo" (área → matéria → assunto com contagens; tocar aplica o filtro). 66 testes |
 | 4. Listas e PDF | **Pronta (03/11)**: 82 testes; filtro → lista → PDF verificado no build web (aba nova + download), PDF conferido página a página |
-| 5. Firebase Auth + Firestore | — |
+| 5. Firebase Auth + Firestore | **Pronta nos emuladores (03/11)**: 87 testes Flutter e 6 de regras. Cadastro → salvar → recarregar → sair/entrar → excluir conta verificado no navegador. **Falta o projeto real (Fred)** |
 | 6. Painel (resumo relativo) | — |
 | 7. Métricas (desejável) | — |
 | 8. Deploy (desejável) | — |

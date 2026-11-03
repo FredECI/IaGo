@@ -23,3 +23,33 @@ final class DemoSession extends Session {
   @override
   bool get isDemo => true;
 }
+
+/// Conta real (Firebase Auth). A igualdade inclui o nome, para a saudação
+/// atualizar quando o perfil muda; os repositórios dependem só do `uid`
+/// (veja `dataOwnerProvider`).
+final class AccountSession extends Session {
+  const AccountSession({required this.uid, required this.email, this.name});
+
+  final String uid;
+  final String email;
+  final String? name;
+
+  @override
+  String get displayName {
+    final first = (name ?? '').trim().split(' ').first;
+    return first.isNotEmpty ? first : email.split('@').first;
+  }
+
+  @override
+  bool get isDemo => false;
+
+  @override
+  bool operator ==(Object other) =>
+      other is AccountSession &&
+      other.uid == uid &&
+      other.email == email &&
+      other.name == name;
+
+  @override
+  int get hashCode => Object.hash(uid, email, name);
+}

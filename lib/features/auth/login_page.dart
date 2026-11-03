@@ -4,6 +4,7 @@ import 'package:material_ui/material_ui.dart';
 import '../../core/app_info.dart';
 import '../../data/providers.dart';
 import '../../shared/brand.dart';
+import 'account_section.dart';
 
 /// Porta de entrada: demonstração em 1 toque ou conta com e-mail.
 class LoginPage extends ConsumerWidget {
@@ -78,21 +79,7 @@ class LoginPage extends ConsumerWidget {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  OutlinedButton.icon(
-                    style: OutlinedButton.styleFrom(
-                      minimumSize: const Size.fromHeight(48),
-                    ),
-                    onPressed: null,
-                    icon: const Icon(Icons.mail_outline),
-                    label: const Text('Entrar com e-mail'),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Contas com e-mail e senha chegam na próxima etapa '
-                    'deste beta.',
-                    textAlign: TextAlign.center,
-                    style: muted,
-                  ),
+                  const AccountSection(),
                 ],
               ),
             ),

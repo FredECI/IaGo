@@ -5,6 +5,8 @@ import 'package:material_ui/material_ui.dart';
 import '../data/providers.dart';
 import '../features/account/account_page.dart';
 import '../features/auth/login_page.dart';
+import '../features/auth/sign_up_page.dart';
+import '../features/auth/terms_page.dart';
 import '../features/dashboard/dashboard_page.dart';
 import '../features/lists/list_editor_page.dart';
 import '../features/lists/lists_page.dart';
@@ -17,6 +19,8 @@ import 'shell.dart';
 /// Caminhos das telas (em português, como aparecem na barra do navegador).
 abstract final class Routes {
   static const String login = '/entrar';
+  static const String signUp = '/cadastro';
+  static const String terms = '/termos';
   static const String dashboard = '/painel';
   static const String questions = '/questoes';
   static const String lists = '/listas';
@@ -47,13 +51,19 @@ final routerProvider = Provider<GoRouter>((ref) {
     refreshListenable: refresh,
     redirect: (context, state) {
       final signedIn = ref.read(sessionProvider) != null;
-      final onLogin = state.matchedLocation == Routes.login;
-      if (!signedIn && !onLogin) return Routes.login;
-      if (signedIn && onLogin) return Routes.dashboard;
+      final location = state.matchedLocation;
+      final onEntry = location == Routes.login || location == Routes.signUp;
+      // Termos: abertos para todos (o cadastro aponta para eles).
+      if (!signedIn && !onEntry && location != Routes.terms) {
+        return Routes.login;
+      }
+      if (signedIn && onEntry) return Routes.dashboard;
       return null;
     },
     routes: [
       GoRoute(path: Routes.login, builder: (_, _) => const LoginPage()),
+      GoRoute(path: Routes.signUp, builder: (_, _) => const SignUpPage()),
+      GoRoute(path: Routes.terms, builder: (_, _) => const TermsPage()),
       GoRoute(
         path: Routes.newQuestion,
         builder: (_, _) => const QuestionFormPage(),
