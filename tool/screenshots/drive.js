@@ -89,6 +89,21 @@ const CHROME = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
     }
     else if (kind === 'press') { await page.keyboard.press(arg); await page.waitForTimeout(400); }
     else if (kind === 'scroll') { await page.mouse.move(180, 400); await page.mouse.wheel(0, Number(arg)); await page.waitForTimeout(700); }
+    else if (kind === 'newtab') {
+      // Toca e espera abrir uma aba nova (ex.: "Abrir PDF").
+      const [popup] = await Promise.all([context.waitForEvent('page', { timeout: 10000 }), clickText(arg)]);
+      await popup.waitForLoadState().catch(() => {});
+      console.log('aba nova aberta:', popup.url().slice(0, 60));
+      await popup.close();
+    }
+    else if (kind === 'download') {
+      // Toca e salva o arquivo baixado: download:<texto do botão>|<arquivo>
+      const [label, file] = arg.split('|');
+      const [dl] = await Promise.all([page.waitForEvent('download', { timeout: 10000 }), clickText(label)]);
+      const target = path.join(outDir, file || dl.suggestedFilename());
+      await dl.saveAs(target);
+      console.log('baixado:', target, '(nome sugerido:', dl.suggestedFilename() + ')');
+    }
     else if (kind === 'field') {
       // Foca o campo de texto pelo rótulo/dica (o input da semântica do Flutter).
       const sel = `input[aria-label*="${arg}"], textarea[aria-label*="${arg}"]`;

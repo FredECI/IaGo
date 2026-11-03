@@ -5,6 +5,7 @@ import 'package:material_ui/material_ui.dart';
 import '../../app/router.dart';
 import '../../data/providers.dart';
 import '../../shared/brand.dart';
+import '../questions/selection.dart';
 
 /// Painel inicial: atalhos e o roteiro dos próximos pilares.
 class DashboardPage extends ConsumerWidget {
@@ -54,7 +55,7 @@ class DashboardPage extends ConsumerWidget {
                   key: const Key('shortcut-build-list'),
                   icon: Icons.playlist_add,
                   label: 'Montar lista',
-                  onTap: () => context.go(Routes.questions),
+                  onTap: () => startListBuilding(context, ref),
                 ),
               ),
             ],

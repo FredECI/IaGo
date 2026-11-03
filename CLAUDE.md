@@ -41,6 +41,20 @@ Protótipo do **IaGo** (Inteligência Artificial de Gerenciamento e Organizaçã
 - **Salvar em menos de 30 s:** o formulário cronometra da abertura ao salvar e mostra "Questão salva em N s (meta: menos de 30 s)". Assunto e plataforma têm sugestões tocáveis (`domain/suggestions.dart`); os assuntos se limitam à matéria escolhida.
 - **Filtros na tela:** os chips usam `Wrap`, com tudo visível a 360 px (nada escondido em rolagem horizontal). O cabeçalho rola junto com a lista. Resultado com filtro aparece como "9 de 40 questões".
 - **Excluir questão** também a retira das listas, via `ListRepository.removeQuestion`.
+- **Listas:** há três jeitos de começar uma.
+  - Pelo filtro atual: "Montar lista com estas N questões", o caminho do roteiro.
+  - Pela seleção: segurar um cartão, ou o atalho "Montar lista" do painel ou "Nova lista".
+  - No editor: reordenar (`onReorderItem`, cujo índice já vem ajustado; `onReorder` está depreciado), remover, adicionar, renomear e excluir.
+- **Tempo de montagem (H2):** `listAssemblyTimerProvider` começa na primeira busca, filtro ou seleção e grava `QuestionList.assemblyStartedAt` na criação. Zera ao criar a lista ou em "Limpar".
+- **PDF** (`features/export/list_pdf.dart`):
+  - A4, sem gabarito, com Nome/Data, numeração, (A)–(E) e 7 linhas nas discursivas.
+  - Cada questão vai em `pw.Inseparable`, para não quebrar no meio da página. O enunciado usa `RichText(overflow: TextOverflow.span)`; sem isso, texto mais alto que uma página derruba o PDF.
+  - Se algo não couber, `buildListPdf` refaz sem agrupar.
+- **Entrega do PDF** (`pdf_exporter.dart`):
+  - Web: "Abrir PDF" abre um blob numa nova aba, e precisa rodar no toque, sem `await` antes. "Baixar PDF" baixa o arquivo.
+  - Android: `layoutPdf` para visualizar ou imprimir e `sharePdf` para compartilhar.
+  - A exportação conta (`registerExport`), mas o arquivo não é guardado.
+- **FABs com `heroTag: null`:** com `StatefulShellRoute.indexedStack`, todas as abas ficam na mesma rota, e a hero tag padrão repetida quebra a transição de saída.
 - **Categorização:** área (4, padrão ENEM) → matéria (catálogo fixo) → assunto (1 tag livre, opcional). Matemática tem uma matéria só, que entra preenchida automaticamente.
 - **Offline:**
   - Fonte Inter embutida (`assets/fonts`, gerada por `tool/build_fonts.py`), também usada no PDF.
@@ -80,6 +94,8 @@ Passos do `drive.js`:
 - `paste:<texto com \n>`: cola de uma vez, como Ctrl+V.
 - `scroll:<px>`, `wait:<ms>`, `shot:<nome>`, `dump`: lista a árvore de semântica.
 - `focus`: mostra o elemento focado.
+- `newtab:<texto>`: toca e confirma que abriu uma aba nova.
+- `download:<texto>|<arquivo>`: toca e salva o download (por exemplo, o PDF).
 
 ## Status
 
@@ -88,7 +104,7 @@ Passos do `drive.js`:
 | 1. Esqueleto, tema, navegação, modo demo | **Pronta (03/11)**: 46 testes verdes, analyze limpo, build web sem nenhum pedido externo |
 | 2. Salvar, listar, buscar, filtrar | **Pronta (03/11)**: 61 testes; fluxo de colar e salvar, busca "função" + filtros = 9 verificados no build web |
 | 3. Categorização (autocompletar, hierarquia, contadores) | **Pronta (03/11)**: tela "Por conteúdo" (área → matéria → assunto com contagens; tocar aplica o filtro). 66 testes |
-| 4. Listas e PDF | — |
+| 4. Listas e PDF | **Pronta (03/11)**: 82 testes; filtro → lista → PDF verificado no build web (aba nova + download), PDF conferido página a página |
 | 5. Firebase Auth + Firestore | — |
 | 6. Painel (resumo relativo) | — |
 | 7. Métricas (desejável) | — |

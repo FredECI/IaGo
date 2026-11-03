@@ -6,6 +6,7 @@ import '../data/providers.dart';
 import '../features/account/account_page.dart';
 import '../features/auth/login_page.dart';
 import '../features/dashboard/dashboard_page.dart';
+import '../features/lists/list_editor_page.dart';
 import '../features/lists/lists_page.dart';
 import '../features/questions/content_tree_page.dart';
 import '../features/questions/question_detail_page.dart';
@@ -30,6 +31,9 @@ abstract final class Routes {
 
   /// Acervo organizado por área → matéria → assunto.
   static const String contentTree = '$questions/conteudos';
+
+  /// Editor de uma lista (aba Listas).
+  static String list(String id) => '$lists/$id';
 }
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -93,7 +97,17 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           StatefulShellBranch(
             routes: [
-              GoRoute(path: Routes.lists, builder: (_, _) => const ListsPage()),
+              GoRoute(
+                path: Routes.lists,
+                builder: (_, _) => const ListsPage(),
+                routes: [
+                  GoRoute(
+                    path: ':id',
+                    builder: (_, state) =>
+                        ListEditorPage(listId: state.pathParameters['id']!),
+                  ),
+                ],
+              ),
             ],
           ),
           StatefulShellBranch(

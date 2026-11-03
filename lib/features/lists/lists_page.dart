@@ -1,11 +1,14 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../../app/router.dart';
 import '../../core/clock.dart';
 import '../../core/formatters.dart';
 import '../../domain/question_list.dart';
 import '../../shared/brand.dart';
 import '../../shared/common_widgets.dart';
+import '../questions/selection.dart';
 import 'lists_providers.dart';
 
 /// Listas montadas: para estudar ou levar à aula de reforço.
@@ -17,6 +20,13 @@ class ListsPage extends ConsumerWidget {
     final lists = ref.watch(listsProvider);
     return Scaffold(
       appBar: AppBar(title: const PageTitle('Listas')),
+      floatingActionButton: FloatingActionButton.extended(
+        heroTag: null,
+        key: const Key('fab-new-list'),
+        onPressed: () => startListBuilding(context, ref),
+        icon: const Icon(Icons.playlist_add),
+        label: const Text('Nova lista'),
+      ),
       body: lists.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, _) => EmptyState(
@@ -30,8 +40,8 @@ class ListsPage extends ConsumerWidget {
               icon: Icons.list_alt_outlined,
               title: 'Nenhuma lista ainda',
               message:
-                  'Selecione questões ou use o filtro atual para montar '
-                  'uma lista.',
+                  'Toque em "Nova lista" e selecione as questões, ou filtre e '
+                  'use "Montar lista".',
             );
           }
           return ListView.separated(
@@ -59,6 +69,9 @@ class _ListCard extends ConsumerWidget {
     return Card(
       clipBehavior: Clip.antiAlias,
       child: ListTile(
+        key: Key('list-card-${list.id}'),
+        onTap: () => context.push(Routes.list(list.id)),
+        trailing: const Icon(Icons.chevron_right),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         leading: CircleAvatar(
           backgroundColor: theme.colorScheme.secondaryContainer,

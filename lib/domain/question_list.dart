@@ -15,6 +15,7 @@ class QuestionList {
     required this.updatedAt,
     this.exportCount = 0,
     this.lastExportedAt,
+    this.assemblyStartedAt,
   }) : questionIds = List.unmodifiable(questionIds);
 
   final String id;
@@ -24,6 +25,10 @@ class QuestionList {
   final DateTime updatedAt;
   final int exportCount;
   final DateTime? lastExportedAt;
+
+  /// Quando o estudante começou a garimpar as questões desta lista (primeira
+  /// busca, filtro ou seleção). Mede o "tempo de montagem" da hipótese H2.
+  final DateTime? assemblyStartedAt;
 
   int get length => questionIds.length;
 
@@ -35,6 +40,7 @@ class QuestionList {
     DateTime? updatedAt,
     int? exportCount,
     Object? lastExportedAt = _unset,
+    Object? assemblyStartedAt = _unset,
   }) {
     return QuestionList(
       id: id ?? this.id,
@@ -46,6 +52,9 @@ class QuestionList {
       lastExportedAt: identical(lastExportedAt, _unset)
           ? this.lastExportedAt
           : lastExportedAt as DateTime?,
+      assemblyStartedAt: identical(assemblyStartedAt, _unset)
+          ? this.assemblyStartedAt
+          : assemblyStartedAt as DateTime?,
     );
   }
 
@@ -56,6 +65,7 @@ class QuestionList {
     'updatedAt': updatedAt,
     'exportCount': exportCount,
     'lastExportedAt': lastExportedAt,
+    'assemblyStartedAt': assemblyStartedAt,
   };
 
   factory QuestionList.fromMap(String id, Map<String, Object?> map) {
@@ -70,6 +80,7 @@ class QuestionList {
       updatedAt: map['updatedAt'] as DateTime? ?? created,
       exportCount: (map['exportCount'] as num?)?.toInt() ?? 0,
       lastExportedAt: map['lastExportedAt'] as DateTime?,
+      assemblyStartedAt: map['assemblyStartedAt'] as DateTime?,
     );
   }
 
@@ -83,7 +94,8 @@ class QuestionList {
           other.createdAt == createdAt &&
           other.updatedAt == updatedAt &&
           other.exportCount == exportCount &&
-          other.lastExportedAt == lastExportedAt;
+          other.lastExportedAt == lastExportedAt &&
+          other.assemblyStartedAt == assemblyStartedAt;
 
   @override
   int get hashCode => Object.hash(
@@ -94,6 +106,7 @@ class QuestionList {
     updatedAt,
     exportCount,
     lastExportedAt,
+    assemblyStartedAt,
   );
 
   @override

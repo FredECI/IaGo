@@ -8,6 +8,7 @@ import '../../domain/area.dart';
 import '../../domain/question.dart';
 import '../../domain/question_filter.dart';
 import '../../domain/suggestions.dart';
+import '../lists/lists_providers.dart';
 
 /// Todas as questões do usuário atual, mais recentes primeiro.
 final questionsProvider = StreamProvider<List<Question>>(
@@ -38,31 +39,41 @@ class QuestionFilterController extends Notifier<QuestionFilter> {
     return const QuestionFilter();
   }
 
-  void setQuery(String query) => state = state.copyWith(query: query);
+  /// Toda busca/filtro conta como começo da montagem de uma lista (H2).
+  void _set(QuestionFilter next) {
+    if (!next.isEmpty) ref.read(listAssemblyTimerProvider.notifier).markStart();
+    state = next;
+  }
 
-  void toggleArea(Area area) => state = state.toggleArea(area);
+  void setQuery(String query) => _set(state.copyWith(query: query));
 
-  void toggleSubject(String subject) => state = state.toggleSubject(subject);
+  void toggleArea(Area area) => _set(state.toggleArea(area));
 
-  void toggleTopic(String topicKey) => state = state.toggleTopic(topicKey);
+  void toggleSubject(String subject) => _set(state.toggleSubject(subject));
 
-  void toggleType(QuestionType type) => state = state.toggleType(type);
+  void toggleTopic(String topicKey) => _set(state.toggleTopic(topicKey));
+
+  void toggleType(QuestionType type) => _set(state.toggleType(type));
 
   void togglePlatform(String platformKey) =>
-      state = state.togglePlatform(platformKey);
+      _set(state.togglePlatform(platformKey));
 
-  void clearDimension(FilterDimension dimension) => state = switch (dimension) {
+  void clearDimension(FilterDimension dimension) => _set(switch (dimension) {
     FilterDimension.area => state.copyWith(areas: const {}),
     FilterDimension.subject => state.copyWith(subjects: const {}),
     FilterDimension.topic => state.copyWith(topicKeys: const {}),
     FilterDimension.type => state.copyWith(type: null),
     FilterDimension.platform => state.copyWith(platformKeys: const {}),
-  };
+  });
 
-  void clearAll() => state = const QuestionFilter();
+  /// Limpar tudo recomeça a contagem do tempo de montagem.
+  void clearAll() {
+    ref.read(listAssemblyTimerProvider.notifier).reset();
+    state = const QuestionFilter();
+  }
 
   /// Troca o filtro inteiro (ex.: tocar num assunto na tela "Por conteúdo").
-  void replace(QuestionFilter filter) => state = filter;
+  void replace(QuestionFilter filter) => _set(filter);
 }
 
 /// Questões que passam na busca e nos filtros atuais.
