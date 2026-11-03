@@ -102,6 +102,34 @@ Protótipo do **IaGo** (Inteligência Artificial de Gerenciamento e Organizaçã
 - O PATH do usuário já foi atualizado, mas o VS Code só enxerga depois de reiniciar. Em terminal antigo, rode antes: `$env:Path = "$env:USERPROFILE\dev\flutter\bin;$env:Path"`.
 - **Pendente (Fred):** aceitar as licenças do Android com `sdkmanager --licenses` (comando completo no histórico da sessão de 03/11). Depois, instalar `platform-tools` e a plataforma.
 
+## Pendências do Fred (e o que fazer em seguida)
+
+1. **Licenças do Android**, em PowerShell:
+   ```powershell
+   $env:JAVA_HOME="$env:USERPROFILE\dev\jdk-21"; & "$env:LOCALAPPDATA\Android\Sdk\cmdline-tools\latest\bin\sdkmanager.bat" --licenses
+   ```
+   Depois, Claude roda:
+   ```
+   sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
+   flutter build apk --release
+   ```
+   O Flutter 3.47 usa compile/target SDK 36 e minSdk 24.
+2. **Projeto Firebase:**
+   - criar no plano Spark, sem cartão;
+   - ativar Authentication → E-mail/senha;
+   - criar o Firestore em `southamerica-east1`;
+   - rodar `firebase login` e informar o ID do projeto.
+
+   Depois, Claude:
+   - registra os apps web/Android (`firebase apps:create` / `apps:sdkconfig`);
+   - preenche `env/firebase.json`;
+   - troca o `default` do `.firebaserc`;
+   - faz `firebase deploy --only hosting,firestore:rules`, **com confirmação do Fred**.
+
+   O Fred cria `admins/{uid}` no console para ver as métricas reais.
+3. **Repositório no GitHub**: criar, informar a URL e, se quiser, o secret `FIREBASE_ENV_JSON` para o CI gerar builds ligados ao Firebase.
+4. **Ensaio**: seguir o [DEMO.md](DEMO.md). O vídeo, as capturas e o PDF do plano B estão em `docs/demo/`. Para regenerar, rodar o `drive.js` com `RECORD_VIDEO`.
+
 ## Comandos úteis
 
 ```bash
@@ -146,4 +174,4 @@ Passos do `drive.js`:
 | 5. Firebase Auth + Firestore | **Pronta nos emuladores (03/11)**: 87 testes Flutter e 6 de regras. Cadastro → salvar → recarregar → sair/entrar → excluir conta verificado no navegador. **Falta o projeto real (Fred)** |
 | 6. Painel (resumo relativo) | **Pronta (03/11)**: "8 questões nos últimos 7 dias, 3 a mais que nos 7 anteriores" (vira "9, 4 a mais" depois de salvar ao vivo), barras de comparação, listas e área com mais questões. 90 testes |
 | 7. Métricas (desejável) | **Pronta (03/11)**: 97 testes; tela com dados simulados verificada no web; eventos e visão de admin com dados reais verificados nos emuladores |
-| 8. Deploy (desejável) | — |
+| 8. Deploy (desejável) | **Preparado (03/11)**: `firebase.json` (hosting + cabeçalhos), ícones e nome do app, README, `.github/workflows/ci.yml` (YAML validado). **Bloqueado pelo Fred:** projeto Firebase + `firebase login`, licenças do Android e repositório no GitHub |

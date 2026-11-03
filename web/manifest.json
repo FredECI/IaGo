@@ -1,11 +1,11 @@
 {
-    "name": "iago",
-    "short_name": "iago",
+    "name": "IaGo — Beta 0.1",
+    "short_name": "IaGo",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "IaGo - organizacao de estudos (Beta 0.1)",
+    "background_color": "#FCF8FF",
+    "theme_color": "#4F46E5",
+    "description": "Suas questões de todas as plataformas, num lugar só.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
@@ -31,5 +31,6 @@
             "type": "image/png",
             "purpose": "maskable"
         }
-    ]
+    ],
+    "lang": "pt-BR"
 }

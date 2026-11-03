@@ -14,10 +14,14 @@ const CHROME = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 
 (async () => {
   const browser = await chromium.launch({ executablePath: CHROME, headless: true });
+  // RECORD_VIDEO=<pasta> grava um vídeo do roteiro (plano B da apresentação).
   const context = await browser.newContext({
     viewport: { width: 360, height: 780 },
     deviceScaleFactor: 2,
     locale: 'pt-BR',
+    ...(process.env.RECORD_VIDEO
+      ? { recordVideo: { dir: process.env.RECORD_VIDEO, size: { width: 360, height: 780 } } }
+      : {}),
   });
   await context.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: new URL(url).origin });
   const page = await context.newPage();
