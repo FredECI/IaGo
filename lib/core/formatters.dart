@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 /// Formatação de datas e contagens em português do Brasil.
 abstract final class Formatters {
   static final DateFormat _dayMonth = DateFormat("d 'de' MMM", 'pt_BR');
-  static final DateFormat _full = DateFormat("d/MM/yyyy 'às' HH:mm", 'pt_BR');
+  static final DateFormat _full = DateFormat("dd/MM/yyyy 'às' HH:mm", 'pt_BR');
   static final DateFormat _date = DateFormat('dd/MM/yyyy', 'pt_BR');
 
   /// "hoje", "ontem", "há 3 dias" ou "12 de out.".

@@ -45,7 +45,7 @@ class DashboardPage extends ConsumerWidget {
                   key: const Key('shortcut-save-question'),
                   icon: Icons.add_circle_outline,
                   label: 'Salvar questão',
-                  onTap: () => context.go(Routes.questions),
+                  onTap: () => context.push(Routes.newQuestion),
                 ),
               ),
               const SizedBox(width: 12),

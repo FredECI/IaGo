@@ -37,4 +37,7 @@ abstract interface class ListRepository {
 
   /// Registra uma exportação em PDF (contador e data da última).
   Future<QuestionList> registerExport(String id);
+
+  /// Retira a questão de todas as listas (usado quando ela é excluída).
+  Future<void> removeQuestion(String questionId);
 }

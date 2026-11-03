@@ -60,6 +60,23 @@ class MemoryListRepository implements ListRepository {
     return saved;
   }
 
+  @override
+  Future<void> removeQuestion(String questionId) async {
+    final now = _clock();
+    _store.value = _sorted([
+      for (final list in _store.value)
+        list.questionIds.contains(questionId)
+            ? list.copyWith(
+                questionIds: [
+                  for (final id in list.questionIds)
+                    if (id != questionId) id,
+                ],
+                updatedAt: now,
+              )
+            : list,
+    ]);
+  }
+
   void _replace(QuestionList saved) {
     final items = [..._store.value];
     final index = items.indexWhere((l) => l.id == saved.id);

@@ -7,6 +7,8 @@ import '../features/account/account_page.dart';
 import '../features/auth/login_page.dart';
 import '../features/dashboard/dashboard_page.dart';
 import '../features/lists/lists_page.dart';
+import '../features/questions/question_detail_page.dart';
+import '../features/questions/question_form_page.dart';
 import '../features/questions/questions_page.dart';
 import 'shell.dart';
 
@@ -17,6 +19,13 @@ abstract final class Routes {
   static const String questions = '/questoes';
   static const String lists = '/listas';
   static const String account = '/conta';
+
+  /// Formulário em tela cheia (fora das abas).
+  static const String newQuestion = '/questao/nova';
+  static String editQuestion(String id) => '/questao/$id/editar';
+
+  /// Detalhe dentro da aba Questões.
+  static String question(String id) => '$questions/$id';
 }
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -37,6 +46,15 @@ final routerProvider = Provider<GoRouter>((ref) {
     },
     routes: [
       GoRoute(path: Routes.login, builder: (_, _) => const LoginPage()),
+      GoRoute(
+        path: Routes.newQuestion,
+        builder: (_, _) => const QuestionFormPage(),
+      ),
+      GoRoute(
+        path: '/questao/:id/editar',
+        builder: (_, state) =>
+            QuestionFormPage(questionId: state.pathParameters['id']),
+      ),
       StatefulShellRoute.indexedStack(
         builder: (_, _, shell) => AppShell(navigationShell: shell),
         branches: [
@@ -53,6 +71,14 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: Routes.questions,
                 builder: (_, _) => const QuestionsPage(),
+                routes: [
+                  GoRoute(
+                    path: ':id',
+                    builder: (_, state) => QuestionDetailPage(
+                      questionId: state.pathParameters['id']!,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

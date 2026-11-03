@@ -104,5 +104,28 @@ void main() {
       await repo.delete(list.id);
       expect(repo.current, isEmpty);
     });
+
+    test('removeQuestion tira a questão de todas as listas', () async {
+      QuestionList list(String name, List<String> ids) => QuestionList(
+        id: '',
+        name: name,
+        questionIds: ids,
+        createdAt: DateTime(2000),
+        updatedAt: DateTime(2000),
+      );
+      final repo = MemoryListRepository(clock: clock);
+      await repo.create(list('A', ['x', 'y']));
+      await repo.create(list('B', ['y', 'z']));
+      await repo.create(list('C', ['z']));
+
+      await repo.removeQuestion('y');
+
+      final byName = {for (final l in repo.current) l.name: l.questionIds};
+      expect(byName, {
+        'A': ['x'],
+        'B': ['z'],
+        'C': ['z'],
+      });
+    });
   });
 }

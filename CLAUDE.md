@@ -36,6 +36,11 @@ Protótipo do **IaGo** (Inteligência Artificial de Gerenciamento e Organizaçã
 - **Busca:** feita no cliente, ignorando acentos, com o plural "-ões" reduzido a "-ão" (`core/text_normalizer.dart`). Assunto e plataforma são tags livres comparadas por `tagKey`.
 - **Filtros:** OU dentro da mesma dimensão e E entre dimensões. Os contadores são facetas: cada um respeita os filtros das outras dimensões.
 - **Colagem:** `domain/paste_parser.dart` separa as alternativas A–E do texto colado. Exige 4 ou mais itens em sequência, para não confundir os itens a) e b) das discursivas.
+  - O formulário detecta colagem quando o texto cresce 20 ou mais caracteres de uma vez.
+  - O aviso "N alternativas separadas" com "Desfazer" fica dentro do formulário, porque um snackbar cobria as sugestões.
+- **Salvar em menos de 30 s:** o formulário cronometra da abertura ao salvar e mostra "Questão salva em N s (meta: menos de 30 s)". Assunto e plataforma têm sugestões tocáveis (`domain/suggestions.dart`); os assuntos se limitam à matéria escolhida.
+- **Filtros na tela:** os chips usam `Wrap`, com tudo visível a 360 px (nada escondido em rolagem horizontal). O cabeçalho rola junto com a lista. Resultado com filtro aparece como "9 de 40 questões".
+- **Excluir questão** também a retira das listas, via `ListRepository.removeQuestion`.
 - **Categorização:** área (4, padrão ENEM) → matéria (catálogo fixo) → assunto (1 tag livre, opcional). Matemática tem uma matéria só, que entra preenchida automaticamente.
 - **Offline:**
   - Fonte Inter embutida (`assets/fonts`, gerada por `tool/build_fonts.py`), também usada no PDF.
@@ -67,13 +72,22 @@ python -m http.server 8765 --bind 127.0.0.1 --directory build/web   # serve o bu
 cd tool/screenshots && npm install && node drive.js http://127.0.0.1:8765/ shots "click:Entrar como Pedro" "shot:painel"
 ```
 
+Passos do `drive.js`:
+
+- `click:<texto>`: toca pelo rótulo de acessibilidade.
+- `field:<rótulo>`: foca um campo de texto. O clique por coordenada **não** foca input no Flutter web.
+- `type:<texto>`: digita.
+- `paste:<texto com \n>`: cola de uma vez, como Ctrl+V.
+- `scroll:<px>`, `wait:<ms>`, `shot:<nome>`, `dump`: lista a árvore de semântica.
+- `focus`: mostra o elemento focado.
+
 ## Status
 
 | Fatia | Situação |
 | --- | --- |
 | 1. Esqueleto, tema, navegação, modo demo | **Pronta (03/11)**: 46 testes verdes, analyze limpo, build web sem nenhum pedido externo |
-| 2. Salvar, listar, buscar, filtrar | Próxima |
-| 3. Categorização (autocompletar, hierarquia, contadores) | — |
+| 2. Salvar, listar, buscar, filtrar | **Pronta (03/11)**: 61 testes; fluxo de colar e salvar, busca "função" + filtros = 9 verificados no build web |
+| 3. Categorização (autocompletar, hierarquia, contadores) | Parcial: área → matéria → assunto, sugestões e contadores já entraram na fatia 2. Falta revisar a hierarquia na tela de filtros |
 | 4. Listas e PDF | — |
 | 5. Firebase Auth + Firestore | — |
 | 6. Painel (resumo relativo) | — |
