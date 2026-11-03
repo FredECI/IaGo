@@ -1,0 +1,19 @@
+# Análise estática do IaGo. Regra do projeto: `flutter analyze` sem avisos
+# antes de cada commit.
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  exclude:
+    - build/**
+    - android/**
+    - web/**
+  language:
+    strict-casts: true
+    strict-raw-types: true
+
+linter:
+  rules:
+    - prefer_single_quotes
+    - prefer_final_locals
+    - unawaited_futures
+    - avoid_dynamic_calls

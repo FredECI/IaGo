@@ -1,0 +1,7 @@
+# Fins de linha LF em todo o repositório (Windows e CI em Linux).
+* text=auto eol=lf
+*.png binary
+*.ttf binary
+*.otf binary
+*.jar binary
+*.pdf binary

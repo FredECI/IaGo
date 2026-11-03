@@ -1,0 +1,11 @@
+{
+  "name": "iago-screenshots",
+  "private": true,
+  "description": "Dirige o build web do IaGo no Chrome (360 px) e tira capturas. Bloqueia pedidos externos para provar que roda offline.",
+  "scripts": {
+    "drive": "node drive.js"
+  },
+  "devDependencies": {
+    "playwright-core": "1.56.1"
+  }
+}

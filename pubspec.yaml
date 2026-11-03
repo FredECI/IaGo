@@ -1,0 +1,49 @@
+name: iago
+description: "IaGo — Inteligência Artificial de Gerenciamento e Organização de Estudos (Beta 0.1)"
+publish_to: 'none'
+
+# Beta 0.1. No Android, versionName = 0.1.0 e versionCode = 1.
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.13.7
+
+dependencies:
+  collection: ^1.19.1
+  cupertino_icons: ^2.0.0
+  flutter:
+    sdk: flutter
+  flutter_riverpod: ^3.4.3
+  go_router: ^18.1.2
+  image: ^4.12.0
+  image_picker: ^1.2.4
+  intl: ^0.20.3
+  material_ui: ^1.9.0
+  pdf: ^3.13.1
+  printing: ^5.15.1
+  shared_preferences: ^2.5.6
+  url_launcher: ^6.3.3
+  web: ^1.1.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+
+  # Fonte embutida: o app e o PDF funcionam offline com acentos e símbolos.
+  # Gerada por tool/build_fonts.py (Inter, licença OFL em assets/fonts/OFL.txt).
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Inter-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Inter-Bold.ttf
+          weight: 700
+
+  assets:
+    - assets/fonts/
