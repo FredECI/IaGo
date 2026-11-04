@@ -69,8 +69,9 @@ jobs:
       - name: Build web (CanvasKit embutido, funciona sem CDN)
         run: flutter build web --release --no-web-resources-cdn $DEFINES
 
+      # ARM de 32 e 64 bits cobre todos os celulares; x86_64 só serve a emulador.
       - name: Build APK de release (chave de debug)
-        run: flutter build apk --release $DEFINES
+        run: flutter build apk --release --target-platform android-arm,android-arm64 $DEFINES
 
       - name: Assinatura do APK
         run: |

@@ -29,6 +29,14 @@ android {
         versionName = flutter.versionName
     }
 
+    // APK menor para baixar: as bibliotecas nativas vão comprimidas dentro do
+    // APK e são extraídas na instalação (o download cai de ~60 MB para ~20 MB).
+    packaging {
+        jniLibs {
+            useLegacyPackaging = true
+        }
+    }
+
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
