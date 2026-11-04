@@ -109,7 +109,7 @@ Protótipo do **IaGo** (Inteligência Artificial de Gerenciamento e Organizaçã
   - Apps: Web `1:958140378539:web:cc9bfd557bc11eed49f6ee` e Android `1:958140378539:android:71a8c5564031232949f6ee` (`br.ufrj.iago`).
   - O `env/firebase.json` foi gerado com `apps:sdkconfig` e fica fora do git. O `.firebaserc` tem `default` = `iago-beta` e o alias `demo` = `demo-iago`.
   - Verificado em 03/11 pelo `drive.js` em `localhost`, com `ALLOW_HOSTS=www.gstatic.com,googleapis.com`: cadastro → salvar → recarregar → sair/entrar → excluir conta → o login falha.
-  - Para a CLI criar projetos, a conta precisa ter aceitado os termos do Firebase no console, senão o `addFirebase` dá 403. Na primeira tentativa, isso deixou dois projetos vazios do Google Cloud (`iago-beta-ufrj` e `iago-ufrj-2026`), para o Fred apagar.
+  - Para a CLI criar projetos, a conta precisa ter aceitado os termos do Firebase no console, senão o `addFirebase` dá 403. Na primeira tentativa, isso deixou dois projetos vazios do Google Cloud (`iago-beta-ufrj` e `iago-ufrj-2026`), que o Fred apagou em 04/11.
 
 ## Ambiente desta máquina (instalado em 03/11)
 
@@ -128,11 +128,8 @@ Protótipo do **IaGo** (Inteligência Artificial de Gerenciamento e Organizaçã
    cd C:\IaGo; firebase.cmd deploy --only hosting --project iago-beta
    ```
    O APK para o WhatsApp está em `build/IaGo-Beta-0.1.apk`.
-2. **Apagar os dois projetos vazios** criados por engano. Em cada link, clicar em "Desligar" e digitar o ID:
-   - https://console.cloud.google.com/iam-admin/settings?project=iago-beta-ufrj
-   - https://console.cloud.google.com/iam-admin/settings?project=iago-ufrj-2026
-3. **Admin das métricas reais:** criar `admins/{uid}` no console do Firestore.
-4. **Ensaio**: seguir o [DEMO.md](DEMO.md). O vídeo, as capturas e o PDF do plano B estão em `docs/demo/`. Para regenerar, rodar o `drive.js` com `RECORD_VIDEO`.
+2. **Admin das métricas reais:** criar `admins/{uid}` no console do Firestore.
+3. **Ensaio**: seguir o [DEMO.md](DEMO.md). O vídeo, as capturas e o PDF do plano B estão em `docs/demo/`. Para regenerar, rodar o `drive.js` com `RECORD_VIDEO`.
 
 ## Comandos úteis
 
