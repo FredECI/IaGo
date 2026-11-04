@@ -122,12 +122,14 @@ Dois secrets opcionais do repositório mudam os builds:
 - `FIREBASE_ENV_JSON`, com o conteúdo do `env/firebase.json`. Sem ele, os builds só têm o modo demonstração.
 - `ANDROID_DEBUG_KEYSTORE`, com o `debug.keystore` em base64. Com ele, todo APK sai com a mesma assinatura e a versão nova instala por cima da anterior. Sem ele, é preciso desinstalar a versão antiga antes.
 
-Para gravá-los (PowerShell, na raiz do projeto, com o `gh` logado):
+No `FredECI/IaGo`, os dois estão configurados desde 04/11. Para gravá-los de novo, use o Git Bash, na raiz do projeto e com o `gh` logado:
 
-```powershell
-Get-Content env\firebase.json -Raw | gh secret set FIREBASE_ENV_JSON -R FredECI/IaGo
-[Convert]::ToBase64String([IO.File]::ReadAllBytes("$env:USERPROFILE\.android\debug.keystore")) | gh secret set ANDROID_DEBUG_KEYSTORE -R FredECI/IaGo
+```bash
+gh secret set FIREBASE_ENV_JSON -R FredECI/IaGo < env/firebase.json
+base64 -w0 ~/.android/debug.keystore | gh secret set ANDROID_DEBUG_KEYSTORE -R FredECI/IaGo
 ```
+
+Evite o pipe do PowerShell: ele acrescenta um BOM e uma quebra de linha ao texto. O CI descarta os dois, mas o secret fica sujo.
 
 ## Capturas e vídeo
 

@@ -45,7 +45,7 @@ jobs:
           FIREBASE_ENV_JSON: ${{ secrets.FIREBASE_ENV_JSON }}
         run: |
           if [ -n "$FIREBASE_ENV_JSON" ]; then
-            printf '%s' "$FIREBASE_ENV_JSON" | tr -d '\r' > env/firebase.json
+            printf '%s' "$FIREBASE_ENV_JSON" | sed '1s/^\xEF\xBB\xBF//' | tr -d '\r' > env/firebase.json
             echo "DEFINES=--dart-define-from-file=env/firebase.json" >> "$GITHUB_ENV"
           else
             echo "Sem FIREBASE_ENV_JSON: builds em modo demonstração."
@@ -53,15 +53,15 @@ jobs:
 
       # Opcional: com o secret ANDROID_DEBUG_KEYSTORE (keystore em base64), todo
       # APK sai com a mesma assinatura, e a versão nova instala por cima da antiga.
-      # Sem ele, cada execução gera uma chave nova. O `tr` descarta quebras de
-      # linha (o PowerShell acrescenta \r\n ao gravar o secret pelo pipe).
+      # Sem ele, cada execução gera uma chave nova. O `tr` deixa só o alfabeto do
+      # base64: o pipe do PowerShell acrescenta BOM e \r\n ao gravar o secret.
       - name: Chave de assinatura estável (opcional)
         env:
           ANDROID_DEBUG_KEYSTORE: ${{ secrets.ANDROID_DEBUG_KEYSTORE }}
         run: |
           if [ -n "$ANDROID_DEBUG_KEYSTORE" ]; then
             mkdir -p "$HOME/.android"
-            printf '%s' "$ANDROID_DEBUG_KEYSTORE" | tr -d '\r\n\t ' | base64 -d > "$HOME/.android/debug.keystore"
+            printf '%s' "$ANDROID_DEBUG_KEYSTORE" | tr -cd 'A-Za-z0-9+/=' | base64 -d > "$HOME/.android/debug.keystore"
             echo "ANDROID_USER_HOME=$HOME/.android" >> "$GITHUB_ENV"
           else
             echo "Sem ANDROID_DEBUG_KEYSTORE: chave de debug nova nesta execução."
