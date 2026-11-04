@@ -94,40 +94,35 @@ Protótipo do **IaGo** (Inteligência Artificial de Gerenciamento e Organizaçã
   - **Linha de base da H2: 30 min é provisório** (`realPilotParameters` em `features/metrics/metrics_providers.dart`). O grupo deve trocar pelo número das entrevistas.
 - **Identidade visual** (sem o deck oficial): índigo `#4F46E5` com a variante `fidelity` do M3, selo Beta âmbar, logo com degradê fixo. Os tokens estão em `lib/app/theme.dart`.
 - **Git:** commits pequenos por fatia, com mensagem em português; `flutter analyze` sem avisos e `flutter test` verde antes de cada um. Autor local: Fred <frediro1910@gmail.com>.
+- **Repositório e entrega (03/11):**
+  - [github.com/FredECI/IaGo](https://github.com/FredECI/IaGo), **privado**. Para abrir ao público: `gh repo edit FredECI/IaGo --visibility public --accept-visibility-change-consequences`. Para dar acesso a um colega: `gh api -X PUT repos/FredECI/IaGo/collaborators/<usuario>`.
+  - O APK sai do CI, porque o runner já tem as licenças do Android. Só ARM (`--target-platform android-arm,android-arm64`) e com `useLegacyPackaging = true`, o que levou o APK de 62 para 21 MB. Ele está na release `v0.1.0-beta` (prerelease), como `IaGo-Beta-0.1.apk`.
+  - O `firebase.json` declara o banco (`southamerica-east1`; o deploy cria se não existir) e o login por e-mail e senha (`auth.providers`, aplicado por `deploy --only auth` no 1º app do projeto). Nada se faz no console.
+  - O modo automático do Claude Code bloqueia extrair credenciais (como a do Git Credential Manager) e gravar secrets. Logins e secrets ficam com o Fred.
 
 ## Ambiente desta máquina (instalado em 03/11)
 
-- Flutter: `C:\Users\Fred\dev\flutter`. JDK 21: `C:\Users\Fred\dev\jdk-21`. Android SDK: `%LOCALAPPDATA%\Android\Sdk` (só as cmdline-tools por enquanto).
+- Flutter: `C:\Users\Fred\dev\flutter`. JDK 21: `C:\Users\Fred\dev\jdk-21`. Android SDK: `%LOCALAPPDATA%\Android\Sdk` (só as cmdline-tools).
 - Firebase CLI 15.34.2 (npm global). FlutterFire CLI 1.4.1 (no Git Bash, chamar `flutterfire.bat`).
-- O PATH do usuário já foi atualizado, mas o VS Code só enxerga depois de reiniciar. Em terminal antigo, rode antes: `$env:Path = "$env:USERPROFILE\dev\flutter\bin;$env:Path"`.
-- **Pendente (Fred):** aceitar as licenças do Android com `sdkmanager --licenses` (comando completo no histórico da sessão de 03/11). Depois, instalar `platform-tools` e a plataforma.
+- GitHub CLI 2.103.3, portátil, em `C:\Users\Fred\dev\gh\bin`; logado como **FredECI** (escopos `repo` e `workflow`).
+- O PATH do usuário já inclui Flutter e gh, mas o VS Code só enxerga depois de reiniciar. Em terminal antigo, rode antes: `$env:Path = "$env:USERPROFILE\dev\flutter\bin;$env:USERPROFILE\dev\gh\bin;$env:Path"`.
+- Chave de debug do Android em `%USERPROFILE%\.android\debug.keystore` (senhas padrão `android`), criada em 03/11 para o secret `ANDROID_DEBUG_KEYSTORE`.
+- As licenças do Android não foram aceitas nesta máquina. Não fazem falta, porque o APK sai do CI; só seriam necessárias para gerar o APK aqui.
 
 ## Pendências do Fred (e o que fazer em seguida)
 
-1. **Licenças do Android**, em PowerShell:
-   ```powershell
-   $env:JAVA_HOME="$env:USERPROFILE\dev\jdk-21"; & "$env:LOCALAPPDATA\Android\Sdk\cmdline-tools\latest\bin\sdkmanager.bat" --licenses
-   ```
-   Depois, Claude roda:
-   ```
-   sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
-   flutter build apk --release
-   ```
-   O Flutter 3.47 usa compile/target SDK 36 e minSdk 24.
-2. **Projeto Firebase:**
-   - criar no plano Spark, sem cartão;
-   - ativar Authentication → E-mail/senha;
-   - criar o Firestore em `southamerica-east1`;
-   - rodar `firebase login` e informar o ID do projeto.
-
-   Depois, Claude:
-   - registra os apps web/Android (`firebase apps:create` / `apps:sdkconfig`);
-   - preenche `env/firebase.json`;
-   - troca o `default` do `.firebaserc`;
-   - faz `firebase deploy --only hosting,firestore:rules`, **com confirmação do Fred**.
-
-   O Fred cria `admins/{uid}` no console para ver as métricas reais.
-3. **Repositório no GitHub**: criar, informar a URL e, se quiser, o secret `FIREBASE_ENV_JSON` para o CI gerar builds ligados ao Firebase.
+1. **`firebase login`**, o único passo manual que falta. Depois dele, Claude faz sozinho (o Fred autorizou criar e publicar em 03/11):
+   - `firebase projects:create <id> --display-name IaGo` (plano Spark);
+   - `firebase apps:create web "IaGo Web"` e `apps:create android "IaGo Android" --package-name br.ufrj.iago`;
+   - `apps:sdkconfig` dos dois apps para preencher o `env/firebase.json`;
+   - `.firebaserc` com o projeto real como `default` e `demo-iago` como alias `demo`;
+   - `flutter build web --release --no-web-resources-cdn --dart-define-from-file=env/firebase.json`;
+   - `firebase deploy --only firestore,auth,hosting`, que cria o banco, publica as regras, ativa o e-mail/senha e publica o site;
+   - testar o site publicado (demo e conta real) e pôr o link no README e no DEMO.md.
+2. **Secrets do CI** (opcional; o Claude não consegue gravar). Os dois comandos estão no README, seção CI. Com eles, o APK ganha o login real e uma assinatura fixa. Depois:
+   - rodar o CI de novo: `gh workflow run CI -R FredECI/IaGo`;
+   - trocar o APK da release: `gh release upload v0.1.0-beta IaGo-Beta-0.1.apk --clobber -R FredECI/IaGo`.
+3. **Admin das métricas reais:** criar `admins/{uid}` no console do Firestore.
 4. **Ensaio**: seguir o [DEMO.md](DEMO.md). O vídeo, as capturas e o PDF do plano B estão em `docs/demo/`. Para regenerar, rodar o `drive.js` com `RECORD_VIDEO`.
 
 ## Comandos úteis
@@ -174,4 +169,4 @@ Passos do `drive.js`:
 | 5. Firebase Auth + Firestore | **Pronta nos emuladores (03/11)**: 87 testes Flutter e 6 de regras. Cadastro → salvar → recarregar → sair/entrar → excluir conta verificado no navegador. **Falta o projeto real (Fred)** |
 | 6. Painel (resumo relativo) | **Pronta (03/11)**: "8 questões nos últimos 7 dias, 3 a mais que nos 7 anteriores" (vira "9, 4 a mais" depois de salvar ao vivo), barras de comparação, listas e área com mais questões. 90 testes |
 | 7. Métricas (desejável) | **Pronta (03/11)**: 97 testes; tela com dados simulados verificada no web; eventos e visão de admin com dados reais verificados nos emuladores |
-| 8. Deploy (desejável) | **Preparado (03/11)**: `firebase.json` (hosting + cabeçalhos), ícones e nome do app, README, `.github/workflows/ci.yml` (YAML validado). **Bloqueado pelo Fred:** projeto Firebase + `firebase login`, licenças do Android e repositório no GitHub |
+| 8. Deploy (desejável) | **Em andamento (03/11)**: repositório privado `FredECI/IaGo`; CI verde (analyze, 97 testes, 6 de regras, build web e APK); APK de 21 MB na release `v0.1.0-beta`, só com o modo demo. **Falta:** `firebase login` (Fred) para criar o projeto e publicar o site |

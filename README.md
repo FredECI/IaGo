@@ -6,6 +6,11 @@ Este beta implementa o pilar **Agrega**, com registro manual. **Direciona** (met
 
 Projeto acadêmico de Caio Peixoto, Fred, João Ricardo, Luiz e Nicolas (UFRJ). Roteiro da apresentação em [DEMO.md](DEMO.md).
 
+## Links
+
+- **Código:** [github.com/FredECI/IaGo](https://github.com/FredECI/IaGo) (repositório privado).
+- **APK para Android:** página [Releases](https://github.com/FredECI/IaGo/releases) do repositório, gerado pelo CI.
+
 ## O que tem nesta versão
 
 - **Modo demonstração** em 1 toque: conta do Pedro com 40 questões originais e 2 listas, guardadas só no aparelho e funcionando sem internet.
@@ -19,7 +24,7 @@ Projeto acadêmico de Caio Peixoto, Fred, João Ricardo, Luiz e Nicolas (UFRJ). 
 ## Requisitos
 
 - Flutter 3.47.x stable (Dart 3.13) e Chrome.
-- Android: JDK 17 ou mais novo e Android SDK com as licenças aceitas (`flutter doctor --android-licenses`).
+- Android: o CI gera o APK (veja [CI](#ci-github-actions)). Para gerar na sua máquina, é preciso JDK 17 ou mais novo e o Android SDK com as licenças aceitas (`flutter doctor --android-licenses`).
 - Firebase (opcional para rodar a demo): Node 20+ e `npm install -g firebase-tools`. Java 21 para os emuladores.
 
 ## Rodar
@@ -75,8 +80,9 @@ flutter build web --release --no-web-resources-cdn [--dart-define-from-file=env/
 # Servir o build localmente (ex.: no notebook da apresentação, sem internet)
 python -m http.server 8765 --directory build/web
 
-# APK de release, assinado com a chave de debug (suficiente para instalar por arquivo)
-flutter build apk --release [--dart-define-from-file=env/firebase.json]
+# APK de release para ARM de 32 e 64 bits (todos os celulares), assinado com a
+# chave de debug, o que basta para instalar por arquivo
+flutter build apk --release --target-platform android-arm,android-arm64 [--dart-define-from-file=env/firebase.json]
 # → build/app/outputs/flutter-apk/app-release.apk
 ```
 
@@ -90,13 +96,23 @@ firebase deploy --only hosting,firestore:rules --project <id-do-projeto>
 
 ## CI (GitHub Actions)
 
-O workflow `.github/workflows/ci.yml` faz três coisas:
+O workflow `.github/workflows/ci.yml` roda a cada push na `main` e em pull requests:
 
-- roda `flutter analyze` e `flutter test`;
-- testa as regras do Firestore no emulador;
-- gera o build web e o APK como artefatos.
+- `flutter analyze` e `flutter test`;
+- os testes das regras do Firestore no emulador;
+- o build web e o APK, guardados como artefatos por 14 dias.
 
-Sem o secret `FIREBASE_ENV_JSON` (o conteúdo do `env/firebase.json`), os builds saem em modo demonstração.
+Dois secrets opcionais do repositório mudam os builds:
+
+- `FIREBASE_ENV_JSON`, com o conteúdo do `env/firebase.json`. Sem ele, os builds só têm o modo demonstração.
+- `ANDROID_DEBUG_KEYSTORE`, com o `debug.keystore` em base64. Com ele, todo APK sai com a mesma assinatura e a versão nova instala por cima da anterior. Sem ele, é preciso desinstalar a versão antiga antes.
+
+Para gravá-los (PowerShell, na raiz do projeto, com o `gh` logado):
+
+```powershell
+Get-Content env\firebase.json -Raw | gh secret set FIREBASE_ENV_JSON -R FredECI/IaGo
+[Convert]::ToBase64String([IO.File]::ReadAllBytes("$env:USERPROFILE\.android\debug.keystore")) | gh secret set ANDROID_DEBUG_KEYSTORE -R FredECI/IaGo
+```
 
 ## Capturas e vídeo
 

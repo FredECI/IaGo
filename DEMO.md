@@ -6,6 +6,14 @@ Roteiro para a apresentação de **sexta, 06/11/2026**. A demonstração dura **
 - **Onde:** no celular (APK ou link web) ou no notebook (Chrome).
 - **Dados:** a conta demo do Pedro volta ao estado original a cada entrada. Se algo der errado no meio, é só sair e entrar de novo.
 
+## Instalar o app no celular (uma vez, antes da aula)
+
+1. No celular, abra a página [Releases](https://github.com/FredECI/IaGo/releases) e baixe o **IaGo-Beta-0.1.apk** (cerca de 20 MB; prefira o Wi-Fi).
+2. Abra o arquivo. Se o Android pedir, permita **instalar apps desconhecidos** para o navegador ou para o gerenciador de arquivos.
+3. Abra o IaGo, toque em **Entrar como Pedro (demonstração)** e teste uma vez em modo avião.
+
+O repositório é privado. Quem não tiver acesso recebe o arquivo do Fred, por WhatsApp ou Drive. Para trocar de versão, desinstale a anterior antes de instalar a nova.
+
 ## Antes de começar: copie o texto da questão
 
 No passo 3 a questão é **colada**. Deixe este texto copiado no aparelho que vai operar (no celular, mande para você mesmo no WhatsApp e copie de lá):
@@ -99,6 +107,7 @@ Os passos seguem os blocos do canvas: **Persona → Jornadas → Funcionalidades
 - [ ] Tela sempre acesa (desligar o bloqueio automático) e brilho no máximo.
 - [ ] Notificações silenciadas (modo "Não perturbe").
 - [ ] Celular carregado e carregador por perto.
+- [ ] APK instalado no celular que vai operar (veja [Instalar o app](#instalar-o-app-no-celular-uma-vez-antes-da-aula)).
 - [ ] Testar uma vez **em modo avião** (APK) ou com o Wi-Fi desligado (build local).
 - [ ] Se for usar o link web: abrir antes da aula, com internet, e deixar a aba aberta.
 - [ ] Vídeo e capturas do plano B no pen drive e na nuvem.
