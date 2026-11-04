@@ -98,12 +98,18 @@ Protótipo do **IaGo** (Inteligência Artificial de Gerenciamento e Organizaçã
   - [github.com/FredECI/IaGo](https://github.com/FredECI/IaGo), **privado**. Para abrir ao público: `gh repo edit FredECI/IaGo --visibility public --accept-visibility-change-consequences`. Para dar acesso a um colega: `gh api -X PUT repos/FredECI/IaGo/collaborators/<usuario>`.
   - O APK sai do CI, porque o runner já tem as licenças do Android. Só ARM (`--target-platform android-arm,android-arm64`) e com `useLegacyPackaging = true`, o que levou o APK de 62 para 21 MB. Ele está na release `v0.1.0-beta` (prerelease), como `IaGo-Beta-0.1.apk`.
   - O `firebase.json` declara o banco (`southamerica-east1`; o deploy cria se não existir) e o login por e-mail e senha (`auth.providers`, aplicado por `deploy --only auth` no 1º app do projeto). Nada se faz no console.
-  - O modo automático do Claude Code bloqueia extrair credenciais (como a do Git Credential Manager) e gravar secrets. Logins e secrets ficam com o Fred.
+  - O modo automático do Claude Code bloqueia três coisas: extrair credenciais (como a do Git Credential Manager), gravar secrets e publicar no Hosting. O deploy de `firestore,auth` passou. Logins, secrets e `deploy --only hosting` ficam com o Fred.
+- **Projeto Firebase real (03/11):** `iago-beta` (nº 958140378539), no plano Spark, da conta frediro1910@gmail.com.
+  - Firestore `(default)`, Standard, em `southamerica-east1`, com regras e índices publicados. Login por e-mail e senha ativo.
+  - Apps: Web `1:958140378539:web:cc9bfd557bc11eed49f6ee` e Android `1:958140378539:android:71a8c5564031232949f6ee` (`br.ufrj.iago`).
+  - O `env/firebase.json` foi gerado com `apps:sdkconfig` e fica fora do git. O `.firebaserc` tem `default` = `iago-beta` e o alias `demo` = `demo-iago`.
+  - Verificado em 03/11 pelo `drive.js` em `localhost`, com `ALLOW_HOSTS=www.gstatic.com,googleapis.com`: cadastro → salvar → recarregar → sair/entrar → excluir conta → o login falha.
+  - Para a CLI criar projetos, a conta precisa ter aceitado os termos do Firebase no console, senão o `addFirebase` dá 403. Na primeira tentativa, isso deixou dois projetos vazios do Google Cloud (`iago-beta-ufrj` e `iago-ufrj-2026`), para o Fred apagar.
 
 ## Ambiente desta máquina (instalado em 03/11)
 
 - Flutter: `C:\Users\Fred\dev\flutter`. JDK 21: `C:\Users\Fred\dev\jdk-21`. Android SDK: `%LOCALAPPDATA%\Android\Sdk` (só as cmdline-tools).
-- Firebase CLI 15.34.2 (npm global). FlutterFire CLI 1.4.1 (no Git Bash, chamar `flutterfire.bat`).
+- Firebase CLI 15.34.2 (npm global), logado como frediro1910@gmail.com. No PowerShell, chamar `firebase.cmd`: a política de execução bloqueia o `firebase.ps1`. FlutterFire CLI 1.4.1 (no Git Bash, chamar `flutterfire.bat`).
 - GitHub CLI 2.103.3, portátil, em `C:\Users\Fred\dev\gh\bin`; logado como **FredECI** (escopos `repo` e `workflow`).
 - O PATH do usuário já inclui Flutter e gh, mas o VS Code só enxerga depois de reiniciar. Em terminal antigo, rode antes: `$env:Path = "$env:USERPROFILE\dev\flutter\bin;$env:USERPROFILE\dev\gh\bin;$env:Path"`.
 - Chave de debug do Android em `%USERPROFILE%\.android\debug.keystore` (senhas padrão `android`), criada em 03/11 para o secret `ANDROID_DEBUG_KEYSTORE`.
@@ -111,19 +117,20 @@ Protótipo do **IaGo** (Inteligência Artificial de Gerenciamento e Organizaçã
 
 ## Pendências do Fred (e o que fazer em seguida)
 
-1. **`firebase login`**, o único passo manual que falta. Depois dele, Claude faz sozinho (o Fred autorizou criar e publicar em 03/11):
-   - `firebase projects:create <id> --display-name IaGo` (plano Spark);
-   - `firebase apps:create web "IaGo Web"` e `apps:create android "IaGo Android" --package-name br.ufrj.iago`;
-   - `apps:sdkconfig` dos dois apps para preencher o `env/firebase.json`;
-   - `.firebaserc` com o projeto real como `default` e `demo-iago` como alias `demo`;
-   - `flutter build web --release --no-web-resources-cdn --dart-define-from-file=env/firebase.json`;
-   - `firebase deploy --only firestore,auth,hosting`, que cria o banco, publica as regras, ativa o e-mail/senha e publica o site;
-   - testar o site publicado (demo e conta real) e pôr o link no README e no DEMO.md.
-2. **Secrets do CI** (opcional; o Claude não consegue gravar). Os dois comandos estão no README, seção CI. Com eles, o APK ganha o login real e uma assinatura fixa. Depois:
-   - rodar o CI de novo: `gh workflow run CI -R FredECI/IaGo`;
-   - trocar o APK da release: `gh release upload v0.1.0-beta IaGo-Beta-0.1.apk --clobber -R FredECI/IaGo`.
-3. **Admin das métricas reais:** criar `admins/{uid}` no console do Firestore.
-4. **Ensaio**: seguir o [DEMO.md](DEMO.md). O vídeo, as capturas e o PDF do plano B estão em `docs/demo/`. Para regenerar, rodar o `drive.js` com `RECORD_VIDEO`.
+1. **Publicar o site** (o Claude não consegue). O `build/web` já tem o build com Firebase e o APK em `build/web/IaGo-Beta-0.1.apk`:
+   ```powershell
+   cd C:\IaGo; firebase.cmd deploy --only hosting --project iago-beta
+   ```
+   Depois, Claude testa o site em https://iago-beta.web.app (demo e conta real).
+2. **Apagar os dois projetos vazios** criados por engano. Em cada link, clicar em "Desligar" e digitar o ID:
+   - https://console.cloud.google.com/iam-admin/settings?project=iago-beta-ufrj
+   - https://console.cloud.google.com/iam-admin/settings?project=iago-ufrj-2026
+3. **Secrets do CI** (opcional; o Claude não consegue gravar). Os dois comandos estão no README, seção CI. Com eles, o APK ganha o login real e uma assinatura fixa. Depois, Claude:
+   - roda o CI de novo: `gh workflow run CI -R FredECI/IaGo`;
+   - troca o APK da release: `gh release upload v0.1.0-beta IaGo-Beta-0.1.apk --clobber -R FredECI/IaGo`;
+   - copia o APK para `build/web`, e o Fred publica de novo, como no item 1.
+4. **Admin das métricas reais:** criar `admins/{uid}` no console do Firestore.
+5. **Ensaio**: seguir o [DEMO.md](DEMO.md). O vídeo, as capturas e o PDF do plano B estão em `docs/demo/`. Para regenerar, rodar o `drive.js` com `RECORD_VIDEO`.
 
 ## Comandos úteis
 
@@ -166,7 +173,7 @@ Passos do `drive.js`:
 | 2. Salvar, listar, buscar, filtrar | **Pronta (03/11)**: 61 testes; fluxo de colar e salvar, busca "função" + filtros = 9 verificados no build web |
 | 3. Categorização (autocompletar, hierarquia, contadores) | **Pronta (03/11)**: tela "Por conteúdo" (área → matéria → assunto com contagens; tocar aplica o filtro). 66 testes |
 | 4. Listas e PDF | **Pronta (03/11)**: 82 testes; filtro → lista → PDF verificado no build web (aba nova + download), PDF conferido página a página |
-| 5. Firebase Auth + Firestore | **Pronta nos emuladores (03/11)**: 87 testes Flutter e 6 de regras. Cadastro → salvar → recarregar → sair/entrar → excluir conta verificado no navegador. **Falta o projeto real (Fred)** |
+| 5. Firebase Auth + Firestore | **Pronta (03/11)**: 87 testes Flutter e 6 de regras. Cadastro → salvar → recarregar → sair/entrar → excluir conta verificado nos emuladores e no projeto real `iago-beta` |
 | 6. Painel (resumo relativo) | **Pronta (03/11)**: "8 questões nos últimos 7 dias, 3 a mais que nos 7 anteriores" (vira "9, 4 a mais" depois de salvar ao vivo), barras de comparação, listas e área com mais questões. 90 testes |
 | 7. Métricas (desejável) | **Pronta (03/11)**: 97 testes; tela com dados simulados verificada no web; eventos e visão de admin com dados reais verificados nos emuladores |
-| 8. Deploy (desejável) | **Em andamento (03/11)**: repositório privado `FredECI/IaGo`; CI verde (analyze, 97 testes, 6 de regras, build web e APK); APK de 21 MB na release `v0.1.0-beta`, só com o modo demo. **Falta:** `firebase login` (Fred) para criar o projeto e publicar o site |
+| 8. Deploy (desejável) | **Em andamento (03/11)**: repositório privado `FredECI/IaGo`; CI verde (analyze, 97 testes, 6 de regras, build web e APK); APK de 21 MB na release `v0.1.0-beta`, só com o modo demo; Firebase `iago-beta` configurado e verificado. **Falta:** o Fred publicar o Hosting (pendência 1) |

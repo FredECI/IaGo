@@ -8,8 +8,9 @@ Projeto acadêmico de Caio Peixoto, Fred, João Ricardo, Luiz e Nicolas (UFRJ). 
 
 ## Links
 
+- **Versão web:** [iago-beta.web.app](https://iago-beta.web.app), com contas reais e modo demonstração.
+- **APK para Android:** [iago-beta.web.app/IaGo-Beta-0.1.apk](https://iago-beta.web.app/IaGo-Beta-0.1.apk), também na página [Releases](https://github.com/FredECI/IaGo/releases) do repositório. É gerado pelo CI.
 - **Código:** [github.com/FredECI/IaGo](https://github.com/FredECI/IaGo) (repositório privado).
-- **APK para Android:** página [Releases](https://github.com/FredECI/IaGo/releases) do repositório, gerado pelo CI.
 
 ## O que tem nesta versão
 
@@ -47,17 +48,30 @@ O Auth do emulador fica na porta 9099 e o Firestore na 8085.
 
 ### Com o Firebase de verdade
 
-1. Crie o projeto no [console do Firebase](https://console.firebase.google.com) no plano **Spark** (gratuito, sem cartão). Ative **Authentication → E-mail/senha** e crie o **Firestore**.
-2. Registre um app **Web** e um **Android** (`br.ufrj.iago`). Copie `env/firebase.example.json` para `env/firebase.json`, que fica fora do git, e preencha com os valores do console.
-3. Rode com:
+O projeto real é o **`iago-beta`**, no plano Spark (gratuito, sem cartão). O `env/firebase.json`, que fica fora do git, já aponta para ele na máquina do Fred:
+
+```bash
+flutter run -d chrome --dart-define-from-file=env/firebase.json
+```
+
+Para montar um projeto do zero, use só a linha de comando. O `firebase.json` já declara o banco (Firestore em `southamerica-east1`), as regras e o login por e-mail e senha.
+
+1. Na primeira vez, a conta Google precisa aceitar os termos do Firebase no [console](https://console.firebase.google.com). Sem isso, a criação pela CLI falha com erro 403.
+2. Crie o projeto e registre os apps:
    ```bash
-   flutter run -d chrome --dart-define-from-file=env/firebase.json
+   firebase login
+   firebase projects:create <id-do-projeto> --display-name IaGo
+   firebase apps:create web "IaGo Web" --project <id-do-projeto>
+   firebase apps:create android "IaGo Android" --package-name br.ufrj.iago --project <id-do-projeto>
    ```
-4. Publique as regras do Firestore:
+3. Copie `env/firebase.example.json` para `env/firebase.json` e preencha com a saída de `firebase apps:sdkconfig web` e `firebase apps:sdkconfig android`. A chave do Android é o `current_key`.
+4. Crie o banco, publique as regras e ative o login por e-mail e senha:
    ```bash
-   firebase deploy --only firestore:rules --project <id-do-projeto>
+   firebase deploy --only firestore,auth --project <id-do-projeto>
    ```
 5. Para ver as métricas reais, crie no Firestore o documento `admins/{uid}`, com qualquer campo, para cada administrador.
+
+No PowerShell, chame `firebase.cmd` em vez de `firebase`. A política de execução padrão do Windows bloqueia o `firebase.ps1` que o npm instala.
 
 O Cloud Storage não é usado, porque exige o plano pago. As imagens vão compactadas, com até ~300 KB, num documento do Firestore.
 
@@ -89,10 +103,12 @@ flutter build apk --release --target-platform android-arm,android-arm64 [--dart-
 ## Publicar a versão web (Firebase Hosting)
 
 ```bash
-firebase login
 flutter build web --release --no-web-resources-cdn --dart-define-from-file=env/firebase.json
-firebase deploy --only hosting,firestore:rules --project <id-do-projeto>
+cp IaGo-Beta-0.1.apk build/web/    # opcional: o APK no mesmo site, em /IaGo-Beta-0.1.apk
+firebase deploy --only hosting --project iago-beta
 ```
+
+O site fica em [iago-beta.web.app](https://iago-beta.web.app). No plano Spark, o Hosting tem 360 MB de tráfego por dia. Cada APK baixado gasta 21 MB, então baixem o APK antes do dia da apresentação.
 
 ## CI (GitHub Actions)
 
