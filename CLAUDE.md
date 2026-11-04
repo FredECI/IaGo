@@ -98,10 +98,12 @@ Protótipo do **IaGo** (Inteligência Artificial de Gerenciamento e Organizaçã
   - [github.com/FredECI/IaGo](https://github.com/FredECI/IaGo), **público desde 03/11**, a pedido do Fred, para os colegas contribuírem. Antes, o histórico foi varrido e não tem segredos.
   - Para dar acesso de escrita a um colega: `gh api -X PUT repos/FredECI/IaGo/collaborators/<usuario>`. O README tem a seção "Como contribuir".
   - Link direto do APK, sem login: https://github.com/FredECI/IaGo/releases/download/v0.1.0-beta/IaGo-Beta-0.1.apk. Ele continua valendo quando o arquivo é trocado com `--clobber`.
-  - O APK sai do CI, porque o runner já tem as licenças do Android. Só ARM (`--target-platform android-arm,android-arm64`) e com `useLegacyPackaging = true`, o que levou o APK de 62 para 21 MB. Ele está na release `v0.1.0-beta` (prerelease), como `IaGo-Beta-0.1.apk`, e chega ao grupo pelo WhatsApp.
+  - O APK sai do CI, porque o runner já tem as licenças do Android. Só ARM (`--target-platform android-arm,android-arm64`) e com `useLegacyPackaging = true`, o que levou o APK de 62 para 21 MB. Ele está na release `v0.1.0-beta` (prerelease), como `IaGo-Beta-0.1.apk`.
+  - Desde 04/11, o APK sai com o Firebase (secret `FIREBASE_ENV_JSON`) e com assinatura fixa (secret `ANDROID_DEBUG_KEYSTORE`; certificado SHA-256 `af704be4…e09d80`, o mesmo do `~/.android/debug.keystore`). Para atualizar a release: `gh workflow run CI`, baixar o artefato `iago-apk` e rodar `gh release upload v0.1.0-beta IaGo-Beta-0.1.apk --clobber`.
   - No Spark, o Hosting recusa `.apk`, `.exe`, `.dll`, `.bat` e `.ipa` (em projetos criados depois de 28/09/2023). Por isso o APK não vai no site. Não mude a extensão para driblar a regra.
   - O `firebase.json` declara o banco (`southamerica-east1`; o deploy cria se não existir) e o login por e-mail e senha (`auth.providers`, aplicado por `deploy --only auth` no 1º app do projeto). Nada se faz no console.
-  - O modo automático do Claude Code bloqueia três coisas: extrair credenciais (como a do Git Credential Manager), gravar secrets e publicar no Hosting. O deploy de `firestore,auth` passou. Logins, secrets e `deploy --only hosting` ficam com o Fred.
+  - O modo automático do Claude Code bloqueia extrair credenciais (como a do Git Credential Manager) e publicar no Hosting. Gravar secrets também foi bloqueado, mas passou quando o Fred pediu explicitamente (04/11). O deploy de `firestore,auth` passou. Logins e `deploy --only hosting` ficam com o Fred.
+  - Grave secrets pelo Git Bash (`gh secret set X < arquivo`). Aqui, o pipe do PowerShell acrescenta BOM e `\r\n`, o que já quebrou o `base64 -d` do CI. O CI agora limpa os dois.
 - **Projeto Firebase real (03/11):** `iago-beta` (nº 958140378539), no plano Spark, da conta frediro1910@gmail.com.
   - Firestore `(default)`, Standard, em `southamerica-east1`, com regras e índices publicados. Login por e-mail e senha ativo.
   - Apps: Web `1:958140378539:web:cc9bfd557bc11eed49f6ee` e Android `1:958140378539:android:71a8c5564031232949f6ee` (`br.ufrj.iago`).
@@ -115,7 +117,7 @@ Protótipo do **IaGo** (Inteligência Artificial de Gerenciamento e Organizaçã
 - Firebase CLI 15.34.2 (npm global), logado como frediro1910@gmail.com. No PowerShell, chamar `firebase.cmd`: a política de execução bloqueia o `firebase.ps1`. FlutterFire CLI 1.4.1 (no Git Bash, chamar `flutterfire.bat`).
 - GitHub CLI 2.103.3, portátil, em `C:\Users\Fred\dev\gh\bin`; logado como **FredECI** (escopos `repo` e `workflow`).
 - O PATH do usuário já inclui Flutter e gh, mas o VS Code só enxerga depois de reiniciar. Em terminal antigo, rode antes: `$env:Path = "$env:USERPROFILE\dev\flutter\bin;$env:USERPROFILE\dev\gh\bin;$env:Path"`.
-- Chave de debug do Android em `%USERPROFILE%\.android\debug.keystore` (senhas padrão `android`), criada em 03/11 para o secret `ANDROID_DEBUG_KEYSTORE`.
+- Chave de debug do Android em `%USERPROFILE%\.android\debug.keystore` (senhas padrão `android`), criada em 03/11. É a que está no secret `ANDROID_DEBUG_KEYSTORE`.
 - As licenças do Android não foram aceitas nesta máquina. Não fazem falta, porque o APK sai do CI; só seriam necessárias para gerar o APK aqui.
 
 ## Pendências do Fred (e o que fazer em seguida)
@@ -128,11 +130,8 @@ Protótipo do **IaGo** (Inteligência Artificial de Gerenciamento e Organizaçã
 2. **Apagar os dois projetos vazios** criados por engano. Em cada link, clicar em "Desligar" e digitar o ID:
    - https://console.cloud.google.com/iam-admin/settings?project=iago-beta-ufrj
    - https://console.cloud.google.com/iam-admin/settings?project=iago-ufrj-2026
-3. **Secrets do CI** (opcional; o Claude não consegue gravar). Os dois comandos estão no README, seção CI. Com eles, o APK ganha o login real e uma assinatura fixa. Depois, Claude:
-   - roda o CI de novo: `gh workflow run CI -R FredECI/IaGo`;
-   - troca o APK da release: `gh release upload v0.1.0-beta IaGo-Beta-0.1.apk --clobber -R FredECI/IaGo`;
-   - deixa o APK novo em `build/IaGo-Beta-0.1.apk`, para o Fred mandar no grupo.
-4. **Admin das métricas reais:** criar `admins/{uid}` no console do Firestore.
+3. **Admin das métricas reais:** criar `admins/{uid}` no console do Firestore.
+4. **Testar o APK num celular de verdade**, com a demo e o login real. Nesta máquina não há aparelho nem emulador.
 5. **Ensaio**: seguir o [DEMO.md](DEMO.md). O vídeo, as capturas e o PDF do plano B estão em `docs/demo/`. Para regenerar, rodar o `drive.js` com `RECORD_VIDEO`.
 
 ## Comandos úteis
@@ -179,4 +178,4 @@ Passos do `drive.js`:
 | 5. Firebase Auth + Firestore | **Pronta (03/11)**: 87 testes Flutter e 6 de regras. Cadastro → salvar → recarregar → sair/entrar → excluir conta verificado nos emuladores e no projeto real `iago-beta` |
 | 6. Painel (resumo relativo) | **Pronta (03/11)**: "8 questões nos últimos 7 dias, 3 a mais que nos 7 anteriores" (vira "9, 4 a mais" depois de salvar ao vivo), barras de comparação, listas e área com mais questões. 90 testes |
 | 7. Métricas (desejável) | **Pronta (03/11)**: 97 testes; tela com dados simulados verificada no web; eventos e visão de admin com dados reais verificados nos emuladores |
-| 8. Deploy (desejável) | **Pronta (03/11)**: site em https://iago-beta.web.app, com o roteiro da demo e a conta real (cadastro → salvar → recarregar → sair/entrar → excluir) verificados lá a 360 px. Repositório privado `FredECI/IaGo` com CI verde. APK de 21 MB, só com o modo demo, na release `v0.1.0-beta` e no WhatsApp |
+| 8. Deploy (desejável) | **Pronta (03/11)**: site em https://iago-beta.web.app, com o roteiro da demo e a conta real (cadastro → salvar → recarregar → sair/entrar → excluir) verificados lá a 360 px. Repositório público `FredECI/IaGo` com CI verde. APK de 21 MB, com login real e assinatura fixa (04/11), na release `v0.1.0-beta` |

@@ -9,7 +9,7 @@ Projeto acadêmico de Caio Peixoto, Fred, João Ricardo, Luiz e Nicolas (UFRJ). 
 ## Links
 
 - **Versão web:** [iago-beta.web.app](https://iago-beta.web.app), com contas reais e modo demonstração.
-- **APK para Android:** [IaGo-Beta-0.1.apk](https://github.com/FredECI/IaGo/releases/download/v0.1.0-beta/IaGo-Beta-0.1.apk) (20 MB), na release [v0.1.0-beta](https://github.com/FredECI/IaGo/releases/tag/v0.1.0-beta). É gerado pelo CI. O plano gratuito do Firebase não aceita `.apk` no Hosting.
+- **APK para Android:** [IaGo-Beta-0.1.apk](https://github.com/FredECI/IaGo/releases/download/v0.1.0-beta/IaGo-Beta-0.1.apk) (20 MB), na release [v0.1.0-beta](https://github.com/FredECI/IaGo/releases/tag/v0.1.0-beta). É gerado pelo CI e tem o modo demonstração e as contas reais. O plano gratuito do Firebase não aceita `.apk` no Hosting.
 - **Código:** [github.com/FredECI/IaGo](https://github.com/FredECI/IaGo). Para contribuir, veja [Como contribuir](#como-contribuir).
 
 ## O que tem nesta versão

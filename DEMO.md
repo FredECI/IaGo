@@ -12,7 +12,10 @@ Roteiro para a apresentação de **sexta, 06/11/2026**. A demonstração dura **
 2. Abra o arquivo no celular. Se o Android pedir, permita **instalar apps desconhecidos** para o WhatsApp, para o navegador ou para o gerenciador de arquivos.
 3. Abra o IaGo, toque em **Entrar como Pedro (demonstração)** e teste uma vez em modo avião.
 
-Sem instalar nada, a versão web abre em **[iago-beta.web.app](https://iago-beta.web.app)**, no celular ou no notebook. Para trocar de versão do APK, desinstale a anterior antes de instalar a nova.
+Sem instalar nada, a versão web abre em **[iago-beta.web.app](https://iago-beta.web.app)**, no celular ou no notebook.
+
+- O APK também tem o cadastro com conta real, com as mesmas contas do site.
+- Quem instalou a primeira versão (de 03/11, só com a demonstração) precisa desinstalá-la antes. Daqui em diante, as versões novas instalam por cima.
 
 ## Antes de começar: copie o texto da questão
 
