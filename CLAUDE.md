@@ -118,11 +118,11 @@ Protótipo do **IaGo** (Inteligência Artificial de Gerenciamento e Organizaçã
 
 ## Pendências do Fred (e o que fazer em seguida)
 
-1. **Publicar o site** (o Claude não consegue). O `build/web` já tem o build com Firebase, e o APK para o WhatsApp está em `build/IaGo-Beta-0.1.apk`:
+1. **Site publicado em 03/11**: https://iago-beta.web.app. Para publicar de novo, Claude gera o build (`flutter build web --release --no-web-resources-cdn --dart-define-from-file=env/firebase.json`) e o Fred roda o comando abaixo, porque o Claude não consegue publicar:
    ```powershell
    cd C:\IaGo; firebase.cmd deploy --only hosting --project iago-beta
    ```
-   Depois, Claude testa o site em https://iago-beta.web.app (demo e conta real).
+   O APK para o WhatsApp está em `build/IaGo-Beta-0.1.apk`.
 2. **Apagar os dois projetos vazios** criados por engano. Em cada link, clicar em "Desligar" e digitar o ID:
    - https://console.cloud.google.com/iam-admin/settings?project=iago-beta-ufrj
    - https://console.cloud.google.com/iam-admin/settings?project=iago-ufrj-2026
@@ -177,4 +177,4 @@ Passos do `drive.js`:
 | 5. Firebase Auth + Firestore | **Pronta (03/11)**: 87 testes Flutter e 6 de regras. Cadastro → salvar → recarregar → sair/entrar → excluir conta verificado nos emuladores e no projeto real `iago-beta` |
 | 6. Painel (resumo relativo) | **Pronta (03/11)**: "8 questões nos últimos 7 dias, 3 a mais que nos 7 anteriores" (vira "9, 4 a mais" depois de salvar ao vivo), barras de comparação, listas e área com mais questões. 90 testes |
 | 7. Métricas (desejável) | **Pronta (03/11)**: 97 testes; tela com dados simulados verificada no web; eventos e visão de admin com dados reais verificados nos emuladores |
-| 8. Deploy (desejável) | **Em andamento (03/11)**: repositório privado `FredECI/IaGo`; CI verde (analyze, 97 testes, 6 de regras, build web e APK); APK de 21 MB na release `v0.1.0-beta`, só com o modo demo; Firebase `iago-beta` configurado e verificado. **Falta:** o Fred publicar o Hosting (pendência 1) |
+| 8. Deploy (desejável) | **Pronta (03/11)**: site em https://iago-beta.web.app, com o roteiro da demo e a conta real (cadastro → salvar → recarregar → sair/entrar → excluir) verificados lá a 360 px. Repositório privado `FredECI/IaGo` com CI verde. APK de 21 MB, só com o modo demo, na release `v0.1.0-beta` e no WhatsApp |
