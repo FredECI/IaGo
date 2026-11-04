@@ -95,7 +95,9 @@ Protótipo do **IaGo** (Inteligência Artificial de Gerenciamento e Organizaçã
 - **Identidade visual** (sem o deck oficial): índigo `#4F46E5` com a variante `fidelity` do M3, selo Beta âmbar, logo com degradê fixo. Os tokens estão em `lib/app/theme.dart`.
 - **Git:** commits pequenos por fatia, com mensagem em português; `flutter analyze` sem avisos e `flutter test` verde antes de cada um. Autor local: Fred <frediro1910@gmail.com>.
 - **Repositório e entrega (03/11):**
-  - [github.com/FredECI/IaGo](https://github.com/FredECI/IaGo), **privado**. Para abrir ao público: `gh repo edit FredECI/IaGo --visibility public --accept-visibility-change-consequences`. Para dar acesso a um colega: `gh api -X PUT repos/FredECI/IaGo/collaborators/<usuario>`.
+  - [github.com/FredECI/IaGo](https://github.com/FredECI/IaGo), **público desde 03/11**, a pedido do Fred, para os colegas contribuírem. Antes, o histórico foi varrido e não tem segredos.
+  - Para dar acesso de escrita a um colega: `gh api -X PUT repos/FredECI/IaGo/collaborators/<usuario>`. O README tem a seção "Como contribuir".
+  - Link direto do APK, sem login: https://github.com/FredECI/IaGo/releases/download/v0.1.0-beta/IaGo-Beta-0.1.apk. Ele continua valendo quando o arquivo é trocado com `--clobber`.
   - O APK sai do CI, porque o runner já tem as licenças do Android. Só ARM (`--target-platform android-arm,android-arm64`) e com `useLegacyPackaging = true`, o que levou o APK de 62 para 21 MB. Ele está na release `v0.1.0-beta` (prerelease), como `IaGo-Beta-0.1.apk`, e chega ao grupo pelo WhatsApp.
   - No Spark, o Hosting recusa `.apk`, `.exe`, `.dll`, `.bat` e `.ipa` (em projetos criados depois de 28/09/2023). Por isso o APK não vai no site. Não mude a extensão para driblar a regra.
   - O `firebase.json` declara o banco (`southamerica-east1`; o deploy cria se não existir) e o login por e-mail e senha (`auth.providers`, aplicado por `deploy --only auth` no 1º app do projeto). Nada se faz no console.

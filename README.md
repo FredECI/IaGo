@@ -9,8 +9,8 @@ Projeto acadêmico de Caio Peixoto, Fred, João Ricardo, Luiz e Nicolas (UFRJ). 
 ## Links
 
 - **Versão web:** [iago-beta.web.app](https://iago-beta.web.app), com contas reais e modo demonstração.
-- **APK para Android:** página [Releases](https://github.com/FredECI/IaGo/releases) do repositório, gerado pelo CI. O plano gratuito do Firebase não aceita `.apk` no Hosting.
-- **Código:** [github.com/FredECI/IaGo](https://github.com/FredECI/IaGo) (repositório privado).
+- **APK para Android:** [IaGo-Beta-0.1.apk](https://github.com/FredECI/IaGo/releases/download/v0.1.0-beta/IaGo-Beta-0.1.apk) (20 MB), na release [v0.1.0-beta](https://github.com/FredECI/IaGo/releases/tag/v0.1.0-beta). É gerado pelo CI. O plano gratuito do Firebase não aceita `.apk` no Hosting.
+- **Código:** [github.com/FredECI/IaGo](https://github.com/FredECI/IaGo). Para contribuir, veja [Como contribuir](#como-contribuir).
 
 ## O que tem nesta versão
 
@@ -137,6 +137,30 @@ O roteiro `tool/screenshots/drive.js` abre o build web no Chrome a 360 px e bloq
 cd tool/screenshots && npm install
 RECORD_VIDEO=video node drive.js http://127.0.0.1:8765/ shots "shot:entrada" "click:Entrar como Pedro" "shot:painel"
 ```
+
+## Como contribuir
+
+1. Instale o Flutter 3.47 (stable) e rode o app:
+   ```bash
+   git clone https://github.com/FredECI/IaGo.git
+   cd IaGo
+   flutter pub get
+   flutter run -d chrome
+   ```
+   Sem o `env/firebase.json`, que não fica no repositório, o app abre só no modo demonstração, e isso basta para quase tudo. Para testar contas, use os emuladores (veja [Rodar](#rodar)).
+2. Crie um branch e, antes de cada commit, rode:
+   ```bash
+   flutter analyze   # precisa terminar com "No issues found!"
+   flutter test
+   ```
+3. Abra um pull request para a `main`. O CI roda os mesmos testes e gera o build web e o APK, e o Fred revisa. Para enviar branches direto no repositório, sem fork, peça ao Fred para te adicionar como colaborador.
+
+Convenções:
+- Código e nomes em inglês. Textos da interface, comentários e documentação em português.
+- Commits pequenos, com mensagem em português.
+- Importe `package:material_ui/material_ui.dart`, nunca `package:flutter/material.dart`. No Flutter 3.47, o Material saiu do framework.
+
+O congelamento de funcionalidades é na **quinta, 05/11, às 20h**. Depois disso, só correção de bugs.
 
 ## Estrutura
 
