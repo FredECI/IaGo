@@ -96,7 +96,8 @@ Protótipo do **IaGo** (Inteligência Artificial de Gerenciamento e Organizaçã
 - **Git:** commits pequenos por fatia, com mensagem em português; `flutter analyze` sem avisos e `flutter test` verde antes de cada um. Autor local: Fred <frediro1910@gmail.com>.
 - **Repositório e entrega (03/11):**
   - [github.com/FredECI/IaGo](https://github.com/FredECI/IaGo), **privado**. Para abrir ao público: `gh repo edit FredECI/IaGo --visibility public --accept-visibility-change-consequences`. Para dar acesso a um colega: `gh api -X PUT repos/FredECI/IaGo/collaborators/<usuario>`.
-  - O APK sai do CI, porque o runner já tem as licenças do Android. Só ARM (`--target-platform android-arm,android-arm64`) e com `useLegacyPackaging = true`, o que levou o APK de 62 para 21 MB. Ele está na release `v0.1.0-beta` (prerelease), como `IaGo-Beta-0.1.apk`.
+  - O APK sai do CI, porque o runner já tem as licenças do Android. Só ARM (`--target-platform android-arm,android-arm64`) e com `useLegacyPackaging = true`, o que levou o APK de 62 para 21 MB. Ele está na release `v0.1.0-beta` (prerelease), como `IaGo-Beta-0.1.apk`, e chega ao grupo pelo WhatsApp.
+  - No Spark, o Hosting recusa `.apk`, `.exe`, `.dll`, `.bat` e `.ipa` (em projetos criados depois de 28/09/2023). Por isso o APK não vai no site. Não mude a extensão para driblar a regra.
   - O `firebase.json` declara o banco (`southamerica-east1`; o deploy cria se não existir) e o login por e-mail e senha (`auth.providers`, aplicado por `deploy --only auth` no 1º app do projeto). Nada se faz no console.
   - O modo automático do Claude Code bloqueia três coisas: extrair credenciais (como a do Git Credential Manager), gravar secrets e publicar no Hosting. O deploy de `firestore,auth` passou. Logins, secrets e `deploy --only hosting` ficam com o Fred.
 - **Projeto Firebase real (03/11):** `iago-beta` (nº 958140378539), no plano Spark, da conta frediro1910@gmail.com.
@@ -117,7 +118,7 @@ Protótipo do **IaGo** (Inteligência Artificial de Gerenciamento e Organizaçã
 
 ## Pendências do Fred (e o que fazer em seguida)
 
-1. **Publicar o site** (o Claude não consegue). O `build/web` já tem o build com Firebase e o APK em `build/web/IaGo-Beta-0.1.apk`:
+1. **Publicar o site** (o Claude não consegue). O `build/web` já tem o build com Firebase, e o APK para o WhatsApp está em `build/IaGo-Beta-0.1.apk`:
    ```powershell
    cd C:\IaGo; firebase.cmd deploy --only hosting --project iago-beta
    ```
@@ -128,7 +129,7 @@ Protótipo do **IaGo** (Inteligência Artificial de Gerenciamento e Organizaçã
 3. **Secrets do CI** (opcional; o Claude não consegue gravar). Os dois comandos estão no README, seção CI. Com eles, o APK ganha o login real e uma assinatura fixa. Depois, Claude:
    - roda o CI de novo: `gh workflow run CI -R FredECI/IaGo`;
    - troca o APK da release: `gh release upload v0.1.0-beta IaGo-Beta-0.1.apk --clobber -R FredECI/IaGo`;
-   - copia o APK para `build/web`, e o Fred publica de novo, como no item 1.
+   - deixa o APK novo em `build/IaGo-Beta-0.1.apk`, para o Fred mandar no grupo.
 4. **Admin das métricas reais:** criar `admins/{uid}` no console do Firestore.
 5. **Ensaio**: seguir o [DEMO.md](DEMO.md). O vídeo, as capturas e o PDF do plano B estão em `docs/demo/`. Para regenerar, rodar o `drive.js` com `RECORD_VIDEO`.
 

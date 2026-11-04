@@ -8,14 +8,11 @@ Roteiro para a apresentação de **sexta, 06/11/2026**. A demonstração dura **
 
 ## Instalar o app no celular (uma vez, antes da aula)
 
-1. No celular, abra **[iago-beta.web.app/IaGo-Beta-0.1.apk](https://iago-beta.web.app/IaGo-Beta-0.1.apk)**. São cerca de 20 MB, então prefira o Wi-Fi.
-2. Abra o arquivo. Se o Android pedir, permita **instalar apps desconhecidos** para o navegador ou para o gerenciador de arquivos.
+1. Pegue o **IaGo-Beta-0.1.apk** (cerca de 20 MB). O Fred manda no grupo do WhatsApp. Quem tem acesso ao repositório também baixa na página [Releases](https://github.com/FredECI/IaGo/releases).
+2. Abra o arquivo no celular. Se o Android pedir, permita **instalar apps desconhecidos** para o WhatsApp, para o navegador ou para o gerenciador de arquivos.
 3. Abra o IaGo, toque em **Entrar como Pedro (demonstração)** e teste uma vez em modo avião.
 
-Sem instalar nada, a versão web abre em **[iago-beta.web.app](https://iago-beta.web.app)**, no celular ou no notebook.
-
-- Para trocar de versão do APK, desinstale a anterior antes de instalar a nova.
-- Baixem o APK antes de sexta: o plano gratuito do site tem cota diária de tráfego.
+Sem instalar nada, a versão web abre em **[iago-beta.web.app](https://iago-beta.web.app)**, no celular ou no notebook. Para trocar de versão do APK, desinstale a anterior antes de instalar a nova.
 
 ## Antes de começar: copie o texto da questão
 

@@ -9,7 +9,7 @@ Projeto acadêmico de Caio Peixoto, Fred, João Ricardo, Luiz e Nicolas (UFRJ). 
 ## Links
 
 - **Versão web:** [iago-beta.web.app](https://iago-beta.web.app), com contas reais e modo demonstração.
-- **APK para Android:** [iago-beta.web.app/IaGo-Beta-0.1.apk](https://iago-beta.web.app/IaGo-Beta-0.1.apk), também na página [Releases](https://github.com/FredECI/IaGo/releases) do repositório. É gerado pelo CI.
+- **APK para Android:** página [Releases](https://github.com/FredECI/IaGo/releases) do repositório, gerado pelo CI. O plano gratuito do Firebase não aceita `.apk` no Hosting.
 - **Código:** [github.com/FredECI/IaGo](https://github.com/FredECI/IaGo) (repositório privado).
 
 ## O que tem nesta versão
@@ -104,11 +104,10 @@ flutter build apk --release --target-platform android-arm,android-arm64 [--dart-
 
 ```bash
 flutter build web --release --no-web-resources-cdn --dart-define-from-file=env/firebase.json
-cp IaGo-Beta-0.1.apk build/web/    # opcional: o APK no mesmo site, em /IaGo-Beta-0.1.apk
 firebase deploy --only hosting --project iago-beta
 ```
 
-O site fica em [iago-beta.web.app](https://iago-beta.web.app). No plano Spark, o Hosting tem 360 MB de tráfego por dia. Cada APK baixado gasta 21 MB, então baixem o APK antes do dia da apresentação.
+O site fica em [iago-beta.web.app](https://iago-beta.web.app). No plano Spark, o Hosting tem 360 MB de tráfego por dia e recusa arquivos `.apk`, `.exe`, `.dll`, `.bat` e `.ipa`. Por isso o APK fica na release do GitHub.
 
 ## CI (GitHub Actions)
 
