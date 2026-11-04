@@ -119,6 +119,7 @@ Protótipo do **IaGo** (Inteligência Artificial de Gerenciamento e Organizaçã
 - O PATH do usuário já inclui Flutter e gh, mas o VS Code só enxerga depois de reiniciar. Em terminal antigo, rode antes: `$env:Path = "$env:USERPROFILE\dev\flutter\bin;$env:USERPROFILE\dev\gh\bin;$env:Path"`.
 - Chave de debug do Android em `%USERPROFILE%\.android\debug.keystore` (senhas padrão `android`), criada em 03/11. É a que está no secret `ANDROID_DEBUG_KEYSTORE`.
 - As licenças do Android não foram aceitas nesta máquina. Não fazem falta, porque o APK sai do CI; só seriam necessárias para gerar o APK aqui.
+- Não há aparelho nem emulador Android nesta máquina. O teste no celular fica com o Fred.
 
 ## Pendências do Fred (e o que fazer em seguida)
 
@@ -131,8 +132,7 @@ Protótipo do **IaGo** (Inteligência Artificial de Gerenciamento e Organizaçã
    - https://console.cloud.google.com/iam-admin/settings?project=iago-beta-ufrj
    - https://console.cloud.google.com/iam-admin/settings?project=iago-ufrj-2026
 3. **Admin das métricas reais:** criar `admins/{uid}` no console do Firestore.
-4. **Testar o APK num celular de verdade**, com a demo e o login real. Nesta máquina não há aparelho nem emulador.
-5. **Ensaio**: seguir o [DEMO.md](DEMO.md). O vídeo, as capturas e o PDF do plano B estão em `docs/demo/`. Para regenerar, rodar o `drive.js` com `RECORD_VIDEO`.
+4. **Ensaio**: seguir o [DEMO.md](DEMO.md). O vídeo, as capturas e o PDF do plano B estão em `docs/demo/`. Para regenerar, rodar o `drive.js` com `RECORD_VIDEO`.
 
 ## Comandos úteis
 
@@ -178,4 +178,4 @@ Passos do `drive.js`:
 | 5. Firebase Auth + Firestore | **Pronta (03/11)**: 87 testes Flutter e 6 de regras. Cadastro → salvar → recarregar → sair/entrar → excluir conta verificado nos emuladores e no projeto real `iago-beta` |
 | 6. Painel (resumo relativo) | **Pronta (03/11)**: "8 questões nos últimos 7 dias, 3 a mais que nos 7 anteriores" (vira "9, 4 a mais" depois de salvar ao vivo), barras de comparação, listas e área com mais questões. 90 testes |
 | 7. Métricas (desejável) | **Pronta (03/11)**: 97 testes; tela com dados simulados verificada no web; eventos e visão de admin com dados reais verificados nos emuladores |
-| 8. Deploy (desejável) | **Pronta (03/11)**: site em https://iago-beta.web.app, com o roteiro da demo e a conta real (cadastro → salvar → recarregar → sair/entrar → excluir) verificados lá a 360 px. Repositório público `FredECI/IaGo` com CI verde. APK de 21 MB, com login real e assinatura fixa (04/11), na release `v0.1.0-beta` |
+| 8. Deploy (desejável) | **Pronta (03/11)**: site em https://iago-beta.web.app, com o roteiro da demo e a conta real (cadastro → salvar → recarregar → sair/entrar → excluir) verificados lá a 360 px. Repositório público `FredECI/IaGo` com CI verde. APK de 21 MB, com login real e assinatura fixa (04/11), na release `v0.1.0-beta`. O Fred instalou e testou num celular de verdade em 04/11, sem problemas |
