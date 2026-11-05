@@ -76,8 +76,7 @@ class DashboardPage extends ConsumerWidget {
             icon: Icons.groups_outlined,
             pillar: 'Conecta',
             description:
-                'Comunidades em que estudantes se ajudam e ganham reputação, '
-                'nunca dinheiro.',
+                'Comunidades em que estudantes se ajudam e ganham reputação.',
           ),
         ],
       ),
