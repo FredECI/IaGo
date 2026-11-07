@@ -26,6 +26,8 @@ class FirebaseAuthRepository implements AuthRepository {
     'questionImages',
     'lists',
     'events',
+    'direction',
+    'directionSteps',
   ];
 
   /// `userChanges` também avisa mudanças de perfil (o nome gravado logo
