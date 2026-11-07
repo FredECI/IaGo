@@ -71,3 +71,5 @@ ui-debug.log
 !/env/emulator.json
 # Testes das regras (Node)
 /firestore-tests/node_modules/
+# Configuração local do Claude Code e dos agentes: fica só nesta máquina.
+/.claude/
