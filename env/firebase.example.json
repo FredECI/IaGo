@@ -6,7 +6,7 @@
   "FIREBASE_AUTH_DOMAIN": "id-do-projeto.firebaseapp.com",
   "FIREBASE_WEB_APP_ID": "1:000000000000:web:xxxxxxxxxxxxxxxx",
   "FIREBASE_ANDROID_APP_ID": "1:000000000000:android:xxxxxxxxxxxxxxxx",
-  "FIREBASE_APPCHECK_WEB_SITE_KEY": "chave de site do reCAPTCHA Enterprise (tipo Web); P2a, passo 5",
+  "FIREBASE_APPCHECK_WEB_SITE_KEY": "chave de site do reCAPTCHA Enterprise (tipo Web); criada no P2a, passo 3, e gravada no passo 8",
   "FIREBASE_APPCHECK_ANDROID_SITE_KEY": "chave do reCAPTCHA Enterprise (tipo Android); P2b, so se o spike seguir para o APK",
   "FIREBASE_EMULATOR_HOST": ""
 }
