@@ -1,9 +1,13 @@
 # CI do IaGo: análise, testes, regras do Firestore e builds (web + APK).
+# Roda em push para main e feat/**, em PR e manual.
+# Secrets (FIREBASE_ENV_JSON, ANDROID_DEBUG_KEYSTORE) e APK so em main (if: github.ref == refs/heads/main, também no manual).
+# Em feat/** e PR: analyze, testes, regras e build web em modo demo, sem secrets.
+# NUNCA grave token de depuracao do App Check no secret.
 name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, 'feat/**']
   pull_request:
   workflow_dispatch:
 
@@ -41,6 +45,7 @@ jobs:
       # Opcional: com o secret FIREBASE_ENV_JSON (conteúdo do env/firebase.json),
       # os builds já saem ligados ao Firebase. Sem ele, modo demonstração.
       - name: Configuração do Firebase (opcional)
+        if: github.ref == 'refs/heads/main'
         env:
           FIREBASE_ENV_JSON: ${{ secrets.FIREBASE_ENV_JSON }}
         run: |
@@ -56,6 +61,7 @@ jobs:
       # Sem ele, cada execução gera uma chave nova. O `tr` deixa só o alfabeto do
       # base64: o pipe do PowerShell acrescenta BOM e \r\n ao gravar o secret.
       - name: Chave de assinatura estável (opcional)
+        if: github.ref == 'refs/heads/main'
         env:
           ANDROID_DEBUG_KEYSTORE: ${{ secrets.ANDROID_DEBUG_KEYSTORE }}
         run: |
@@ -67,14 +73,17 @@ jobs:
             echo "Sem ANDROID_DEBUG_KEYSTORE: chave de debug nova nesta execução."
           fi
 
+      # Fora de main, $DEFINES fica vazio: build em modo demonstração.
       - name: Build web (CanvasKit embutido, funciona sem CDN)
         run: flutter build web --release --no-web-resources-cdn $DEFINES
 
       # ARM de 32 e 64 bits cobre todos os celulares; x86_64 só serve a emulador.
       - name: Build APK de release (chave de debug)
+        if: github.ref == 'refs/heads/main'
         run: flutter build apk --release --target-platform android-arm,android-arm64 $DEFINES
 
       - name: Assinatura do APK
+        if: github.ref == 'refs/heads/main'
         run: |
           APKSIGNER="$(ls -d "$ANDROID_HOME"/build-tools/*/ | sort -V | tail -1)apksigner"
           "$APKSIGNER" verify --print-certs build/app/outputs/flutter-apk/app-release.apk | grep -i "SHA-256"
@@ -86,6 +95,7 @@ jobs:
           retention-days: 14
 
       - uses: actions/upload-artifact@v4
+        if: github.ref == 'refs/heads/main'
         with:
           name: iago-apk
           path: build/app/outputs/flutter-apk/app-release.apk
@@ -112,5 +122,5 @@ jobs:
       - run: npm ci
         working-directory: firestore-tests
 
-      - name: Testes das regras
-        run: firebase emulators:exec --only firestore --project demo-iago "node --test firestore-tests/rules.test.mjs"
+      - name: Testes das regras (todos os firestore-tests/*.test.mjs)
+        run: firebase emulators:exec --only firestore --project demo-iago "node --test firestore-tests/*.test.mjs"
