@@ -1,6 +1,20 @@
 // Dirige o build web do IaGo no Chrome headless (360 px) e tira capturas.
 // Uso: node drive.js <url> <pasta-de-saida> [passos...]
 // Bloqueia qualquer pedido fora do localhost para provar que roda offline.
+//
+// ALLOW_HOSTS (lista separada por vírgula; vale por sufixo do host) libera o que for
+// preciso para testar contas reais. Os padrões abaixo são por sufixo, como em `endsWith`:
+//   Contas (Auth, Firestore):  www.gstatic.com,googleapis.com
+//   + IA e App Check (Firebase AI Logic, reCAPTCHA Enterprise):
+//        www.google.com  -> script do reCAPTCHA (/recaptcha/enterprise.js)
+//        www.gstatic.com -> arquivos estáticos do reCAPTCHA e do SDK do Firebase
+//        googleapis.com  -> cobre firebasevertexai.googleapis.com (AI Logic),
+//                           firebaseappcheck.googleapis.com (troca do token) e
+//                           recaptchaenterprise.googleapis.com
+//   Exemplo (PowerShell):
+//     $env:ALLOW_HOSTS='www.gstatic.com,googleapis.com,www.google.com'
+//   Hosts exatos, se quiser liberar menos: veja docs/guias/p2-console.md ("Hosts para o drive.js").
+//   Sem ALLOW_HOSTS, nada externo passa, e a prova de offline continua valendo.
 const { chromium } = require('playwright-core');
 const path = require('path');
 const fs = require('fs');
