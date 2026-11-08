@@ -47,5 +47,235 @@ service cloud.firestore {
       allow read: if isOwner(uid);
       allow write: if false;
     }
+
+    // --- Política de acesso: espelho de AccessPolicy (CA-R1). Sem appConfig/runtime, get() falha e a regra nega ---
+    function runtime() {
+      return get(/databases/$(database)/documents/appConfig/runtime).data;
+    }
+    function termsMinAge() {
+      return 18;  // igual a AppInfo.termsMinAge; um teste confere (CA-R6)
+    }
+    function minAge() {
+      let configured = runtime().get('minAge', 0);
+      return configured is int && configured > termsMinAge() ? configured : termsMinAge();
+    }
+    function meetsAgePolicy(declared) {
+      return declared is int && declared >= minAge();
+    }
+    function inviteOk(code) {
+      return runtime().get('inviteRequired', true) == false
+        || (code is string && exists(/databases/$(database)/documents/invites/$(code)));
+    }
+    function conectaCooldown() {
+      return duration.value(30, 's');  // CA-R7
+    }
+    function bankIdOk(id) {
+      return id is string && id.matches('^[a-z][a-z0-9]{1,15}-[a-z0-9-]{1,48}$');  // fonte-resto (CA-R4)
+    }
+
+    // --- Funções novas ---
+    function isModerator() {
+      return signedIn() && exists(/databases/$(database)/documents/moderators/$(request.auth.uid));
+    }
+    function isBanned() {
+      return exists(/databases/$(database)/documents/bans/$(request.auth.uid));
+    }
+    function isMember() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/memberships/$(request.auth.uid))
+        && !isBanned();
+    }
+    function conectaOpen() {
+      return runtime().get('conectaWritesEnabled', false) == true;
+    }
+    function myNickname() {
+      return get(/databases/$(database)/documents/profiles/$(request.auth.uid)).data.nickname;
+    }
+    function onlyChanges(fields) {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(fields);
+    }
+    // docPath: caminho do documento sendo criado ('posts/x'). O limite gravado no
+    // mesmo lote precisa apontar para ele (lastDocPath), então só UM documento
+    // novo por lote e por janela consegue passar.
+    function cooldownOk(docPath) {
+      return getAfter(/databases/$(database)/documents/conectaLimits/$(request.auth.uid)).data.lastWriteAt == request.time
+        && getAfter(/databases/$(database)/documents/conectaLimits/$(request.auth.uid)).data.lastDocPath == docPath
+        && (!exists(/databases/$(database)/documents/conectaLimits/$(request.auth.uid))
+            || request.time > get(/databases/$(database)/documents/conectaLimits/$(request.auth.uid)).data.lastWriteAt + conectaCooldown());
+    }
+    function reportedNow(targetId) {
+      // A denúncia precisa ser NOVA: não existia antes e existe depois do lote.
+      return !exists(/databases/$(database)/documents/reports/$(targetId + '_' + request.auth.uid))
+        && existsAfter(/databases/$(database)/documents/reports/$(targetId + '_' + request.auth.uid));
+    }
+    function isAuthor() {
+      return signedIn() && resource.data.authorUid == request.auth.uid;
+    }
+    function textSize(value, min, max) {
+      return value is string && value.size() >= min && value.size() <= max;
+    }
+
+    // --- Configuração e papéis: só console ---
+    match /appConfig/{doc} {
+      allow read: if signedIn();
+      allow write: if false;
+    }
+    match /invites/{code} {
+      allow read, write: if false;  // exists() nas regras não depende desta permissão
+    }
+    match /moderators/{uid} {
+      allow read: if isOwner(uid);
+      allow write: if false;
+    }
+    match /bans/{uid} {
+      allow read: if isOwner(uid) || isModerator();
+      allow write: if isModerator();
+    }
+
+    // --- Membros do piloto ---
+    // memberships/{uid} é PRIVADA (idade declarada e código de convite): só o dono lê.
+    // O que outros membros veem fica em profiles/{uid}, só com o apelido. Os dois
+    // documentos são gravados no mesmo lote e o apelido precisa ser igual.
+    match /memberships/{uid} {
+      allow read: if isOwner(uid);
+      allow create: if isOwner(uid)
+        && request.auth.token.email_verified == true
+        && request.resource.data.keys().hasOnly(['nickname', 'inviteCode', 'declaredMinAge', 'rulesVersion', 'joinedAt'])
+        && textSize(request.resource.data.nickname, 3, 24)
+        && meetsAgePolicy(request.resource.data.declaredMinAge)
+        && request.resource.data.rulesVersion is string
+        && request.resource.data.joinedAt == request.time
+        && inviteOk(request.resource.data.get('inviteCode', null))
+        && existsAfter(/databases/$(database)/documents/profiles/$(uid))
+        && getAfter(/databases/$(database)/documents/profiles/$(uid)).data.nickname == request.resource.data.nickname;
+      allow update: if isOwner(uid)
+        && onlyChanges(['nickname', 'rulesVersion'])
+        && request.resource.data.rulesVersion is string
+        && textSize(request.resource.data.nickname, 3, 24)
+        && getAfter(/databases/$(database)/documents/profiles/$(uid)).data.nickname == request.resource.data.nickname;
+      // Sair apaga o perfil público junto (mesmo lote): o apelido não fica para trás.
+      allow delete: if isOwner(uid)
+        && !existsAfter(/databases/$(database)/documents/profiles/$(uid));
+    }
+    match /profiles/{uid} {
+      allow read: if isOwner(uid) || isMember();
+      allow create: if isOwner(uid)
+        && request.resource.data.keys().hasOnly(['nickname', 'joinedAt'])
+        && textSize(request.resource.data.nickname, 3, 24)
+        && request.resource.data.joinedAt == request.time
+        && existsAfter(/databases/$(database)/documents/memberships/$(uid))
+        && getAfter(/databases/$(database)/documents/memberships/$(uid)).data.nickname == request.resource.data.nickname;
+      allow update: if isOwner(uid)
+        && onlyChanges(['nickname'])
+        && textSize(request.resource.data.nickname, 3, 24)
+        && getAfter(/databases/$(database)/documents/memberships/$(uid)).data.nickname == request.resource.data.nickname;
+      allow delete: if isOwner(uid);
+    }
+    match /conectaLimits/{uid} {
+      allow read: if isOwner(uid);
+      allow create, update: if isOwner(uid)
+        && request.resource.data.keys().hasOnly(['lastWriteAt', 'lastDocPath'])
+        && (!('lastDocPath' in request.resource.data) || textSize(request.resource.data.lastDocPath, 1, 200))
+        && request.resource.data.lastWriteAt == request.time;
+      allow delete: if isOwner(uid)
+        && !existsAfter(/databases/$(database)/documents/memberships/$(uid));
+    }
+
+    // --- Fórum ---
+    match /posts/{postId} {
+      allow read: if isAuthor()
+        || (isMember() && resource.data.status == 'visible')
+        || isModerator();
+      allow create: if isMember() && conectaOpen() && cooldownOk('posts/' + postId)
+        && request.resource.data.keys().hasOnly(['communityId', 'authorUid', 'authorNickname', 'title', 'body', 'bankId', 'status', 'createdAt'])
+        && (!('bankId' in request.resource.data) || bankIdOk(request.resource.data.bankId))
+        && request.resource.data.communityId in ['linguagens', 'humanas', 'natureza', 'matematica', 'reforco']
+        && request.resource.data.authorUid == request.auth.uid
+        && request.resource.data.authorNickname == myNickname()
+        && textSize(request.resource.data.title, 5, 120)
+        && textSize(request.resource.data.body, 1, 2000)
+        && request.resource.data.status == 'visible'
+        && request.resource.data.createdAt == request.time;
+      allow update: if
+        (isMember() && onlyChanges(['status'])
+          && resource.data.status == 'visible'
+          && request.resource.data.status == 'pending'
+          && reportedNow(postId))
+        || (isModerator() && onlyChanges(['status', 'moderationReason', 'moderatedAt'])
+          && request.resource.data.status in ['visible', 'hidden']);
+      allow delete: if isAuthor() || isModerator();
+    }
+    match /replies/{replyId} {
+      allow read: if isAuthor()
+        || (isMember() && resource.data.status == 'visible')
+        || isModerator();
+      allow create: if isMember() && conectaOpen() && cooldownOk('replies/' + replyId)
+        && request.resource.data.keys().hasOnly(['postId', 'authorUid', 'authorNickname', 'body', 'status', 'createdAt'])
+        && get(/databases/$(database)/documents/posts/$(request.resource.data.postId)).data.status == 'visible'
+        && request.resource.data.authorUid == request.auth.uid
+        && request.resource.data.authorNickname == myNickname()
+        && textSize(request.resource.data.body, 1, 2000)
+        && request.resource.data.status == 'visible'
+        && request.resource.data.createdAt == request.time;
+      allow update: if
+        (isMember() && onlyChanges(['status'])
+          && resource.data.status == 'visible'
+          && request.resource.data.status == 'pending'
+          && reportedNow(replyId))
+        || (isModerator() && onlyChanges(['status', 'moderationReason', 'moderatedAt'])
+          && request.resource.data.status in ['visible', 'hidden']);
+      allow delete: if isAuthor() || isModerator();
+    }
+    match /helpfulVotes/{voteId} {
+      allow read: if isMember()
+        || (signedIn() && (resource.data.voterUid == request.auth.uid || resource.data.authorUid == request.auth.uid));
+      allow create: if isMember() && conectaOpen()
+        && voteId == request.resource.data.replyId + '_' + request.auth.uid
+        && request.resource.data.keys().hasOnly(['replyId', 'postId', 'authorUid', 'voterUid', 'createdAt'])
+        && request.resource.data.voterUid == request.auth.uid
+        && request.resource.data.authorUid != request.auth.uid
+        && request.resource.data.authorUid == get(/databases/$(database)/documents/replies/$(request.resource.data.replyId)).data.authorUid
+        && request.resource.data.createdAt == request.time;
+      allow delete: if signedIn()
+        && (resource.data.voterUid == request.auth.uid || resource.data.authorUid == request.auth.uid);
+    }
+    match /reports/{reportId} {
+      allow read: if isModerator() || (signedIn() && resource.data.reporterUid == request.auth.uid);
+      allow create: if isMember()
+        && reportId == request.resource.data.targetId + '_' + request.auth.uid
+        && request.resource.data.keys().hasOnly(['targetType', 'targetId', 'postId', 'reason', 'details', 'reporterUid', 'status', 'createdAt'])
+        && request.resource.data.targetType in ['post', 'reply']
+        && (request.resource.data.targetType == 'post'
+          ? (request.resource.data.postId == request.resource.data.targetId
+              && exists(/databases/$(database)/documents/posts/$(request.resource.data.targetId)))
+          : (exists(/databases/$(database)/documents/replies/$(request.resource.data.targetId))
+              && get(/databases/$(database)/documents/replies/$(request.resource.data.targetId)).data.postId == request.resource.data.postId))
+        && request.resource.data.reason in ['offensive', 'harassment', 'personal_data', 'sexual_or_minor', 'copyright', 'spam', 'other']
+        && textSize(request.resource.data.details, 0, 500)
+        && request.resource.data.reporterUid == request.auth.uid
+        && request.resource.data.status == 'open'
+        && request.resource.data.createdAt == request.time;
+      allow update: if isModerator();
+      // Denúncia aberta só o moderador apaga: quem denuncia não faz o caso sumir da
+      // fila. Depois de resolvida, o autor pode apagar a própria (exclusão de conta).
+      allow delete: if isModerator()
+        || (signedIn() && resource.data.reporterUid == request.auth.uid && resource.data.status == 'resolved');
+    }
+
+    // --- Avaliações ---
+    match /questionRatings/{ratingId} {
+      allow read: if isMember();
+      allow create, update: if isMember()
+        && ratingId == request.resource.data.bankId + '_' + request.auth.uid
+        && request.resource.data.keys().hasOnly(['bankId', 'uid', 'area', 'subject', 'difficulty', 'quality', 'updatedAt'])
+        && bankIdOk(request.resource.data.bankId)
+        && request.resource.data.area in ['languages', 'humanities', 'naturalSciences', 'mathematics']
+        && textSize(request.resource.data.subject, 1, 60)
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.difficulty is int && request.resource.data.difficulty >= 1 && request.resource.data.difficulty <= 3
+        && request.resource.data.quality is int && request.resource.data.quality >= 1 && request.resource.data.quality <= 3
+        && request.resource.data.updatedAt == request.time;
+      allow delete: if signedIn() && resource.data.uid == request.auth.uid;
+    }
   }
 }
