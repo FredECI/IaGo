@@ -20,6 +20,30 @@ abstract interface class QuestionRepository {
 
   Future<void> delete(String id);
 
+  /// Cria várias questões em lote (importação e acervo). Id não vazio é
+  /// mantido, o que torna salvar do acervo idempotente (mesmo id, mesmo
+  /// documento). Lote vazio não faz nada; mais de [maxCreateMany] lança
+  /// [ArgumentError]. Id repetido no mesmo lote vira uma só questão (vale a
+  /// última ocorrência). Ser idempotente por id significa que salvar de novo
+  /// substitui o documento, inclusive edições: quem chama (a tela do acervo)
+  /// deve evitar regravar uma questão do acervo que já foi salva.
+  Future<List<Question>> createMany(List<Question> questions);
+
+  /// Tamanho máximo de um lote de [createMany].
+  static const int maxCreateMany = 400;
+
+  /// Remove ids repetidos mantendo a última ocorrência (ids vazios ficam).
+  static List<Question> dedupeById(List<Question> questions) {
+    final lastIndex = <String, int>{
+      for (var i = 0; i < questions.length; i++) questions[i].id: i,
+    };
+    return [
+      for (var i = 0; i < questions.length; i++)
+        if (questions[i].id.isEmpty || lastIndex[questions[i].id] == i)
+          questions[i],
+    ];
+  }
+
   /// Imagem compactada da questão (carregada só no detalhe e no PDF).
   Future<Uint8List?> loadImage(String questionId);
 }

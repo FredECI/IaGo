@@ -59,6 +59,30 @@ class FirestoreQuestionRepository implements QuestionRepository {
   }
 
   @override
+  Future<List<Question>> createMany(List<Question> questions) async {
+    if (questions.length > QuestionRepository.maxCreateMany) {
+      throw ArgumentError.value(questions.length, 'questions', 'lote grande');
+    }
+    if (questions.isEmpty) return const [];
+    final now = _clock();
+    final batch = _db.batch();
+    final saved = <Question>[];
+    for (final q in QuestionRepository.dedupeById(questions)) {
+      final doc = q.id.isEmpty ? _questions.doc() : _questions.doc(q.id);
+      final item = q.copyWith(
+        id: doc.id,
+        createdAt: now,
+        updatedAt: now,
+        hasImage: false,
+      );
+      batch.set(doc, toFirestore(item.toMap()));
+      saved.add(item);
+    }
+    await commitOrQueue(batch.commit());
+    return saved;
+  }
+
+  @override
   Future<Question> update(
     Question question, {
     Uint8List? image,

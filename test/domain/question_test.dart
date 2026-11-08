@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:iago/domain/area.dart';
+import 'package:iago/domain/metric_event.dart';
 import 'package:iago/domain/question.dart';
 import 'package:iago/domain/question_list.dart';
 
@@ -33,6 +34,46 @@ void main() {
       expect(q.subject, q.area.subjects.first);
     });
 
+    test('documento antigo, sem os campos novos, vira manual', () {
+      final old = Map<String, Object?>.from(sampleQuestion().toMap())
+        ..remove('origin')
+        ..remove('bankId')
+        ..remove('myDifficulty')
+        ..remove('myQuality');
+      final q = Question.fromMap('old', old);
+      expect(q.origin, QuestionOrigin.manual);
+      expect(q.bankId, isNull);
+      expect(q.myDifficulty, isNull);
+      expect(q.myQuality, isNull);
+      expect(
+        Question.fromMap('x', const {'origin': '???'}).origin,
+        QuestionOrigin.manual,
+      );
+    });
+
+    test('campos novos ida e volta e copyWith', () {
+      final q = sampleQuestion().copyWith(
+        origin: QuestionOrigin.bank,
+        bankId: 'enem-2022-1',
+        myDifficulty: 2,
+        myQuality: 3,
+      );
+      final back = Question.fromMap(q.id, q.toMap());
+      expect(back, q);
+      expect(back.origin, QuestionOrigin.bank);
+      expect(back.bankId, 'enem-2022-1');
+      expect(q.copyWith(topic: 'x').bankId, 'enem-2022-1');
+      expect(q.copyWith(bankId: null, myDifficulty: null).bankId, isNull);
+      expect(q.copyWith(myDifficulty: null).myQuality, 3);
+    });
+
+    test('isEdited só vale para cópia do acervo alterada depois', () {
+      final base = sampleQuestion().copyWith(origin: QuestionOrigin.bank);
+      expect(base.isEdited, isTrue);
+      expect(base.copyWith(updatedAt: base.createdAt).isEdited, isFalse);
+      expect(sampleQuestion().isEdited, isFalse);
+    });
+
     test('copyWith consegue limpar campos opcionais', () {
       final q = sampleQuestion().copyWith(sourceUrl: null, notes: null);
       expect(q.sourceUrl, isNull);
@@ -53,6 +94,40 @@ void main() {
         () => sampleQuestion().alternatives.add('6'),
         throwsUnsupportedError,
       );
+    });
+  });
+
+  group('MetricEventType', () {
+    test('códigos novos da spec existem e são únicos', () {
+      for (final code in [
+        'questions_bulk_saved',
+        'import_run',
+        'direction_plan_created',
+        'direction_step_done',
+        'direction_step_missed',
+        'ai_fallback',
+        'rating_saved',
+        'community_post',
+        'community_reply',
+        'helpful_given',
+        'report_filed',
+      ]) {
+        expect(MetricEventType.tryParse(code), isNotNull, reason: code);
+      }
+      final codes = MetricEventType.values.map((t) => t.code).toSet();
+      expect(codes, hasLength(MetricEventType.values.length));
+    });
+
+    test('dado chamado type não sobrescreve o tipo do evento', () {
+      final at = DateTime(2026);
+      final e = MetricEvent(
+        type: MetricEventType.questionsBulkSaved,
+        at: at,
+        data: const {'type': 'x', 'origin': 'bank', 'count': 3},
+      );
+      expect(e.toMap()['type'], 'questions_bulk_saved');
+      expect(e.toMap()['at'], at);
+      expect(e.toMap()['count'], 3);
     });
   });
 

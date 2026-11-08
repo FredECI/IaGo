@@ -41,6 +41,35 @@ void main() {
       },
     );
 
+    test('createMany cria em lote, mantém id dado e é idempotente', () async {
+      final repo = MemoryQuestionRepository(clock: clock);
+      final bank = draft(statement: 'enem').copyWith(
+        id: 'bank_enem-2022-1',
+        origin: QuestionOrigin.bank,
+        bankId: 'enem-2022-1',
+      );
+      final saved = await repo.createMany([bank, draft(statement: 'outra')]);
+      expect(saved[0].id, 'bank_enem-2022-1');
+      expect(saved[1].id, hasLength(20));
+      expect(saved.every((q) => q.createdAt == now), isTrue);
+      expect(repo.current, hasLength(2));
+
+      await repo.createMany([bank]);
+      expect(repo.current, hasLength(2));
+      expect(
+        repo.current
+            .where((q) => q.origin == QuestionOrigin.bank)
+            .single
+            .bankId,
+        'enem-2022-1',
+      );
+      expect(await repo.createMany(const []), isEmpty);
+      expect(
+        () => repo.createMany(List.filled(401, draft())),
+        throwsArgumentError,
+      );
+    });
+
     test('lista fica do mais recente para o mais antigo', () async {
       final repo = MemoryQuestionRepository(clock: clock);
       await repo.create(draft(statement: 'antiga'));

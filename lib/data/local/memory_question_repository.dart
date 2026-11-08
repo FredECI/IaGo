@@ -45,6 +45,30 @@ class MemoryQuestionRepository implements QuestionRepository {
   }
 
   @override
+  Future<List<Question>> createMany(List<Question> questions) async {
+    if (questions.length > QuestionRepository.maxCreateMany) {
+      throw ArgumentError.value(questions.length, 'questions', 'lote grande');
+    }
+    if (questions.isEmpty) return const [];
+    final now = _clock();
+    final saved = [
+      for (final q in QuestionRepository.dedupeById(questions))
+        q.copyWith(
+          id: q.id.isEmpty ? newId() : q.id,
+          createdAt: now,
+          updatedAt: now,
+          hasImage: false,
+        ),
+    ];
+    final ids = {for (final q in saved) q.id};
+    _store.value = _sorted([
+      ..._store.value.where((q) => !ids.contains(q.id)),
+      ...saved,
+    ]);
+    return saved;
+  }
+
+  @override
   Future<Question> update(
     Question question, {
     Uint8List? image,
