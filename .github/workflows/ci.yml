@@ -2,6 +2,7 @@
 # Roda em push para main e feat/**, em PR e manual.
 # Secrets (FIREBASE_ENV_JSON, ANDROID_DEBUG_KEYSTORE) e APK so em main (if: github.ref == refs/heads/main, também no manual).
 # Em feat/** e PR: analyze, testes, regras e build web em modo demo, sem secrets.
+# APK de feat/mvp* (spike de IA, teste no celular): só pelo workflow manual apk-manual.yml.
 # NUNCA grave token de depuracao do App Check no secret.
 name: CI
 
