@@ -54,6 +54,7 @@ _BOLD = re.compile(r"\*\*(.+?)\*\*", re.DOTALL)
 _ITALIC = re.compile(r"(?<![\w*])\*(?=\S)([^*\n]+?)(?<=\S)\*(?![\w*])")
 _UNDERSCORE = re.compile(r"(?<![\w_])_(?=[^\s_])([^_\n]+?)(?<=[^\s_])_(?![\w_])")
 _BULLET = "•"
+_ZERO_WIDTH = re.compile("[\u200b\u200c\u200d\u2060\ufeff]")
 
 
 def _script(m, covered):
@@ -78,6 +79,7 @@ def clean_markup(text: str, covered=None) -> str:
     - normaliza para NFC, troca NBSP por espaço e arruma os espaços.
     """
     text = unicodedata.normalize("NFC", text).replace("\xa0", " ")
+    text = _ZERO_WIDTH.sub("", text)
     text = _SCRIPT.sub(lambda m: _script(m, covered), text)
     text = _BR.sub("\n", text)
     text = _TAG.sub("", text)
@@ -184,6 +186,11 @@ class EnemDevAdapter(SourceAdapter):
         exclusions = []
         if bad_language:
             exclusions.append("api_lingua_inconsistente")
+        # Na fonte, o expoente some e fica só um caractere de largura zero depois do número
+        # ("10[ZWSP]−1" lê-se "10 menos 1"): o texto limpo mudaria de sentido.
+        raw_text = context + intro + "".join(a.get("text") or "" for a in alts)
+        if re.search(r"\d" + _ZERO_WIDTH.pattern, raw_text):
+            exclusions.append("expoente_perdido_na_fonte")
         if _IMAGE_MD.search(context) or _IMAGE_MD.search(intro) or _IMAGE_HTML.search(context):
             exclusions.append("imagem_no_contexto")
         if item.get("files"):

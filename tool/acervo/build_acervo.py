@@ -36,7 +36,7 @@ AREA_LABEL = {
 FORBIDDEN_KEYS = ("correctAlternative", "isCorrect", "gabarito")
 
 _LATEX = re.compile(
-    r"\\[a-zA-Z]+|\\\(|\$\$|(?<![A-Za-z\d])\$(?=\S)[^$\n]*?(?<=\S)\$"
+    r"\\[a-zA-Z]+|\\\(|\$\$|\^\{|(?<![A-Za-z\d])\$(?=\S)[^$\n]*?(?<=\S)\$"
 )
 
 

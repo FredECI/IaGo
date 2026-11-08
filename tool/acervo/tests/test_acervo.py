@@ -128,6 +128,13 @@ class AdapterTest(unittest.TestCase):
         item["alternatives"][2]["file"] = "http://x/b.png"
         self.assertIn("imagem_em_alternativa", a.normalize(item).exclusions)
 
+    def test_lost_exponent_is_excluded(self):
+        a = EnemDevAdapter()
+        item = api_item(1, alts=["1,1x10​−1​", "b", "c", "d", "e"])
+        self.assertIn("expoente_perdido_na_fonte", a.normalize(item).exclusions)
+        item = api_item(1, context="curta​duração")
+        self.assertNotIn("expoente_perdido_na_fonte", a.normalize(item).exclusions)
+
     def test_unknown_discipline_fails(self):
         with self.assertRaises(ValueError):
             EnemDevAdapter().normalize(api_item(1, discipline="outra"))
@@ -186,6 +193,9 @@ class ExclusionTest(unittest.TestCase):
 
     def test_empty_alternative(self):
         self.assertIn("alternativa_vazia", ba.exclusion_reasons(self.raw(alternatives=["a", "", "c", "d", "e"]), None))
+
+    def test_latex_superscript_brace(self):
+        self.assertIn("formula_latex", ba.exclusion_reasons(self.raw(statement="10^{3} litros"), None))
 
     def test_latex(self):
         for t in (r"calcule \frac{1}{2}", r"valor $x^2 + 1$ final", r"\(a\)", "$$x$$"):
@@ -249,6 +259,9 @@ class CleanMarkupTest(unittest.TestCase):
         self.assertEqual(clean_markup("CO<sub>2</sub> e m<sup>2</sup>", self.COV), "CO₂ e m²")
         self.assertEqual(clean_markup("CO<sub>2</sub>", set()), "CO2")
         self.assertEqual(clean_markup("<p style='x'><strong>a</strong> &iacute;</p>"), "a í")
+
+    def test_zero_width_removed(self):
+        self.assertEqual(clean_markup("a​b‌‍⁠﻿c"), "abc")
 
     def test_headers(self):
         self.assertEqual(clean_markup("##### TIPO DE CURVA\ntexto"), "TIPO DE CURVA\ntexto")
