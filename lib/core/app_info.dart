@@ -10,6 +10,10 @@ abstract final class AppInfo {
   /// Versão do texto de Termos e Privacidade aceita no cadastro (LGPD).
   static const String termsVersion = '2026-11-03';
 
+  /// Idade mínima das contas, pelos termos. É o piso de `AccessPolicy.minAge`
+  /// e deve valer o mesmo que `termsMinAge()` em `firestore.rules`.
+  static const int termsMinAge = 18;
+
   /// Meta de tempo para salvar uma questão (requisito do beta).
   static const Duration saveQuestionGoal = Duration(seconds: 30);
 }
