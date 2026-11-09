@@ -4,6 +4,7 @@ import 'package:material_ui/material_ui.dart';
 
 import '../../app/router.dart';
 import '../../core/app_info.dart';
+import '../../data/policy_providers.dart';
 import '../../data/providers.dart';
 import '../../domain/user_profile.dart';
 
@@ -23,6 +24,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
   ReferralSource? _referral;
   int? _platforms;
   bool _acceptedTerms = false;
+  bool _ageDeclared = false;
   bool _obscure = true;
   bool _busy = false;
   String? _error;
@@ -59,6 +61,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
           referralSource: _referral!,
           platformsBefore: _platforms,
           termsVersion: AppInfo.termsVersion,
+          declaredMinAge: ref.read(accessPolicyProvider).minAge,
         ),
       );
       // A sessão muda sozinha e o roteador leva ao painel.
@@ -72,6 +75,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final minAge = ref.watch(accessPolicyProvider).minAge;
     return Scaffold(
       appBar: AppBar(title: const Text('Criar conta grátis')),
       body: SafeArea(
@@ -202,6 +206,27 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                             onPressed: () => context.push(Routes.terms),
                             child: const Text('Ler os termos'),
                           ),
+                        ),
+                        if (state.hasError) _ErrorLine(state.errorText!),
+                      ],
+                    ),
+                  ),
+                  FormField<bool>(
+                    validator: (_) => _ageDeclared
+                        ? null
+                        : 'É preciso declarar a idade mínima para criar a '
+                              'conta.',
+                    builder: (state) => Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CheckboxListTile(
+                          key: const Key('signup-age'),
+                          contentPadding: EdgeInsets.zero,
+                          controlAffinity: ListTileControlAffinity.leading,
+                          value: _ageDeclared,
+                          onChanged: (v) =>
+                              setState(() => _ageDeclared = v ?? false),
+                          title: Text('Declaro ter $minAge anos ou mais.'),
                         ),
                         if (state.hasError) _ErrorLine(state.errorText!),
                       ],

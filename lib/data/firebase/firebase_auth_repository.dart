@@ -5,6 +5,7 @@ import '../../core/clock.dart';
 import '../../domain/metric_event.dart';
 import '../../domain/user_profile.dart';
 import '../auth_repository.dart';
+import 'firestore_mapping.dart';
 
 /// Cadastro e login com e-mail e senha (Firebase Auth) e perfil em
 /// `users/{uid}`. Nada de servidor próprio: as regras do Firestore garantem
@@ -40,8 +41,65 @@ class FirebaseAuthRepository implements AuthRepository {
             uid: user.uid,
             email: user.email,
             displayName: user.displayName,
+            emailVerified: user.emailVerified,
           ),
   );
+
+  @override
+  Stream<String?> watchAcceptedTermsVersion() {
+    final uid = _auth.currentUser?.uid;
+    if (uid == null) return const Stream.empty();
+    return _db
+        .collection('users')
+        .doc(uid)
+        .snapshots()
+        .where((snap) => snap.exists)
+        .map((snap) {
+          final version = snap.data()?['termsVersion'];
+          return version is String ? version : null;
+        });
+  }
+
+  @override
+  Future<void> acceptTerms({
+    required String termsVersion,
+    required int declaredMinAge,
+  }) => _guard(() async {
+    final uid = _auth.currentUser?.uid;
+    if (uid == null) {
+      throw const AuthFailure('Entre na conta antes de aceitar os termos.');
+    }
+    final now = _clock();
+    await commitOrQueue(
+      _db.collection('users').doc(uid).set({
+        'termsVersion': termsVersion,
+        'termsAcceptedAt': now,
+        'declaredMinAge': declaredMinAge,
+        'declaredMinAgeAt': now,
+      }, SetOptions(merge: true)),
+    );
+  });
+
+  @override
+  Future<void> sendEmailVerification() => _guard(() async {
+    final user = _auth.currentUser;
+    if (user == null) {
+      throw const AuthFailure('Entre na conta antes de verificar o e-mail.');
+    }
+    await user.sendEmailVerification();
+  });
+
+  @override
+  Future<bool> refreshEmailVerified() => _guardValue(() async {
+    final user = _auth.currentUser;
+    if (user == null) return false;
+    await user.reload();
+    final verified = _auth.currentUser?.emailVerified ?? false;
+    // `reload` não renova o ID token, e as regras de `memberships` leem
+    // `email_verified` do token: sem isto, a entrada seria negada por até 1 h.
+    if (verified) await _auth.currentUser?.getIdToken(true);
+    return verified;
+  });
 
   @override
   Future<void> signIn({required String email, required String password}) =>
@@ -68,8 +126,17 @@ class FirebaseAuthRepository implements AuthRepository {
       'platformsBefore': ?data.platformsBefore,
       'termsVersion': data.termsVersion,
       'termsAcceptedAt': now,
+      'declaredMinAge': data.declaredMinAge,
+      'declaredMinAgeAt': now,
       'createdAt': now,
     });
+    // Verificação do e-mail: se falhar (rede), a pessoa pede de novo na tela
+    // "Entrar no piloto". Nunca impede o cadastro.
+    try {
+      await user.sendEmailVerification();
+    } on FirebaseException {
+      // Segue sem o envio.
+    }
     // H4 (origem) e H2 (plataformas antes): evento de cadastro.
     await _db.collection('users').doc(user.uid).collection('events').add({
       'type': MetricEventType.signedUp.code,
@@ -112,9 +179,12 @@ class FirebaseAuthRepository implements AuthRepository {
     await user.delete();
   });
 
-  Future<void> _guard(Future<void> Function() action) async {
+  Future<void> _guard(Future<void> Function() action) =>
+      _guardValue<void>(action);
+
+  Future<T> _guardValue<T>(Future<T> Function() action) async {
     try {
-      await action();
+      return await action();
     } on FirebaseAuthException catch (e) {
       throw AuthFailure(messageFor(e.code));
     } on FirebaseException catch (e) {

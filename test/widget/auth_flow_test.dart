@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iago/app/router.dart';
+import 'package:iago/core/app_info.dart';
 import 'package:iago/data/auth_repository.dart';
 import 'package:iago/data/firebase/firebase_bootstrap.dart';
 import 'package:iago/data/local/direction_memory_repository.dart';
@@ -26,6 +27,15 @@ class FakeAuthRepository implements AuthRepository {
   final _users = StreamController<AuthUser?>.broadcast();
   SignUpData? lastSignUp;
 
+  /// Versão dos termos que o perfil tem (`null` = perfil sem aceite).
+  String? acceptedTerms = AppInfo.termsVersion;
+  final _terms = StreamController<String?>.broadcast();
+  int? acceptedAge;
+  String? deletedWithPassword;
+  bool emailVerified = true;
+  bool verifiedAfterRefresh = true;
+  int verificationsSent = 0;
+
   void emit(AuthUser? user) => _users.add(user);
 
   @override
@@ -36,14 +46,44 @@ class FakeAuthRepository implements AuthRepository {
     if (password != 'senha-certa') {
       throw const AuthFailure('E-mail ou senha incorretos.');
     }
-    emit(AuthUser(uid: 'u1', email: email, displayName: 'Ana Souza'));
+    emit(
+      AuthUser(
+        uid: 'u1',
+        email: email,
+        displayName: 'Ana Souza',
+        emailVerified: emailVerified,
+      ),
+    );
   }
 
   @override
   Future<void> signUp(SignUpData data) async {
     lastSignUp = data;
+    acceptedTerms = data.termsVersion;
     emit(AuthUser(uid: 'u2', email: data.email, displayName: data.name));
   }
+
+  @override
+  Stream<String?> watchAcceptedTermsVersion() async* {
+    yield acceptedTerms;
+    yield* _terms.stream;
+  }
+
+  @override
+  Future<void> acceptTerms({
+    required String termsVersion,
+    required int declaredMinAge,
+  }) async {
+    acceptedTerms = termsVersion;
+    acceptedAge = declaredMinAge;
+    _terms.add(termsVersion);
+  }
+
+  @override
+  Future<void> sendEmailVerification() async => verificationsSent++;
+
+  @override
+  Future<bool> refreshEmailVerified() async => verifiedAfterRefresh;
 
   @override
   Future<void> sendPasswordReset(String email) async {}
@@ -52,7 +92,10 @@ class FakeAuthRepository implements AuthRepository {
   Future<void> signOut() async => emit(null);
 
   @override
-  Future<void> deleteAccount({required String password}) async => emit(null);
+  Future<void> deleteAccount({required String password}) async {
+    deletedWithPassword = password;
+    emit(null);
+  }
 }
 
 /// Rola a lista (preguiçosa) até o campo existir e ficar visível.
@@ -199,8 +242,8 @@ void main() {
       GoRouter.of(tester.element(find.text('Olá, Ana')))
           .go(Routes.becomeMember);
       await tester.pumpAndSettle();
-      expect(find.byKey(const Key('placeholder-back')), findsOneWidget);
-      expect(find.text('Virar membro'), findsWidgets);
+      expect(find.byKey(const Key('join-submit')), findsOneWidget);
+      expect(find.text('Entrar no piloto'), findsWidgets);
     });
   });
 
@@ -236,7 +279,19 @@ void main() {
     await reveal(tester, 'signup-submit');
     await tester.tap(find.byKey(const Key('signup-submit')));
     await tester.pumpAndSettle();
+    expect(
+      find.text('É preciso declarar a idade mínima para criar a conta.'),
+      findsOneWidget,
+    );
+    expect(auth.lastSignUp, isNull);
 
+    await reveal(tester, 'signup-age');
+    await tester.tap(find.byKey(const Key('signup-age')));
+    await reveal(tester, 'signup-submit');
+    await tester.tap(find.byKey(const Key('signup-submit')));
+    await tester.pumpAndSettle();
+
+    expect(auth.lastSignUp?.declaredMinAge, AppInfo.termsMinAge);
     expect(auth.lastSignUp?.referralSource, ReferralSource.friend);
     expect(auth.lastSignUp?.termsVersion, isNotEmpty);
     expect(find.text('Olá, Pedro'), findsOneWidget);

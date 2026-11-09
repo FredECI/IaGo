@@ -47,7 +47,7 @@ void main() {
       '/direciona': 'Direciona',
       '/direciona/objetivo': 'Objetivo de estudo',
       '/conecta': 'Conecta',
-      '/conecta/membro': 'membro',
+      '/conecta/membro': 'Entrar no piloto',
       '/conecta/moderacao': 'oderação',
       '/conecta/geral': 'Comunidade',
       '/conecta/geral/conversa/p1': 'Conversa',
@@ -68,7 +68,9 @@ void main() {
         // página provisória.
         expect(
           find.byKey(const Key('placeholder-back')),
-          e.key.startsWith('/direciona') || e.key.startsWith('/questoes/acervo')
+          e.key.startsWith('/direciona') ||
+                  e.key.startsWith('/questoes/acervo') ||
+                  e.key == '/conecta/membro'
               ? findsNothing
               : findsOneWidget,
         );

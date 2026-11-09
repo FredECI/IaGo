@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:iago/core/app_info.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../helpers/test_app.dart';
@@ -12,7 +13,7 @@ void main() {
     await pumpIagoApp(tester);
 
     // Tela inicial com selo Beta.
-    expect(find.text('Beta 0.1'), findsOneWidget);
+    expect(find.text(AppInfo.versionLabel), findsOneWidget);
     await enterDemo(tester);
 
     // Painel: saudação, resumo relativo, atalhos e os pilares (sem "Em breve").
