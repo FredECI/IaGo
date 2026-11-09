@@ -69,7 +69,10 @@ void main() {
     await tester.tap(find.byKey(const Key('open-import')));
     await tester.pumpAndSettle();
     expect(find.text('Importar questões'), findsWidgets);
-    await expectPlaceholderAndBack(tester);
+    expect(find.byKey(const Key('import-paste-field')), findsOneWidget);
+    await tester.tap(find.byType(BackButton));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('import-paste-field')), findsNothing);
     expect(find.text('40 questões'), findsOneWidget);
   });
 

@@ -7,6 +7,7 @@ import '../../app/router.dart';
 import '../../core/formatters.dart';
 import '../../domain/question.dart';
 import '../../shared/common_widgets.dart';
+import '../rating/rating_panel.dart';
 import 'question_image.dart';
 import 'questions_providers.dart';
 
@@ -180,6 +181,8 @@ class QuestionDetailPage extends ConsumerWidget {
                 ? Text('Editada em ${Formatters.dateTime(question.updatedAt)}')
                 : null,
           ),
+          const Divider(),
+          PrivateRatingPanel(question: question),
         ],
       ),
     );

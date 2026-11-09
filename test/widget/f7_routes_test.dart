@@ -70,6 +70,7 @@ void main() {
           find.byKey(const Key('placeholder-back')),
           e.key.startsWith('/direciona') ||
                   e.key.startsWith('/questoes/acervo') ||
+                  e.key == '/importar' ||
                   e.key == '/conecta/membro'
               ? findsNothing
               : findsOneWidget,
