@@ -1,0 +1,117 @@
+{
+  "rate": [
+    {
+      "kind": "set",
+      "path": "questionRatings/enem-2022-136_ana",
+      "data": {
+        "bankId": "enem-2022-136",
+        "uid": "ana",
+        "area": "mathematics",
+        "subject": "Matemática",
+        "difficulty": 2,
+        "quality": 3,
+        "updatedAt": {
+          "$": "serverTimestamp"
+        }
+      }
+    }
+  ],
+  "rateChange": [
+    {
+      "kind": "set",
+      "path": "questionRatings/enem-2022-136_ana",
+      "data": {
+        "bankId": "enem-2022-136",
+        "uid": "ana",
+        "area": "mathematics",
+        "subject": "Matemática",
+        "difficulty": 3,
+        "quality": 1,
+        "updatedAt": {
+          "$": "serverTimestamp"
+        }
+      }
+    }
+  ],
+  "rateNoSubject": [
+    {
+      "kind": "set",
+      "path": "questionRatings/enem-2022-12_ana",
+      "data": {
+        "bankId": "enem-2022-12",
+        "uid": "ana",
+        "area": "naturalSciences",
+        "subject": "Ciências da Natureza",
+        "difficulty": 2,
+        "quality": 3,
+        "updatedAt": {
+          "$": "serverTimestamp"
+        }
+      }
+    }
+  ],
+  "rateLongSubject": [
+    {
+      "kind": "set",
+      "path": "questionRatings/enem-2022-12_ana",
+      "data": {
+        "bankId": "enem-2022-12",
+        "uid": "ana",
+        "area": "languages",
+        "subject": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "difficulty": 2,
+        "quality": 3,
+        "updatedAt": {
+          "$": "serverTimestamp"
+        }
+      }
+    }
+  ],
+  "rateOtherSource": [
+    {
+      "kind": "set",
+      "path": "questionRatings/obmep-2019-12_ana",
+      "data": {
+        "bankId": "obmep-2019-12",
+        "uid": "ana",
+        "area": "mathematics",
+        "subject": "Matemática",
+        "difficulty": 2,
+        "quality": 3,
+        "updatedAt": {
+          "$": "serverTimestamp"
+        }
+      }
+    }
+  ],
+  "remove": [
+    {
+      "kind": "delete",
+      "path": "questionRatings/enem-2022-136_ana"
+    }
+  ],
+  "privateRate": [
+    {
+      "kind": "update",
+      "path": "users/ana/questions/bank_enem-2022-136",
+      "data": {
+        "myDifficulty": 2,
+        "myQuality": 3
+      }
+    }
+  ],
+  "privateClear": [
+    {
+      "kind": "update",
+      "path": "users/ana/questions/q1",
+      "data": {
+        "myDifficulty": {
+          "$": "delete"
+        },
+        "myQuality": {
+          "$": "delete"
+        }
+      }
+    }
+  ]
+}

@@ -4,8 +4,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../core/clock.dart';
 import '../../domain/question.dart';
+import '../../domain/rating_models.dart';
 import '../repositories.dart';
 import 'firestore_mapping.dart';
+import 'rating_write_plans.dart';
 
 /// Questões em `users/{uid}/questions`; a imagem compactada fica à parte, em
 /// `users/{uid}/questionImages/{id}` (lida só no detalhe e no PDF).
@@ -111,6 +113,35 @@ class FirestoreQuestionRepository implements QuestionRepository {
           ..delete(_images.doc(id)))
         .commit(),
   );
+
+  @override
+  Future<void> setPrivateRating(
+    String id, {
+    int? difficulty,
+    int? quality,
+  }) async {
+    final plan = privateRatingPlan(
+      uid: _uid,
+      questionId: id,
+      difficulty: difficulty,
+      quality: quality,
+    );
+    final batch = _db.batch();
+    for (final w in plan) {
+      batch.update(_db.doc(w.path), w.data!);
+    }
+    try {
+      await commitOrQueue(batch.commit());
+    } on FirebaseException catch (e) {
+      if (e.code == 'not-found') {
+        throw const RatingFailure(
+          RatingFailureKind.invalid,
+          'Questão não encontrada.',
+        );
+      }
+      rethrow;
+    }
+  }
 
   @override
   Future<Uint8List?> loadImage(String questionId) async {

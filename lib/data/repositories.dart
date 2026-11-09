@@ -20,6 +20,12 @@ abstract interface class QuestionRepository {
 
   Future<void> delete(String id);
 
+  /// Avaliação privada (1 a 3) da questão: grava só `myDifficulty` e
+  /// `myQuality`, **sem mudar `updatedAt`** (mudar marcaria a cópia do acervo
+  /// como "editada"). `null` apaga a nota. Nota fora de 1 a 3 lança
+  /// `RatingFailure`; questão inexistente lança `RatingFailure` (invalid).
+  Future<void> setPrivateRating(String id, {int? difficulty, int? quality});
+
   /// Cria várias questões em lote (importação e acervo). Id não vazio é
   /// mantido, o que torna salvar do acervo idempotente (mesmo id, mesmo
   /// documento). Lote vazio não faz nada; mais de [maxCreateMany] lança

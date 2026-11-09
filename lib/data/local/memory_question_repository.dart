@@ -4,6 +4,7 @@ import '../../core/clock.dart';
 import '../../core/ids.dart';
 import '../../core/live_value.dart';
 import '../../domain/question.dart';
+import '../../domain/rating_models.dart';
 import '../repositories.dart';
 
 /// Questões em memória: usadas no modo demonstração (offline) e nos testes.
@@ -96,6 +97,35 @@ class MemoryQuestionRepository implements QuestionRepository {
     _store.value = List<Question>.unmodifiable(
       _store.value.where((q) => q.id != id),
     );
+  }
+
+  @override
+  Future<void> setPrivateRating(
+    String id, {
+    int? difficulty,
+    int? quality,
+  }) async {
+    if (difficulty != null && !isValidScore(difficulty) ||
+        quality != null && !isValidScore(quality)) {
+      throw const RatingFailure(
+        RatingFailureKind.invalid,
+        'A nota deve ser de 1 a 3.',
+      );
+    }
+    final items = [..._store.value];
+    final index = items.indexWhere((q) => q.id == id);
+    if (index < 0) {
+      throw const RatingFailure(
+        RatingFailureKind.invalid,
+        'Questão não encontrada.',
+      );
+    }
+    // Sem tocar em updatedAt.
+    items[index] = items[index].copyWith(
+      myDifficulty: difficulty,
+      myQuality: quality,
+    );
+    _store.value = _sorted(items);
   }
 
   @override
