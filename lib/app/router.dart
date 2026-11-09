@@ -7,7 +7,12 @@ import '../features/account/account_page.dart';
 import '../features/auth/login_page.dart';
 import '../features/auth/sign_up_page.dart';
 import '../features/auth/terms_page.dart';
+import '../features/bank/bank_pages.dart';
+import '../features/community/community_access.dart';
+import '../features/community/community_pages.dart';
 import '../features/dashboard/dashboard_page.dart';
+import '../features/direction/direction_pages.dart';
+import '../features/import/import_page.dart';
 import '../features/lists/list_editor_page.dart';
 import '../features/metrics/metrics_page.dart';
 import '../features/lists/lists_page.dart';
@@ -37,6 +42,26 @@ abstract final class Routes {
   /// Acervo organizado por área → matéria → assunto.
   static const String contentTree = '$questions/conteudos';
 
+  /// Acervo (só leitura) dentro da aba Questões.
+  static const String bank = '$questions/acervo';
+  static const String bankSources = '$bank/fontes';
+  static String bankQuestion(String id) => '$bank/$id';
+
+  /// Importar várias questões (tela cheia, fora das abas).
+  static const String import = '/importar';
+
+  /// Direciona (tela cheia, aberta pelo Painel).
+  static const String direction = '/direciona';
+  static const String directionGoal = '$direction/objetivo';
+
+  /// Conecta (tela cheia). Só aparece para quem a `AccessPolicy` libera.
+  static const String community = '/conecta';
+  static const String becomeMember = '$community/membro';
+  static const String moderation = '$community/moderacao';
+  static String communityRoom(String id) => '$community/$id';
+  static String communityPost(String id, String postId) =>
+      '$community/$id/conversa/$postId';
+
   /// Editor de uma lista (aba Listas).
   static String list(String id) => '$lists/$id';
 
@@ -48,6 +73,8 @@ final routerProvider = Provider<GoRouter>((ref) {
   final rootKey = GlobalKey<NavigatorState>(debugLabel: 'root');
   final refresh = ValueNotifier<int>(0);
   ref.listen(sessionProvider, (_, _) => refresh.value++);
+  ref.listen(conectaVisibleProvider, (_, _) => refresh.value++);
+  ref.listen(conectaJoinableProvider, (_, _) => refresh.value++);
 
   final router = GoRouter(
     navigatorKey: rootKey,
@@ -62,6 +89,18 @@ final routerProvider = Provider<GoRouter>((ref) {
         return Routes.login;
       }
       if (signedIn && onEntry) return Routes.dashboard;
+      // Conecta: a rota também obedece à política (link direto não burla).
+      // "Virar membro" abre só se o Conecta estiver ligado (F6).
+      final inConecta =
+          location == Routes.community ||
+          location.startsWith('${Routes.community}/');
+      if (signedIn &&
+          inConecta &&
+          !(ref.read(conectaVisibleProvider) ||
+              (location == Routes.becomeMember &&
+                  ref.read(conectaJoinableProvider)))) {
+        return Routes.dashboard;
+      }
       return null;
     },
     routes: [
@@ -69,6 +108,38 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: Routes.signUp, builder: (_, _) => const SignUpPage()),
       GoRoute(path: Routes.terms, builder: (_, _) => const TermsPage()),
       GoRoute(path: Routes.metrics, builder: (_, _) => const MetricsPage()),
+      GoRoute(path: Routes.import, builder: (_, _) => const ImportPage()),
+      GoRoute(
+        path: Routes.direction,
+        builder: (_, _) => const DirectionPage(),
+        routes: [
+          GoRoute(path: 'objetivo', builder: (_, _) => const GoalPage()),
+        ],
+      ),
+      GoRoute(
+        path: Routes.community,
+        builder: (_, _) => const CommunityHomePage(),
+        routes: [
+          // Antes de ':communityId', senão viraria um id.
+          GoRoute(path: 'membro', builder: (_, _) => const BecomeMemberPage()),
+          GoRoute(path: 'moderacao', builder: (_, _) => const ModerationPage()),
+          GoRoute(
+            path: ':communityId',
+            builder: (_, state) => CommunityPage(
+              communityId: state.pathParameters['communityId']!,
+            ),
+            routes: [
+              GoRoute(
+                path: 'conversa/:postId',
+                builder: (_, state) => CommunityPostPage(
+                  communityId: state.pathParameters['communityId']!,
+                  postId: state.pathParameters['postId']!,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
       GoRoute(
         path: Routes.newQuestion,
         builder: (_, _) => const QuestionFormPage(),
@@ -95,7 +166,23 @@ final routerProvider = Provider<GoRouter>((ref) {
                 path: Routes.questions,
                 builder: (_, _) => const QuestionsPage(),
                 routes: [
-                  // Antes de ':id', senão "conteudos" viraria um id.
+                  // Antes de ':id', senão "conteudos" e "acervo" viram ids.
+                  GoRoute(
+                    path: 'acervo',
+                    builder: (_, _) => const BankPage(),
+                    routes: [
+                      GoRoute(
+                        path: 'fontes',
+                        builder: (_, _) => const BankSourcesPage(),
+                      ),
+                      GoRoute(
+                        path: ':id',
+                        builder: (_, state) => BankQuestionPage(
+                          questionId: state.pathParameters['id']!,
+                        ),
+                      ),
+                    ],
+                  ),
                   GoRoute(
                     path: 'conteudos',
                     builder: (_, _) => const ContentTreePage(),
