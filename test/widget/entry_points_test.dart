@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:iago/domain/direction_models.dart';
+import 'package:iago/features/bank/bank_providers.dart';
 import 'package:iago/features/direction/direction_providers.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../helpers/fake_bank_catalog.dart';
 import '../helpers/test_app.dart';
 
 /// Pontos de entrada das trilhas do MVP (F7), na demo: cada um abre a sua
@@ -30,7 +32,10 @@ void main() {
     await tester.tap(find.byKey(const Key('direction-card')));
     await tester.pumpAndSettle();
     expect(find.text('Direciona'), findsWidgets);
-    await expectPlaceholderAndBack(tester);
+    expect(find.text('Demonstração: proposta simulada'), findsOneWidget);
+    await tester.tap(find.byTooltip('Voltar'));
+    await tester.pumpAndSettle();
+    expect(find.text('Demonstração: proposta simulada'), findsNothing);
     expect(find.byKey(const Key('direction-card')), findsOneWidget);
   });
 
@@ -43,15 +48,22 @@ void main() {
   });
 
   testWidgets('Questões: Acervo e Importar abrem as páginas', (tester) async {
-    await pumpIagoApp(tester);
+    await pumpIagoApp(
+      tester,
+      overrides: [bankCatalogProvider.overrideWithValue(FakeBankCatalog())],
+    );
     await enterDemo(tester);
     await tester.tap(find.text('Questões').last);
     await tester.pumpAndSettle();
 
     await tester.tap(find.byKey(const Key('open-bank')));
     await tester.pumpAndSettle();
-    expect(find.text('Acervo'), findsWidgets);
-    await expectPlaceholderAndBack(tester);
+    // Tela de verdade do acervo (A4), com o botão de voltar da barra.
+    expect(find.byKey(const Key('bank-search-field')), findsOneWidget);
+    expect(find.text('1.250 questões'), findsOneWidget);
+    await tester.tap(find.byType(BackButton));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('bank-search-field')), findsNothing);
     expect(find.text('40 questões'), findsOneWidget);
 
     await tester.tap(find.byKey(const Key('open-import')));

@@ -134,8 +134,8 @@ String _rationale(
   final text = switch (action) {
     StepAction.collect =>
       c.savedLast14d == 0
-          ? '$s não teve questões salvas nos últimos $directionWindowDays dias e tem ${c.saved} no acervo.'
-          : '$s tem só ${c.saved} no acervo, abaixo de ${t.minQuestionsPerSubject}.',
+          ? '$s não teve questões salvas nos últimos $directionWindowDays dias e tem ${c.saved} salvas.'
+          : '$s tem só ${c.saved} salvas, abaixo de ${t.minQuestionsPerSubject}.',
     StepAction.buildList =>
       '$s tem ${c.saved} questões e nenhuma lista exportada nos últimos $directionWindowDays dias.',
     StepAction.review =>

@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../core/clock.dart';
@@ -34,11 +35,40 @@ class _ExportSheetState extends ConsumerState<ExportSheet> {
   GeneratedPdf? _pdf;
   Object? _error;
   bool _counted = false;
+  GoRouter? _router;
+  String? _openedAt;
 
   @override
   void initState() {
     super.initState();
     _generate();
+  }
+
+  // A folha mora no navegador da aba Listas: sem isso, ela sobrevive à troca
+  // de aba e pode exportar a lista errada. Qualquer mudança de rota a fecha.
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_router != null) return;
+    _router = GoRouter.maybeOf(context);
+    _openedAt = _router?.state.uri.toString();
+    _router?.routerDelegate.addListener(_onRouteChanged);
+  }
+
+  void _onRouteChanged() {
+    final router = _router;
+    if (router == null || !mounted) return;
+    if (router.state.uri.toString() != _openedAt) {
+      _router?.routerDelegate.removeListener(_onRouteChanged);
+      _router = null;
+      Navigator.of(context).maybePop();
+    }
+  }
+
+  @override
+  void dispose() {
+    _router?.routerDelegate.removeListener(_onRouteChanged);
+    super.dispose();
   }
 
   Future<void> _generate() async {

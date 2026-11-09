@@ -3,9 +3,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iago/app/app.dart';
 import 'package:iago/app/router.dart';
+import 'package:iago/features/bank/bank_providers.dart';
 import 'package:iago/features/community/community_access.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../helpers/fake_bank_catalog.dart';
 import '../helpers/test_app.dart';
 import 'auth_flow_test.dart' show pumpWithAuth;
 
@@ -52,14 +54,24 @@ void main() {
     };
     for (final e in routes.entries) {
       testWidgets('abre ${e.key}', (tester) async {
-        await pumpIagoApp(tester);
+        await pumpIagoApp(
+          tester,
+          overrides: [bankCatalogProvider.overrideWithValue(FakeBankCatalog())],
+        );
         await enterDemo(tester);
         await go(tester, e.key);
         expect(locationOf(tester), e.key, reason: 'não pode redirecionar');
         expect(find.textContaining(e.value), findsWidgets);
         // Qualquer estouro de layout vira exceção capturada pelo tester.
         expect(tester.takeException(), isNull);
-        expect(find.byKey(const Key('placeholder-back')), findsOneWidget);
+        // Direciona (DI4) e Acervo (A4/A5) já são telas de verdade, sem
+        // página provisória.
+        expect(
+          find.byKey(const Key('placeholder-back')),
+          e.key.startsWith('/direciona') || e.key.startsWith('/questoes/acervo')
+              ? findsNothing
+              : findsOneWidget,
+        );
       });
     }
 
@@ -149,7 +161,10 @@ void main() {
 
   group('conta real: Direciona, Acervo e Importar (sem guard)', () {
     testWidgets('abrem na conta real', (tester) async {
-      await pumpWithAuth(tester);
+      await pumpWithAuth(
+        tester,
+        extra: [bankCatalogProvider.overrideWithValue(FakeBankCatalog())],
+      );
       await signInAna(tester);
       for (final p in const ['/direciona', '/importar', '/questoes/acervo']) {
         await go(tester, p);
