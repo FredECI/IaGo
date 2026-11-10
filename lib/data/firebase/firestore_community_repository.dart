@@ -466,13 +466,18 @@ class FirestoreCommunityRepository implements CommunityRepository {
       });
 
   @override
-  Future<CommunityFootprint> myFootprint() => _guard(() async {
+  Future<CommunityFootprint> myFootprint({
+    bool fromServer = false,
+  }) => _guard(() async {
+    // Na exclusão de conta (C5) o inventário não pode vir do cache: sem rede,
+    // a leitura falha e nada é apagado.
+    final opts = fromServer ? const GetOptions(source: Source.server) : null;
     Future<List<String>> ids(_Query q) async => [
-      for (final d in (await q.get()).docs) d.id,
+      for (final d in (await q.get(opts)).docs) d.id,
     ];
     final reports = await _col('reports')
         .where('reporterUid', isEqualTo: _uid)
-        .get();
+        .get(opts);
     return CommunityFootprint(
       postIds: await ids(_col('posts').where('authorUid', isEqualTo: _uid)),
       replyIds: await ids(_col('replies').where('authorUid', isEqualTo: _uid)),

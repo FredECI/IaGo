@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
@@ -144,6 +146,30 @@ Future<void> _deleteAccount(BuildContext context, WidgetRef ref) async {
   );
   if (password == null || password.isEmpty || !context.mounted) return;
   final messenger = ScaffoldMessenger.of(context);
+  final navigator = Navigator.of(context, rootNavigator: true);
+  // A exclusão pode levar vários segundos: mostra a espera, sem fechar.
+  unawaited(
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const PopScope(
+        canPop: false,
+        child: AlertDialog(
+          key: Key('deleting-account'),
+          content: Row(
+            children: [
+              SizedBox.square(
+                dimension: 24,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+              SizedBox(width: 16),
+              Expanded(child: Text('Apagando seus dados...')),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
   try {
     await auth.deleteAccount(password: password);
     messenger.showSnackBar(
@@ -151,6 +177,8 @@ Future<void> _deleteAccount(BuildContext context, WidgetRef ref) async {
     );
   } on AuthFailure catch (failure) {
     messenger.showSnackBar(SnackBar(content: Text(failure.message)));
+  } finally {
+    if (navigator.mounted) navigator.pop();
   }
 }
 
@@ -178,8 +206,10 @@ class _DeleteAccountDialogState extends State<_DeleteAccountDialog> {
         mainAxisSize: MainAxisSize.min,
         children: [
           const Text(
-            'Suas questões, listas e registros serão apagados para sempre. '
-            'Digite sua senha para confirmar.',
+            'Suas questões, listas, registros e o que você publicou no Conecta '
+            'serão apagados para sempre. Uma denúncia sua ainda aberta '
+            'continua até a moderação resolver. Digite sua senha para '
+            'confirmar.',
           ),
           const SizedBox(height: 12),
           TextField(

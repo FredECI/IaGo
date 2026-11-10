@@ -27,6 +27,12 @@ class MemoryRatingRepository implements RatingRepository {
     _targets[target.bankId] = target;
   }
 
+  /// Exclusão de conta (C5): apaga todas as avaliações públicas feitas.
+  void eraseMyData() {
+    _mine.clear();
+    _targets.clear();
+  }
+
   @override
   Future<void> remove(String bankId) async {
     _mine.remove(bankId);

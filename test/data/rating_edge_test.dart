@@ -46,11 +46,12 @@ String _firstId({required int count}) {
   throw StateError('sem id com $count avaliações');
 }
 
-List<File> _dartFiles(String dir) => Directory(dir)
-    .listSync(recursive: true)
-    .whereType<File>()
-    .where((f) => f.path.endsWith('.dart'))
-    .toList();
+List<File> _dartFiles(String dir) =>
+    Directory(dir)
+        .listSync(recursive: true)
+        .whereType<File>()
+        .where((f) => f.path.endsWith('.dart'))
+        .toList();
 
 void main() {
   group('limiar de 3 avaliações (CA-A2) pelo repositório', () {
@@ -89,12 +90,15 @@ void main() {
       expect(_s(1.7, 2.0).difficultyText, startsWith('Mais fácil'));
     });
 
-    test('regressão: diferença exata de 0,2 não é "na média" (menor que 0,2)', () {
-      // 2.0 - 1.8 = 0.19999999999999996 em ponto flutuante; o texto mostra
-      // "2,0 × 1,8" e diz "na média", contra a regra "menor que 0,2".
-      expect(_s(2.0, 1.8).difficultyText, startsWith('Mais difícil'));
-      expect(_s(1.8, 2.0).difficultyText, startsWith('Mais fácil'));
-    });
+    test(
+      'regressão: diferença exata de 0,2 não é "na média" (menor que 0,2)',
+      () {
+        // 2.0 - 1.8 = 0.19999999999999996 em ponto flutuante; o texto mostra
+        // "2,0 × 1,8" e diz "na média", contra a regra "menor que 0,2".
+        expect(_s(2.0, 1.8).difficultyText, startsWith('Mais difícil'));
+        expect(_s(1.8, 2.0).difficultyText, startsWith('Mais fácil'));
+      },
+    );
   });
 
   group('matéria vazia e longa', () {

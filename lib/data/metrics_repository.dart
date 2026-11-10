@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../core/clock.dart';
 import '../domain/metric_event.dart';
+import 'firebase/account_erasure.dart';
 import 'firebase/firestore_mapping.dart';
 import 'local/simulated_pilot.dart';
 
@@ -65,6 +66,8 @@ class FirestoreMetricsRepository implements MetricsRepository {
 
   @override
   Future<void> log(MetricEvent event) {
+    // Durante a exclusão da conta, nada de recriar users/{uid}/events.
+    if (AccountErasureState.inProgress) return Future.value();
     final map = toFirestore(event.toMap());
     // "Ativo no dia" tem id fixo por data: no máximo um por dia.
     if (event.type == MetricEventType.active) {

@@ -292,6 +292,27 @@ class _TermsReacceptPageState extends ConsumerState<TermsReacceptPage> {
                     onPressed: _busy ? null : _delete,
                     child: const Text('Excluir tudo'),
                   ),
+                  if (_busy)
+                    const Padding(
+                      key: Key('reaccept-deleting'),
+                      padding: EdgeInsets.only(top: 12),
+                      child: Row(
+                        children: [
+                          SizedBox.square(
+                            dimension: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          ),
+                          SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              'Apagando seus dados... Pode levar alguns '
+                              'segundos. Denúncias suas ainda abertas '
+                              'ficam até a moderação resolver.',
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                 ],
                 const SizedBox(height: 8),
                 TextButton(

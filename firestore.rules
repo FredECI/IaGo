@@ -264,7 +264,8 @@ service cloud.firestore {
 
     // --- Avaliações ---
     match /questionRatings/{ratingId} {
-      allow read: if isMember();
+      allow read: if isMember()
+        || (signedIn() && resource.data.uid == request.auth.uid);  // dono lista as próprias (exclusão de conta, C5)
       allow create, update: if isMember()
         && ratingId == request.resource.data.bankId + '_' + request.auth.uid
         && request.resource.data.keys().hasOnly(['bankId', 'uid', 'area', 'subject', 'difficulty', 'quality', 'updatedAt'])

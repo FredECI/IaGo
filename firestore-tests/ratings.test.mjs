@@ -2,7 +2,7 @@
 import { after, before, beforeEach, test } from 'node:test';
 
 import { assertFails, assertSucceeds } from '@firebase/rules-unit-testing';
-import { deleteDoc, doc, getDoc, setDoc } from 'firebase/firestore';
+import { collection, deleteDoc, doc, getDoc, getDocs, query, setDoc, where } from 'firebase/firestore';
 
 import { baseScenario, newEnv, past, seed, ts } from './helpers.mjs';
 
@@ -115,4 +115,29 @@ test('area fora das 4 áreas, matéria vazia, longa ou não texto, e os dois cam
   for (const a of ['languages', 'humanities', 'naturalSciences', 'mathematics']) {
     await assertSucceeds(setDoc(doc(ana, path('ana')), rating('ana', { area: a, subject: 'x'.repeat(60) })));
   }
+});
+
+test('C5: o dono lista as próprias avaliações mesmo sem ser membro ou estando banido; as dos outros, não', async () => {
+  await seed(env, {
+    ...baseScenario(),
+    'bans/bob': { at: 1, reason: 'x' },
+    [path('ana')]: rating('ana'),
+    [path('bob')]: rating('bob'),
+    [path('ex')]: rating('ex'),
+  });
+  const own = (uid) => getDocs(query(collection(db(uid), 'questionRatings'), where('uid', '==', uid)));
+  // Banido e ex-membro (sem membership) listam as próprias.
+  for (const uid of ['bob', 'ex']) {
+    const snap = await assertSucceeds(own(uid));
+    if (snap.docs.length !== 1) throw new Error(`${uid}: esperava 1 avaliação`);
+  }
+  // Não membro não lista as dos outros, nem por consulta, nem por leitura direta.
+  await assertFails(getDocs(query(collection(db('ex'), 'questionRatings'), where('uid', '==', 'ana'))));
+  await assertFails(getDoc(doc(db('ex'), path('ana'))));
+  await assertFails(getDocs(collection(db('ex'), 'questionRatings')));
+  // Banido continua sem ler as dos outros; sem login, nada.
+  await assertFails(getDoc(doc(db('bob'), path('ana'))));
+  await assertFails(getDocs(query(collection(env.unauthenticatedContext().firestore(), 'questionRatings'), where('uid', '==', 'ana'))));
+  // Membro segue lendo as dos outros.
+  await assertSucceeds(getDoc(doc(db('ana'), path('bob'))));
 });

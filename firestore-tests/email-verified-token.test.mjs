@@ -20,7 +20,7 @@ import { newEnv, seed } from './helpers.mjs';
 // No CI (só o emulador do Firestore) o teste é pulado: precisa do Auth.
 const hasAuth = Boolean(process.env.FIREBASE_AUTH_EMULATOR_HOST);
 const test = (name, fn) => baseTest(name, { skip: !hasAuth && 'sem emulador do Auth' }, fn);
-const PROJECT = 'demo-iago';
+const PROJECT = 'demo-iago-evt'; // Firestore isolado; o Auth do emulador é o demo-iago
 let app, auth, db, env;
 
 before(async () => {
@@ -61,7 +61,7 @@ test('reload não basta: sem renovar o token a entrada é negada; com getIdToken
   await sendEmailVerification(user);
 
   // Verifica pelo link do emulador (oobCode).
-  const res = await fetch(`http://127.0.0.1:9099/emulator/v1/projects/${PROJECT}/oobCodes`);
+  const res = await fetch(`http://127.0.0.1:9099/emulator/v1/projects/demo-iago/oobCodes`);
   const { oobCodes } = await res.json();
   const code = oobCodes.filter((c) => c.email === email && c.requestType === 'VERIFY_EMAIL').at(-1);
   assert.ok(code, 'o emulador emitiu o código de verificação');

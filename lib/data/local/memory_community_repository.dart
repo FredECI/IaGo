@@ -49,6 +49,20 @@ class MemoryCommunityRepository implements CommunityRepository {
 
   String _newId(String prefix) => '$prefix${++_seq}';
 
+  /// Espelho em memória da exclusão de conta (C5): apaga posts, respostas,
+  /// votos dados, denúncias resolvidas e a participação. Denúncia aberta fica
+  /// até o moderador decidir; votos recebidos e o banimento também ficam.
+  void eraseMyData() {
+    _posts.removeWhere((p) => p.authorUid == uid);
+    _replies.removeWhere((r) => r.authorUid == uid);
+    _myVotes.clear();
+    _reports.removeWhere(
+      (_, r) => r.record.reporterUid == uid && !r.record.open,
+    );
+    _membership = null;
+    _lastWriteAt = null;
+  }
+
   Membership _requireMember() {
     final m = _membership;
     if (m == null || _banned.contains(uid)) {
