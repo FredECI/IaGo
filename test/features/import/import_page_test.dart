@@ -135,7 +135,7 @@ void main() {
       final before = await totalQuestions(tester);
 
       await paste(tester, _pasted(5));
-      expect(find.byKey(const Key('import-count')), findsOneWidget);
+      await reveal(tester, find.byKey(const Key('import-count')));
       await expectCount(
         tester,
         '5 de 5 marcadas para salvar (limite de 30 por lote).',

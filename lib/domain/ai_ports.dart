@@ -47,6 +47,10 @@ enum AiFailure {
 
   /// Provedor em alta demanda ou fora do ar (HTTP 500 ou 503).
   unavailable,
+
+  /// Limite suave diário do usuário (`aiDailyPerUser`), contado no aparelho.
+  /// Nenhum pedido sai.
+  dailyLimit,
   unknown,
 }
 

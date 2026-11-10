@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:file_selector/file_selector.dart';
 
 import '../../data/policy_providers.dart';
 import '../../data/providers.dart';
@@ -12,23 +12,38 @@ import 'import_models.dart';
 /// Escolhe arquivos para a IA. Injetável: os testes trocam por uma lista fixa.
 typedef PickFiles = Future<List<ImportFile>> Function();
 
-/// Padrão: só prints, pelo `image_picker` (já no projeto). PDF fica para a
-/// F5b, que acrescenta um seletor de arquivos de verdade; trocar é só
-/// sobrescrever este provider.
-final pickFilesProvider = Provider<PickFiles>((ref) => pickImageFiles);
+/// Padrão: o seletor de arquivos do sistema (prints e PDF), por
+/// `file_selector`. Trocar é só sobrescrever este provider.
+final pickFilesProvider = Provider<PickFiles>((ref) => pickImportFiles);
 
-Future<List<ImportFile>> pickImageFiles() async {
-  final picked = await ImagePicker().pickMultiImage(limit: maxImportFiles);
+const XTypeGroup _importTypes = XTypeGroup(
+  label: 'Prints e PDF',
+  extensions: ['png', 'jpg', 'jpeg', 'webp', 'pdf'],
+  mimeTypes: ['image/png', 'image/jpeg', 'image/webp', 'application/pdf'],
+  uniformTypeIdentifiers: [
+    'public.png',
+    'public.jpeg',
+    'org.webmproject.webp',
+    'com.adobe.pdf',
+  ],
+);
+
+Future<List<ImportFile>> pickImportFiles() async {
+  final picked = await openFiles(acceptedTypeGroups: [_importTypes]);
   final files = <ImportFile>[];
   for (final x in picked) {
-    // Grande demais: não lê os bytes; segue com um arquivo vazio, que a
-    // checagem de limites recusa pelo tipo/tamanho sem custo de memória.
-    final tooBig = await x.length() > maxImportFileBytes;
+    // Passou do teto de arquivos ou do tamanho: não lê os bytes. Segue com
+    // um arquivo sem conteúdo (ou com 1 byte a mais que o limite), que a
+    // checagem de limites recusa pelo motivo certo, sem custo de memória.
+    final skip = files.length >= maxImportFiles;
+    final tooBig = !skip && await x.length() > maxImportFileBytes;
     files.add(
       ImportFile(
         name: x.name,
         mimeType: x.mimeType ?? '',
-        bytes: tooBig
+        bytes: skip
+            ? Uint8List(0)
+            : tooBig
             ? Uint8List(maxImportFileBytes + 1)
             : await x.readAsBytes(),
       ),

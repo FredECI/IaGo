@@ -187,4 +187,33 @@ void main() {
       expect(await g.availability(), AiAvailability.available);
     });
   });
+
+  group('FirebaseAiGateway.generateJson', () {
+    for (final outcome in [AppCheckOutcome.noSiteKey, AppCheckOutcome.failed]) {
+      test('App Check inativo (${outcome.name}) falha antes do pedido', () {
+        final g = FirebaseAiGateway(
+          configured: () => true,
+          ensureAppCheck: () async => outcome,
+        );
+        // Sem Firebase no teste: se o pedido fosse montado, o erro seria outro.
+        expect(
+          g.generateJson(
+            call: AiCall.proposal,
+            model: 'm',
+            systemInstruction: 's',
+            prompt: 'p',
+            responseSchema: proposalResponseSchema,
+            timeout: const Duration(seconds: 1),
+          ),
+          throwsA(
+            isA<AiException>().having(
+              (e) => e.failure,
+              'failure',
+              AiFailure.appCheckDenied,
+            ),
+          ),
+        );
+      });
+    }
+  });
 }

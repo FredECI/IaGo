@@ -11,6 +11,7 @@ import '../../domain/area.dart';
 import '../../domain/metric_event.dart';
 import '../../domain/paste_parser.dart';
 import '../../shared/common_widgets.dart';
+import '../community/community_access.dart';
 import '../metrics/metrics_providers.dart';
 import '../questions/questions_providers.dart';
 import 'import_draft_card.dart';
@@ -51,13 +52,39 @@ class _ImportPageState extends ConsumerState<ImportPage> {
   bool _showErrors = false;
   bool _saving = false;
   bool _running = false;
-  bool _quotaHit = false;
+
+  /// Cota do provedor ou limite diário do usuário: o restante fica pendente.
+  AiFailure? _limitHit;
+
+  /// Cada execução tem um número; cancelar muda o número e o resultado da
+  /// execução antiga é ignorado.
+  int _runId = 0;
   String? _notice;
   String? _capNotice;
   List<String> _refusals = const [];
   Area? _bulkArea;
   String? _bulkSubject;
   _ImportSummary? _summary;
+
+  @override
+  void initState() {
+    super.initState();
+    // Falha passageira do App Check numa abertura anterior não pode valer a
+    // sessão toda: ao reabrir a tela, a checagem é refeita.
+    Future.microtask(_refreshAvailability);
+  }
+
+  /// Só para conta real: na demo o App Check nunca é tocado.
+  Future<void> _refreshAvailability() async {
+    if (!mounted || ref.read(dataOwnerProvider) is! String) return;
+    if (!aiAvailabilityNeedsRetry(ref.read(aiAvailabilityProvider))) return;
+    ref.invalidate(aiAvailabilityProvider);
+    try {
+      await ref.read(aiAvailabilityProvider.future);
+    } catch (_) {
+      // O erro já fica no provider; a tela mostra "indisponível".
+    }
+  }
 
   @override
   void dispose() {
@@ -223,18 +250,30 @@ class _ImportPageState extends ConsumerState<ImportPage> {
   }
 
   Future<void> _runJobs(List<FileJob> jobs) async {
-    final extractor = ref.read(questionExtractorProvider);
-    if (extractor == null || _running) return;
+    if (_running) return;
+    // Marca já: toque duplo durante a checagem não roda duas vezes.
+    final runId = ++_runId;
+    bool cancelled() => !mounted || runId != _runId;
     setState(() {
       _running = true;
-      _quotaHit = false;
+      _limitHit = null;
     });
+    // "Tentar de novo" refaz a checagem da IA se ela falhou antes.
+    await _refreshAvailability();
+    // Cancelou (e talvez retomou) enquanto checava: esta execução morre.
+    if (!mounted || runId != _runId) return;
+    final extractor = ref.read(questionExtractorProvider);
+    if (extractor == null) {
+      setState(() => _running = false);
+      showMessage(context, aiFailureMessage(_unavailableFailure()));
+      return;
+    }
     var ran = 0;
     var failed = 0;
     var extracted = 0;
     var partial = false;
     for (final job in jobs) {
-      if (!mounted) return;
+      if (cancelled()) return;
       ran++;
       setState(() {
         job.status = FileJobStatus.running;
@@ -242,7 +281,7 @@ class _ImportPageState extends ConsumerState<ImportPage> {
       });
       try {
         final result = await extractor.extract(job.file);
-        if (!mounted) return;
+        if (cancelled()) return;
         setState(() {
           job.status = FileJobStatus.done;
           job.extracted = result.questions.length;
@@ -254,12 +293,14 @@ class _ImportPageState extends ConsumerState<ImportPage> {
         });
         partial = partial || result.partial;
       } on AiException catch (e) {
-        if (!mounted) return;
-        if (e.failure == AiFailure.quotaExhausted) {
-          // Cota: este e os próximos ficam pendentes; o que já veio fica.
+        if (cancelled()) return;
+        if (e.failure == AiFailure.quotaExhausted ||
+            e.failure == AiFailure.dailyLimit) {
+          // Cota ou limite diário: este e os próximos ficam pendentes; o que
+          // já veio fica.
           setState(() {
             job.status = FileJobStatus.pending;
-            _quotaHit = true;
+            _limitHit = e.failure;
           });
           ran--;
           break;
@@ -276,7 +317,7 @@ class _ImportPageState extends ConsumerState<ImportPage> {
           job.failure = e.failure;
         });
       } catch (_) {
-        if (!mounted) return;
+        if (cancelled()) return;
         failed++;
         setState(() {
           job.status = FileJobStatus.failed;
@@ -284,7 +325,7 @@ class _ImportPageState extends ConsumerState<ImportPage> {
         });
       }
     }
-    if (!mounted) return;
+    if (cancelled()) return;
     setState(() => _running = false);
     if (ran > 0) {
       ref.read(metricsLoggerProvider).log(MetricEventType.importRun, {
@@ -295,6 +336,24 @@ class _ImportPageState extends ConsumerState<ImportPage> {
         'partial': partial,
       });
     }
+  }
+
+  /// Por que a IA não está disponível (para a mensagem): App Check ou o resto.
+  AiFailure _unavailableFailure() =>
+      aiUnavailableReason(ref.read(aiAvailabilityProvider));
+
+  /// Cancelar: o que está em andamento volta a "pendente" e o resultado que
+  /// chegar depois é ignorado. Nada já extraído se perde.
+  void _cancelRun() {
+    setState(() {
+      _runId++;
+      _running = false;
+      for (final job in _jobs) {
+        if (job.status == FileJobStatus.running) {
+          job.status = FileJobStatus.pending;
+        }
+      }
+    });
   }
 
   void _removeJob(FileJob job) => setState(() => _jobs.remove(job));
@@ -372,6 +431,14 @@ class _ImportPageState extends ConsumerState<ImportPage> {
     final theme = Theme.of(context);
     final mode = ref.watch(importAiModeProvider);
     final summary = _summary;
+    // Só conta real: a demo não toca no App Check.
+    // Conta real, fora do piloto, com a IA ligada: o caminho é virar membro.
+    final offerJoin =
+        ref.watch(canOfferJoinProvider) &&
+        ref.watch(accessPolicyProvider).aiEnabled;
+    final retryable =
+        ref.watch(dataOwnerProvider) is String &&
+        aiAvailabilityNeedsRetry(ref.watch(aiAvailabilityProvider));
 
     return Scaffold(
       appBar: AppBar(title: const Text('Importar questões')),
@@ -430,9 +497,26 @@ class _ImportPageState extends ConsumerState<ImportPage> {
                 color: theme.colorScheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Text(
-                'Importar de prints e PDF não está disponível para esta conta '
-                'agora. A colagem de texto funciona normalmente.',
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Importar de prints e PDF não está disponível para esta '
+                    'conta agora. A colagem de texto funciona normalmente.',
+                  ),
+                  if (offerJoin)
+                    TextButton(
+                      key: const Key('import-join'),
+                      onPressed: () => context.push(Routes.becomeMember),
+                      child: const Text('Entrar no piloto'),
+                    ),
+                  if (retryable)
+                    TextButton(
+                      key: const Key('import-retry-availability'),
+                      onPressed: _refreshAvailability,
+                      child: const Text('Tentar de novo'),
+                    ),
+                ],
               ),
             )
           else
@@ -471,7 +555,8 @@ class _ImportPageState extends ConsumerState<ImportPage> {
           ),
         Text(
           'Até $maxImportFiles arquivos de ${maxImportFileBytes ~/ (1024 * 1024)} '
-          'MB (PNG, JPEG, WebP ou PDF). A IA só copia o texto; você revisa.',
+          'MB (PNG, JPEG, WebP ou PDF de até $maxImportPdfPages páginas). '
+          'A IA só copia o texto; você revisa.',
           style: theme.textTheme.bodySmall,
         ),
         const SizedBox(height: 8),
@@ -495,7 +580,7 @@ class _ImportPageState extends ConsumerState<ImportPage> {
               ),
             ),
           ),
-        if (_quotaHit)
+        if (_limitHit case final hit?)
           Container(
             key: const Key('import-quota'),
             margin: const EdgeInsets.only(top: 8),
@@ -505,12 +590,22 @@ class _ImportPageState extends ConsumerState<ImportPage> {
               borderRadius: BorderRadius.circular(12),
             ),
             child: Text(
-              aiFailureMessage(AiFailure.quotaExhausted),
+              aiFailureMessage(hit),
               style: TextStyle(color: theme.colorScheme.onTertiaryContainer),
             ),
           ),
         for (final job in _jobs) _jobTile(theme, job),
-        if (_quotaHit && pending.isNotEmpty && !_running)
+        if (_running)
+          Align(
+            alignment: Alignment.centerLeft,
+            child: TextButton.icon(
+              key: const Key('import-cancel'),
+              onPressed: _cancelRun,
+              icon: const Icon(Icons.close),
+              label: const Text('Cancelar leitura'),
+            ),
+          ),
+        if (pending.isNotEmpty && !_running)
           Align(
             alignment: Alignment.centerLeft,
             child: TextButton(

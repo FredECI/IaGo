@@ -1,6 +1,7 @@
 /// Modelos e regras puras da importação em lote (sem widgets).
 library;
 
+import '../../core/pdf_page_count.dart';
 import '../../domain/access_policy.dart';
 import '../../domain/ai_ports.dart';
 import '../../domain/area.dart';
@@ -16,6 +17,10 @@ const int maxImportFiles = 5;
 
 /// Tamanho máximo de cada arquivo, em bytes (CA-R7).
 const int maxImportFileBytes = 10 * 1024 * 1024;
+
+/// Páginas por PDF (CA-R7). PDF cujas páginas não dá para contar também é
+/// recusado (`countPdfPages` devolve `null`).
+const int maxImportPdfPages = 10;
 
 /// Tipos aceitos (CA-I13).
 const Set<String> importMimeTypes = {
@@ -74,6 +79,9 @@ String aiFailureMessage(AiFailure failure) => switch (failure) {
   AiFailure.timeout => 'A IA demorou demais. Tente de novo.',
   AiFailure.unavailable =>
     'A IA está com muita procura agora. Tente de novo em alguns minutos.',
+  AiFailure.dailyLimit =>
+    'Você chegou ao limite de leituras de IA de hoje. Ele volta amanhã. '
+        'A colagem funciona agora.',
   AiFailure.unknown =>
     'Não foi possível processar este arquivo. Tente de novo.',
 };
@@ -114,7 +122,31 @@ FileCheck checkImportFiles(List<ImportFile> picked, {int alreadyChosen = 0}) {
       refusals.add(
         '${file.name}: o limite é $maxImportFiles arquivos por vez.',
       );
+    } else if (file.bytes.isEmpty) {
+      // O seletor não lê os bytes do que passou do teto de arquivos: chega
+      // vazio, e a recusa explica pelo limite (ou por estar vazio de fato).
+      refusals.add(
+        '${file.name}: arquivo vazio ou além do limite de $maxImportFiles '
+        'arquivos por vez.',
+      );
     } else {
+      if (mime == 'application/pdf') {
+        final pages = countPdfPages(file.bytes);
+        if (pages == null) {
+          refusals.add(
+            '${file.name}: não conseguimos contar as páginas. Envie prints '
+            'ou um PDF de até $maxImportPdfPages páginas.',
+          );
+          continue;
+        }
+        if (pages > maxImportPdfPages) {
+          refusals.add(
+            '${file.name}: tem $pages páginas; o limite é '
+            '$maxImportPdfPages.',
+          );
+          continue;
+        }
+      }
       accepted.add(
         ImportFile(name: file.name, mimeType: mime, bytes: file.bytes),
       );

@@ -6,10 +6,12 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../app/router.dart';
 import '../../core/clock.dart';
 import '../../core/formatters.dart';
+import '../../data/policy_providers.dart';
 import '../../domain/direction_calendar.dart';
 import '../../domain/direction_models.dart';
 import '../../domain/direction_progress.dart';
 import '../../shared/common_widgets.dart';
+import '../community/community_access.dart';
 import 'direction_providers.dart';
 
 export 'goal_page.dart';
@@ -19,10 +21,6 @@ final urlOpenerProvider = Provider<Future<bool> Function(Uri)>(
   (ref) =>
       (uri) => launchUrl(uri, mode: LaunchMode.externalApplication),
 );
-
-/// Ponto da proposta pela IA (DI3). Escondido até a DI3 ligar a política de
-/// acesso e o `StepProposer`; nunca aparece nesta entrega.
-const bool _aiProposalVisible = false;
 
 /// Direciona: objetivo, até 3 etapas pendentes e a comparação com os 14 dias
 /// anteriores.
@@ -158,6 +156,11 @@ class _DirectionPageState extends ConsumerState<DirectionPage> {
                   onCalendar: () => _addToCalendar(step),
                 ),
               ),
+          if (ref.watch(canOfferJoinProvider) &&
+              ref.watch(accessPolicyProvider).aiEnabled) ...[
+            const _JoinNote(),
+            const SizedBox(height: 12),
+          ],
           if (!stepsAsync.isLoading && inDate.isEmpty) ...[
             const SizedBox(height: 4),
             FilledButton.icon(
@@ -168,7 +171,6 @@ class _DirectionPageState extends ConsumerState<DirectionPage> {
               label: const Text('Pedir nova proposta'),
             ),
           ],
-          if (_aiProposalVisible) const SizedBox.shrink(),
         ],
       );
     }
@@ -187,6 +189,36 @@ class _DirectionPageState extends ConsumerState<DirectionPage> {
         ],
       ),
       body: SafeArea(child: body),
+    );
+  }
+}
+
+/// Conta real fora do piloto: as etapas vêm das regras; a proposta pela IA é
+/// para membros.
+class _JoinNote extends StatelessWidget {
+  const _JoinNote();
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      key: const Key('direction-join-note'),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'As etapas vêm das regras do app. A proposta pela IA é para '
+              'quem entrou no piloto.',
+            ),
+            TextButton(
+              key: const Key('direction-join'),
+              onPressed: () => context.push(Routes.becomeMember),
+              child: const Text('Entrar no piloto'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

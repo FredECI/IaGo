@@ -12,6 +12,7 @@ import '../../domain/session.dart';
 import '../../domain/user_profile.dart';
 import '../../shared/brand.dart';
 import '../../shared/common_widgets.dart';
+import '../community/community_access.dart';
 import '../metrics/metrics_providers.dart';
 
 /// Conta: perfil, aparência, sobre e saída.
@@ -72,6 +73,20 @@ class AccountPage extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 8),
+          if (ref.watch(canOfferJoinProvider)) ...[
+            const Divider(),
+            const _SectionTitle('Piloto'),
+            ListTile(
+              key: const Key('account-join'),
+              leading: const Icon(Icons.how_to_reg_outlined),
+              title: const Text('Entrar no piloto'),
+              subtitle: const Text(
+                'Libera a IA e as avaliações do acervo. Precisa de convite.',
+              ),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.push(Routes.becomeMember),
+            ),
+          ],
           if (ref.watch(isAdminProvider).value ?? false) ...[
             const Divider(),
             const _SectionTitle('Piloto'),

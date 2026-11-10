@@ -47,7 +47,10 @@ class FirebaseAiGateway implements AiGateway {
     required Duration timeout,
   }) async {
     try {
-      await ensureAppCheck();
+      // Sem App Check ativo o pedido seria negado: falha antes de gastá-lo.
+      if (!(await ensureAppCheck()).isActive) {
+        throw const AiException(AiFailure.appCheckDenied);
+      }
       final generative = FirebaseAI.googleAI().generativeModel(
         model: model,
         systemInstruction: Content.system(systemInstruction),

@@ -37,13 +37,15 @@ void main() {
     expect(violations, isEmpty);
   });
 
-  test('firebase_ai só aparece em lib/data/ai/gemini/', () {
+  test('firebase_ai e firebase_app_check só em lib/data/ai/gemini/', () {
     final violations = <String>[];
     for (final f in _dartFiles('lib')) {
       final path = _norm(f.path);
       if (path.contains('lib/data/ai/gemini/')) continue;
       for (final m in _import.allMatches(f.readAsStringSync())) {
-        if (m.group(1)!.startsWith('package:firebase_ai/')) {
+        final uri = m.group(1)!;
+        if (uri.startsWith('package:firebase_ai/') ||
+            uri.startsWith('package:firebase_app_check/')) {
           violations.add('$path importa ${m.group(1)}');
         }
       }

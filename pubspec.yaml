@@ -9,6 +9,7 @@ environment:
   sdk: ^3.13.7
 
 dependencies:
+  archive: ^4.6.0
   cloud_firestore: ^7.1.0
   collection: ^1.19.1
   cupertino_icons: ^2.0.0

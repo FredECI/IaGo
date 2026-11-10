@@ -135,7 +135,14 @@ class _BecomeMemberPageState extends ConsumerState<BecomeMemberPage> {
           );
       ref.invalidate(myMembershipProvider);
       await ref.read(myMembershipProvider.future);
-      if (mounted) context.go(Routes.community);
+      if (mounted) {
+        // Conecta desligado: o fórum não abre, volta ao Painel.
+        context.go(
+          ref.read(conectaVisibleProvider)
+              ? Routes.community
+              : Routes.dashboard,
+        );
+      }
     } on CommunityFailure catch (failure) {
       if (mounted) setState(() => _error = _messageFor(failure));
     } finally {
@@ -162,6 +169,7 @@ class _BecomeMemberPageState extends ConsumerState<BecomeMemberPage> {
     final theme = Theme.of(context);
     final policy = ref.watch(accessPolicyProvider);
     final membership = ref.watch(myMembershipProvider);
+    final conectaOn = ref.watch(conectaVisibleProvider);
     ref.watch(authUserProvider);
 
     Widget body;
@@ -171,15 +179,19 @@ class _BecomeMemberPageState extends ConsumerState<BecomeMemberPage> {
       body = EmptyState(
         icon: Icons.how_to_reg_outlined,
         title: 'Você já faz parte',
-        message: 'Você participa do Conecta como ${m.nickname}.',
+        message: conectaOn
+            ? 'Você participa do Conecta como ${m.nickname}.'
+            : 'Você é membro do piloto como ${m.nickname}. A IA e as '
+                  'avaliações já estão liberadas.',
         action: FilledButton(
           key: const Key('join-open'),
-          onPressed: () => context.go(Routes.community),
-          child: const Text('Abrir o Conecta'),
+          onPressed: () =>
+              context.go(conectaOn ? Routes.community : Routes.dashboard),
+          child: Text(conectaOn ? 'Abrir o Conecta' : 'Voltar ao Painel'),
         ),
       );
     } else {
-      body = _form(theme, policy);
+      body = _form(theme, policy, conectaOn);
     }
     return Scaffold(
       appBar: AppBar(title: const Text('Entrar no piloto')),
@@ -194,14 +206,18 @@ class _BecomeMemberPageState extends ConsumerState<BecomeMemberPage> {
     );
   }
 
-  Widget _form(ThemeData theme, AccessPolicy policy) {
+  Widget _form(ThemeData theme, AccessPolicy policy, bool conectaOn) {
     final verified = _emailVerified;
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
       children: [
         Text(
-          'O Conecta é um espaço fechado para estudar junto. Para entrar, '
-          'precisamos de mais algumas coisas.',
+          conectaOn
+              ? 'O Conecta é um espaço fechado para estudar junto. Para '
+                    'entrar, precisamos de mais algumas coisas.'
+              : 'O piloto é fechado: quem entra libera a IA (importar de '
+                    'prints e PDF, proposta do Direciona) e as avaliações do '
+                    'acervo. Para entrar, precisamos de mais algumas coisas.',
           style: theme.textTheme.bodyLarge,
         ),
         const SizedBox(height: 16),

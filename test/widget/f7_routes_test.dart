@@ -114,13 +114,13 @@ void main() {
       }
     });
 
-    testWidgets('conta com a flag desligada: /conecta/membro volta ao Painel', (
+    testWidgets('conta com a flag desligada: /conecta/membro abre a entrada', (
       tester,
     ) async {
       await pumpWithAuth(tester);
       await signInAna(tester);
       await go(tester, '/conecta/membro');
-      expect(locationOf(tester), '/painel');
+      expect(locationOf(tester), '/conecta/membro');
     });
 
     testWidgets('flag ligada mas não membro: guard barra', (tester) async {

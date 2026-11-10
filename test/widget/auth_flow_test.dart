@@ -224,7 +224,7 @@ void main() {
   });
 
   group('Rota "Virar membro"', () {
-    testWidgets('conta real com a flag desligada volta ao Painel', (
+    testWidgets('conta real com a flag desligada abre a entrada no piloto', (
       tester,
     ) async {
       await pumpWithAuth(tester);
@@ -232,8 +232,10 @@ void main() {
       GoRouter.of(tester.element(find.text('Olá, Ana')))
           .go(Routes.becomeMember);
       await tester.pumpAndSettle();
-      expect(find.text('Virar membro'), findsNothing);
-      expect(find.text('Olá, Ana'), findsOneWidget);
+      // D1: virar membro não depende do Conecta; o fórum segue fechado.
+      expect(find.byKey(const Key('join-nickname')), findsOneWidget);
+      expect(find.textContaining('O piloto é fechado'), findsOneWidget);
+      expect(find.textContaining('espaço fechado para estudar'), findsNothing);
     });
 
     testWidgets('com a flag ligada, abre mesmo sem ser membro', (tester) async {
@@ -242,7 +244,7 @@ void main() {
       GoRouter.of(tester.element(find.text('Olá, Ana')))
           .go(Routes.becomeMember);
       await tester.pumpAndSettle();
-      expect(find.byKey(const Key('join-submit')), findsOneWidget);
+      expect(find.byKey(const Key('join-nickname')), findsOneWidget);
       expect(find.text('Entrar no piloto'), findsWidgets);
     });
   });

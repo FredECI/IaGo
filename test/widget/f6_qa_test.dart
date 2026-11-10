@@ -238,7 +238,7 @@ void main() {
   });
 
   group('F7: rota /conecta/membro', () {
-    testWidgets('com o Conecta desligado, o link direto volta ao Painel', (
+    testWidgets('com o Conecta desligado, o link direto abre a entrada', (
       tester,
     ) async {
       await pumpWithAuth(tester);
@@ -247,8 +247,7 @@ void main() {
       GoRouter.of(tester.element(find.byType(Scaffold).first))
           .go(Routes.becomeMember);
       await tester.pumpAndSettle();
-      expect(find.byKey(const Key('join-submit')), findsNothing);
-      expect(find.text('Olá, Ana'), findsOneWidget);
+      expect(find.byKey(const Key('join-nickname')), findsOneWidget);
     });
 
     testWidgets('na demonstração com o Conecta desligado também não abre', (

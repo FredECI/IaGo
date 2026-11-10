@@ -90,7 +90,8 @@ final routerProvider = Provider<GoRouter>((ref) {
       }
       if (signedIn && onEntry) return Routes.dashboard;
       // Conecta: a rota também obedece à política (link direto não burla).
-      // "Virar membro" abre só se o Conecta estiver ligado (F6).
+      // "Entrar no piloto" abre com o Conecta desligado também (D1): só essa
+      // tela, nunca o fórum.
       final inConecta =
           location == Routes.community ||
           location.startsWith('${Routes.community}/');
