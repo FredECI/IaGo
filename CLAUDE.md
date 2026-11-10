@@ -19,12 +19,10 @@ Contexto compartilhado por todos os agentes. Mantenha curto (menos de 200 linhas
 - **Não é/não faz:** chat, ensino, gabarito, correção, geração de questões, scraping. Banco de questões, só o acervo de leitura aprovado no MVP (ENEM, sem gabarito). A IA só extrai questões de arquivos e propõe etapas de estudo.
 - Referências em `docs/referencia/`: fora do git e não públicas (material do grupo, livro e roteiros). Não copie trechos, números nem nomes de lá para o repositório, que é público.
 
-### Fluxo da demo do beta (menos de 2 min; muda na tarefa O2)
+### Roteiro da demo
 
-1. Abrir o app, tocar em "Entrar como Pedro (demonstração)" e ver o Painel: resumo relativo da semana e cards "Em breve".
-2. Salvar questão: colar uma objetiva (as alternativas A–E são separadas sozinhas), informar a plataforma e escolher Matemática → Funções.
-3. Buscar "função" e filtrar por Matemática + Objetiva. A seed devolve 9; com a questão salva ao vivo, 10.
-4. Montar a lista "Reforço — Funções" com as 10, exportar o PDF e abrir. (Desejável) Métricas do piloto H1–H4 com "dados simulados".
+- **MVP:** [DEMO.md](DEMO.md), seções 1 a 7 (Painel, colagem, importação, acervo, Direciona, Conecta e métricas). Os números da busca estão nos testes: `test/data/demo_seed_test.dart` e `test/widget/questions_flow_test.dart`.
+- **Regressão do beta:** seção própria do DEMO.md. Vale até a O2 ser fechada.
 
 ## Stack
 
@@ -82,12 +80,7 @@ Passos do `drive.js`:
 
 O agente principal da sessão é o `orquestrador` (configurado em `.claude/settings.json`). Ele conversa com o usuário e delega aos especialistas em `.claude/agents/`: arquiteto, backend, frontend, qa, revisor, devops e documentador.
 
-Se você é um especialista:
-
-- Você recebe um briefing do orquestrador e não vê a conversa com o usuário. Trabalhe só dentro do escopo do briefing.
-- Você não fala com o usuário: dúvidas que só ele pode responder vão para "Pendências e riscos" no seu relatório.
-- Artefatos compartilhados: `docs/specs/` (planos, contratos de API, checklist de tarefas) e `docs/decisoes/` (decisões de arquitetura).
-- Se o briefing e a spec se contradizem, não escolha em silêncio: aponte o conflito no relatório e, se a escolha for arriscada, pare antes de implementar.
+Se você é um especialista: trabalhe só no briefing (você não vê a conversa com o usuário); dúvidas que só o usuário responde vão para "Pendências e riscos"; use `docs/specs/` e `docs/decisoes/` como artefatos compartilhados; se briefing e spec se contradizem, aponte no relatório e, se a escolha for arriscada, pare antes de implementar.
 
 ## Relatório padrão
 
@@ -116,6 +109,14 @@ Todo especialista termina com:
   - **Processo autônomo (D8):** cada parte só fica pronta com `flutter analyze` limpo, `flutter test` e testes de regra verdes, aprovação do `qa`, `revisor` sem nada CRÍTICO ou ALTO e CI verde no push. No máximo 2 ciclos de correção; depois, o impasse vai ao Fred. O Fred só entra no P2, nos checkpoints CP0 a CP3 (até 15 min cada), no teste no celular (Q2), na publicação do Hosting e nas decisões. Sem resposta dele até o horário do checkpoint (de Brasília): se o `qa` aprovou, segue; se não, vale a ordem de corte. O corte 9 (IA no Direciona) nunca é automático.
   - **Commits:** o Fred autorizou commit e push só nas branches `feat/mvp*`, depois que `qa` e `revisor` aprovarem cada parte, e merge só entre essas branches, com `C:\IaGo` livre de agentes. Quem faz é o **orquestrador**; os especialistas não fazem commit. Merge em `main`, deploy e release continuam dependendo do OK do Fred.
   - **Branches:** base `feat/mvp`. Fase 1 nela, com um agente por vez em `C:\IaGo`. Trilhas da Fase 2 em `feat/mvp-<trilha>`, cada uma numa worktree ignorada pelo git (`C:\IaGo\.worktrees\<trilha>`), mescladas pelo orquestrador. Testes de regra, uma worktree de cada vez (portas fixas do emulador).
+- **MVP, em `feat/mvp` (09/11):**
+  - **Avaliação só para membros (AV2):** resumo e avaliação do acervo são para membros; fora do piloto, a tela mostra "Entrar no piloto" (`rating_panel.dart`). Na demo, são dados simulados. Ver [seção 6](docs/specs/mvp-27-11.md#6-avaliação-pelos-usuários).
+  - **Exclusão em cascata (C5):** apaga também o Conecta (posts, respostas, "Ajudou", denúncias, limites) e as avaliações (`questionRatings`). Ver [CA-T7](docs/specs/mvp-27-11.md#critérios-de-aceite).
+  - **`Source.server` na exclusão:** inventário e subcoleções são lidos do servidor, para não apagar só o que está no cache; sem fila offline e com timeout de 30 s (`firebase_auth_repository.dart`).
+  - **Moderador só na demo:** "Ver como moderador (demonstração)" liga o papel em memória (`demoModeratorModeProvider`) e volta a desligado a cada sessão. Em conta real, o papel é `moderators/{uid}`. Ver [Conecta](docs/specs/mvp-27-11.md#2-conecta).
+  - **Contato do projeto:** `AppInfo.projectContactEmail` ainda é `<e-mail do projeto>`, e `test/publish_ready_test.dart` está com `skip: true`. Antes de 26/11, trocar pelo e-mail da P4 e ligar o teste. Ver [CA-C11](docs/specs/mvp-27-11.md#critérios-de-aceite).
+  - **`hadAcceptedListStep` em `list_exported`:** `true` se a lista saiu com uma etapa "Montar lista" aceita (H3). A H2 usa só listas sem questões do acervo (`bankQuestionCount`). Ver [métricas](docs/specs/mvp-27-11.md#métricas).
+  - **Limites da importação:** 5 arquivos por vez, 10 MB cada e 30 questões por lote (`maxImportFiles`, `maxImportFileBytes`, `maxExtractedQuestions`). O limite de 10 páginas do PDF **não tem checagem no código**; está só na spec. Ver [seção 3](docs/specs/mvp-27-11.md#3-importação-em-lote).
 - **Flutter:** o Material saiu do framework: use sempre `import 'package:material_ui/material_ui.dart';` e nunca `package:flutter/material.dart`, para não ter duas cópias de `Theme`. As localizações vêm de `GlobalMaterialLocalizations.delegates` do próprio `material_ui`.
 - **Riverpod sem geração de código** (`Notifier`, `Provider`, `StreamProvider`). `Override` vem de `package:flutter_riverpod/misc.dart`. `AsyncValue.value` é anulável.
 - **go_router** com `StatefulShellRoute.indexedStack` e 4 abas: Painel, Questões, Listas, Conta. O redirect depende de `sessionProvider`.
@@ -149,48 +150,36 @@ Todo especialista termina com:
   - Excluir a conta (LGPD) pede a senha, reautentica, apaga as subcoleções e o perfil, e por fim o usuário do Auth. Mensagens de erro do Auth em português (`FirebaseAuthRepository.messageFor`).
 - **Emuladores:** projeto `demo-iago`, que não precisa de conta nem login. Auth na porta 9099 e Firestore na **8085**: a 8080 está ocupada nesta máquina por outro programa. Na web, com emulador, o SDK tenta `accounts:lookup` em produção ao restaurar a sessão, porque isso acontece antes do `useAuthEmulator`. É inofensivo e só ocorre no emulador.
 - **Métricas do piloto** (fatia 7, desejável):
-  - Eventos em `users/{uid}/events`, via `MetricsLogger`, que nunca trava a tela: `signed_up` (origem e plataformas antes); `question_saved` (segundos e `questionType`); `list_created`; `list_exported` (`assemblySeconds` na 1ª exportação, `questionCount`, `exportIndex`); `active` (id `active-AAAA-MM-DD`, no máximo um por dia); `satisfaction` / `satisfaction_dismissed`. `MetricEvent.toMap` grava `type`/`at` por último, porque um dado chamado `type` já sobrescreveu o tipo uma vez.
-  - Pesquisa de satisfação (0–10 + plataformas agora) uma única vez, depois da 3ª exportação (`maybeAskSatisfaction`). Na demo, a seed tem 1 exportação, então a do roteiro (a 2ª) não abre a pesquisa.
-  - Tela `/metricas`: H1–H4 calculadas na hora (`domain/pilot_metrics.dart`), cada valor ao lado da meta, com "Meta atingida", "Abaixo da meta" ou "Sem dados ainda".
-    - Na demo: 20 usuários fictícios (`data/local/simulated_pilot.dart`, determinístico) e a faixa "DADOS SIMULADOS". Resultado de propósito misto: retenção 38% e listas/semana 0,8 ficam abaixo da meta.
-    - Nas contas: só admin. Para virar admin, criar no console do Firestore o documento `admins/{uid}`, com qualquer campo.
+  - Eventos em `users/{uid}/events` via `MetricsLogger`, que nunca trava a tela: `signed_up`, `question_saved` (segundos e `questionType`), `list_created`, `list_exported` (`assemblySeconds` na 1ª, `questionCount`, `exportIndex`, `bankQuestionCount`, `hadAcceptedListStep`), `active` (id `active-AAAA-MM-DD`, no máximo um por dia), `satisfaction` / `satisfaction_dismissed`. `MetricEvent.toMap` grava `type`/`at` por último, porque um dado chamado `type` já sobrescreveu o tipo uma vez.
+  - Pesquisa de satisfação (0–10 + plataformas) uma vez, depois da 3ª exportação (`maybeAskSatisfaction`). Na demo, a seed tem 1 exportação, então a do roteiro não abre a pesquisa.
+  - Tela `/metricas`: H1–H6 calculadas na hora (`domain/pilot_metrics.dart`), cada valor com a meta; H5 e H6 têm "meta provisória". Na demo: 20 usuários fictícios (`data/local/simulated_pilot.dart`) e a faixa "DADOS SIMULADOS"; retenção 38% e listas/semana 0,8 ficam abaixo da meta, de propósito. Nas contas: só admin (`admins/{uid}`, criado no console).
   - **Linha de base da H2: 30 min é provisório** (`realPilotParameters` em `features/metrics/metrics_providers.dart`). O grupo deve trocar pelo número das entrevistas.
 - **Identidade visual** (sem o deck oficial): índigo `#4F46E5` com a variante `fidelity` do M3, selo Beta âmbar, logo com degradê fixo. Os tokens estão em `lib/app/theme.dart`.
-- **Repositório e entrega (03/11):**
-  - [github.com/FredECI/IaGo](https://github.com/FredECI/IaGo), **público desde 03/11**, a pedido do Fred, para os colegas contribuírem. Antes, o histórico foi varrido e não tem segredos. Para dar acesso de escrita a um colega: `gh api -X PUT repos/FredECI/IaGo/collaborators/<usuario>`. O README tem a seção "Como contribuir".
-  - Link direto do APK, sem login: https://github.com/FredECI/IaGo/releases/download/v0.1.0-beta/IaGo-Beta-0.1.apk. Ele continua valendo quando o arquivo é trocado com `--clobber`.
-  - O APK sai do CI, porque o runner já tem as licenças do Android. Só ARM (`--target-platform android-arm,android-arm64`) e com `useLegacyPackaging = true`, o que levou o APK de 62 para 21 MB. Ele está na release `v0.1.0-beta` (prerelease), como `IaGo-Beta-0.1.apk`.
-  - Desde 04/11, o APK sai com o Firebase (secret `FIREBASE_ENV_JSON`) e com assinatura fixa (secret `ANDROID_DEBUG_KEYSTORE`; certificado SHA-256 `af704be4…e09d80`, o mesmo do `~/.android/debug.keystore`). Para atualizar a release: `gh workflow run CI`, baixar o artefato `iago-apk` e rodar `gh release upload v0.1.0-beta IaGo-Beta-0.1.apk --clobber`.
-  - No Spark, o Hosting recusa `.apk`, `.exe`, `.dll`, `.bat` e `.ipa` (em projetos criados depois de 28/09/2023). Por isso o APK não vai no site. Não mude a extensão para driblar a regra.
-  - O `firebase.json` declara o banco (`southamerica-east1`; o deploy cria se não existir) e o login por e-mail e senha (`auth.providers`, aplicado por `deploy --only auth` no 1º app do projeto). Nada se faz no console.
-  - O modo automático do Claude Code bloqueia extrair credenciais (como a do Git Credential Manager) e publicar no Hosting. Gravar secrets também foi bloqueado, mas passou quando o Fred pediu explicitamente (04/11). O deploy de `firestore,auth` passou. Logins e `deploy --only hosting` ficam com o Fred.
-  - Grave secrets pelo Git Bash (`gh secret set X < arquivo`). Aqui, o pipe do PowerShell acrescenta BOM e `\r\n`, o que já quebrou o `base64 -d` do CI. O CI agora limpa os dois.
-- **Projeto Firebase real (03/11):** `iago-beta` (nº 958140378539), no plano Spark, da conta frediro1910@gmail.com.
-  - Firestore `(default)`, Standard, em `southamerica-east1`, com regras e índices publicados. Login por e-mail e senha ativo. Apps: Web `1:958140378539:web:cc9bfd557bc11eed49f6ee` e Android `1:958140378539:android:71a8c5564031232949f6ee` (`br.ufrj.iago`).
-  - O `env/firebase.json` foi gerado com `apps:sdkconfig` e fica fora do git. O `.firebaserc` tem `default` = `iago-beta` e o alias `demo` = `demo-iago`.
-  - Verificado em 03/11 pelo `drive.js` em `localhost`, com `ALLOW_HOSTS=www.gstatic.com,googleapis.com`: cadastro → salvar → recarregar → sair/entrar → excluir conta → o login falha.
-  - Para a CLI criar projetos, a conta precisa ter aceitado os termos do Firebase no console, senão o `addFirebase` dá 403. Os dois projetos vazios que a primeira tentativa deixou foram apagados em 04/11.
+- **Repositório e entrega:**
+  - Público em [github.com/FredECI/IaGo](https://github.com/FredECI/IaGo), desde 03/11, para os colegas contribuírem; colaborador: `gh api -X PUT repos/FredECI/IaGo/collaborators/<usuario>`. O histórico foi varrido e não tem segredos.
+  - O APK sai do CI (só ARM, `useLegacyPackaging`, 21 MB), com `FIREBASE_ENV_JSON` e assinatura fixa (`ANDROID_DEBUG_KEYSTORE`; SHA-256 `af704be4…e09d80`). Release `v0.1.0-beta`: `gh workflow run CI`, baixar `iago-apk` e `gh release upload v0.1.0-beta IaGo-Beta-0.1.apk --clobber`. O link direto não muda. O APK de `feat/mvp*` sai só pelo workflow manual `apk-manual.yml`.
+  - O Spark recusa `.apk` no Hosting (projetos criados depois de 28/09/2023): não mude a extensão.
+  - Secrets pelo Git Bash (`gh secret set X < arquivo`): o PowerShell grava BOM e `\r\n`. O modo automático bloqueia credenciais e deploy de Hosting; logins e `deploy --only hosting` ficam com o Fred.
+- **Projeto Firebase real:** `iago-beta` (nº 958140378539), plano Spark, conta frediro1910@gmail.com. Firestore `(default)` em `southamerica-east1`, login por e-mail e senha, apps Web `1:958140378539:web:cc9bfd557bc11eed49f6ee` e Android `1:958140378539:android:71a8c5564031232949f6ee` (`br.ufrj.iago`). `env/firebase.json` (gerado com `apps:sdkconfig`) fica fora do git; `.firebaserc`: `default` = `iago-beta`, `demo` = `demo-iago`.
+  - Verificado em 03/11 pelo `drive.js` em `localhost` (com `ALLOW_HOSTS=www.gstatic.com,googleapis.com`): cadastro, salvar, recarregar, sair e entrar, excluir conta, e o login falha depois. Para a CLI criar projetos, a conta precisa aceitar os termos do Firebase no console (senão, 403).
 
-## Ambiente desta máquina (instalado em 03/11)
+## Ambiente desta máquina (03/11)
 
-- Flutter: `C:\Users\Fred\dev\flutter`. JDK 21: `C:\Users\Fred\dev\jdk-21`. Android SDK: `%LOCALAPPDATA%\Android\Sdk` (só as cmdline-tools).
-- Firebase CLI 15.34.2 (npm global), logado como frediro1910@gmail.com. No PowerShell, chamar `firebase.cmd`: a política de execução bloqueia o `firebase.ps1`. FlutterFire CLI 1.4.1 (no Git Bash, chamar `flutterfire.bat`).
-- GitHub CLI 2.103.3, portátil, em `C:\Users\Fred\dev\gh\bin`; logado como **FredECI** (escopos `repo` e `workflow`).
-- O PATH do usuário já inclui Flutter e gh, mas o VS Code só enxerga depois de reiniciar. Em terminal antigo, rode antes: `$env:Path = "$env:USERPROFILE\dev\flutter\bin;$env:USERPROFILE\dev\gh\bin;$env:Path"`.
-- Chave de debug do Android em `%USERPROFILE%\.android\debug.keystore` (senhas padrão `android`), criada em 03/11. É a que está no secret `ANDROID_DEBUG_KEYSTORE`.
-- As licenças do Android não foram aceitas nesta máquina. Não fazem falta, porque o APK sai do CI; só seriam necessárias para gerar o APK aqui. Não há aparelho nem emulador Android nesta máquina. O teste no celular fica com o Fred.
+- Flutter em `C:\Users\Fred\dev\flutter`, JDK 21 em `C:\Users\Fred\dev\jdk-21`, Android SDK em `%LOCALAPPDATA%\Android\Sdk` (só cmdline-tools; licenças não aceitas, e o APK sai do CI). Sem aparelho nem emulador Android: o teste no celular é do Fred.
+- Firebase CLI 15.34.2 e GitHub CLI 2.103.3 (`C:\Users\Fred\dev\gh\bin`, logado como FredECI). No PowerShell, `firebase.cmd` (a política bloqueia o `.ps1`); FlutterFire CLI no Git Bash é `flutterfire.bat`. Em terminal antigo: `$env:Path = "$env:USERPROFILE\dev\flutter\bin;$env:USERPROFILE\dev\gh\bin;$env:Path"`.
+- Chave de debug em `%USERPROFILE%\.android\debug.keystore` (senhas `android`), a mesma do secret `ANDROID_DEBUG_KEYSTORE`.
 
 ## Pendências do Fred (e o que fazer em seguida)
 
-A lista completa, em ordem e com o tempo de cada item, está na spec: [Ações do Fred, em ordem](docs/specs/mvp-27-11.md#ações-do-fred-em-ordem). As próximas:
+A lista completa, em ordem, está na spec: [Ações do Fred, em ordem](docs/specs/mvp-27-11.md#ações-do-fred-em-ordem). As próximas:
 
-1. **P2a** pelo guia, cerca de 50 min, até segunda, 09/11. Destrava o spike de IA e o CP0 (terça, 10/11, às 20h).
-2. **Publicação do MVP (26/11):** Claude gera o build (`flutter build web --release --no-web-resources-cdn --dart-define-from-file=env/firebase.json`) e o Fred roda `cd C:\IaGo; firebase.cmd deploy --only hosting --project iago-beta`. Para ver as métricas reais, ele cria `admins/{uid}` no console do Firestore. O APK do beta para o WhatsApp está em `build/IaGo-Beta-0.1.apk`.
-3. **Ensaio:** seguir o [DEMO.md](DEMO.md); vídeo, capturas e PDF do plano B em `docs/demo/` (regenerar com `drive.js` e `RECORD_VIDEO`). O APK fora de `main` depende de decisão do Fred (workflow manual recomendado; veja a spec).
+1. **P2a** pelo guia (cerca de 50 min), com prazo hoje, 09/11. Destrava a F1 e o CP0 de terça, 10/11, às 20h. Inclui o secret `FIREBASE_ENV_JSON` (F4). Depois: P2b (só para o APK) e P2c (antes de 26/11).
+2. **Publicação (26/11):** `deploy --only firestore` (O1), com OK do Fred. Claude gera o build com `--dart-define-from-file=env/firebase.json`; o Fred roda `firebase.cmd deploy --only hosting --project iago-beta`. Para ver as métricas reais, criar `admins/{uid}` no console.
+3. **Q2:** teste no celular (cerca de 30 min) com o APK candidato. **Ensaio:** seguir o [DEMO.md](DEMO.md); capturas e vídeo em `docs/demo/` são do beta e serão regenerados na O2, depois da IA.
 
 ## Status
 
 | Fase | Situação |
 | --- | --- |
 | Beta 0.1 (fatias 1 a 8) | **Pronto (03/11)**: 97 testes Flutter e 6 de regras; demo offline e conta real verificadas a 360 px no site https://iago-beta.web.app; repositório público com CI verde; APK de 21 MB na release `v0.1.0-beta`, testado num celular em 04/11. O APK trocado em 05/11 (só o texto do card Conecta) ainda não foi testado no celular. Roteiro e plano B: [DEMO.md](DEMO.md) e `docs/demo/` |
-| MVP de 27/11 | **Spec aprovada em 07/11.** Na `feat/mvp`: CI, guia do P2, spec e ADRs, I1/I2, DI1/DI2 e acervo (A1, 1.687 questões). Em andamento: F2 e F3. Próximo: P2a (Fred) e CP0, terça, 10/11, às 20h |
+| MVP de 27/11 | **Spec aprovada em 07/11.** Em 09/11, 26 commits em `feat/mvp`: F2, F3, F5a, F6, F7; acervo (A1, A3, A4, A5; 1.687 questões); avaliação (AV1, AV2); colagem (I1, I2, I4); Direciona (DI1, DI2, DI4); Conecta (C1 a C6); métricas H1 a H6 (M1). Pendentes: P2a (Fred, hoje), F1, F5b, I3, I5, DI3, DI5, A2, A6, Q1 a Q4, O1 e O2 (falta o vídeo). Próximo: P2a e CP0, terça, 10/11, às 20h |

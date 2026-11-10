@@ -73,3 +73,5 @@ ui-debug.log
 /firestore-tests/node_modules/
 # Configuração local do Claude Code e dos agentes: fica só nesta máquina.
 /.claude/
+# Worktrees das trilhas do MVP (C:\IaGo\.worktrees\<trilha>)
+/.worktrees/
