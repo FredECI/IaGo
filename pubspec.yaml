@@ -3,7 +3,7 @@ description: "IaGo — Inteligência Artificial de Gerenciamento e Organização
 publish_to: 'none'
 
 # Beta 0.1. No Android, versionName = 0.1.0 e versionCode = 1.
-version: 0.1.0+1
+version: 0.2.0+2
 
 environment:
   sdk: ^3.13.7
@@ -12,6 +12,9 @@ dependencies:
   cloud_firestore: ^7.1.0
   collection: ^1.19.1
   cupertino_icons: ^2.0.0
+  file_selector: ^1.1.0
+  firebase_ai: ^5.1.0
+  firebase_app_check: ^0.5.1
   firebase_auth: ^7.0.1
   firebase_core: ^5.1.0
   flutter:

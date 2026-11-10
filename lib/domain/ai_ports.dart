@@ -44,6 +44,9 @@ enum AiFailure {
   malformed,
   disabled,
   timeout,
+
+  /// Provedor em alta demanda ou fora do ar (HTTP 500 ou 503).
+  unavailable,
   unknown,
 }
 

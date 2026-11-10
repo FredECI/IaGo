@@ -30,6 +30,23 @@ abstract final class FirebaseConfig {
     'FIREBASE_EMULATOR_HOST',
   );
 
+  /// Chave de site do reCAPTCHA Enterprise na web. É pública (vai no site).
+  static const String appCheckWebSiteKey = String.fromEnvironment(
+    'FIREBASE_APPCHECK_WEB_SITE_KEY',
+  );
+
+  /// Chave do reCAPTCHA no Android. Ausente, a IA fica indisponível no APK.
+  static const String appCheckAndroidSiteKey = String.fromEnvironment(
+    'FIREBASE_APPCHECK_ANDROID_SITE_KEY',
+  );
+
+  /// Token de depuração do App Check, só de `env/appcheck-debug.json` (fora do
+  /// git). É segredo: nunca vai para o secret nem para o build de publicação.
+  /// Vazio = nenhum provedor de depuração é ativado.
+  static const String appCheckDebugToken = String.fromEnvironment(
+    'FIREBASE_APPCHECK_DEBUG_TOKEN',
+  );
+
   static String get appId => kIsWeb ? webAppId : androidAppId;
 
   static bool get isConfigured =>

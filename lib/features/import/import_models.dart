@@ -72,6 +72,8 @@ String aiFailureMessage(AiFailure failure) => switch (failure) {
   AiFailure.disabled =>
     'A IA está desligada no momento. A colagem continua disponível.',
   AiFailure.timeout => 'A IA demorou demais. Tente de novo.',
+  AiFailure.unavailable =>
+    'A IA está com muita procura agora. Tente de novo em alguns minutos.',
   AiFailure.unknown =>
     'Não foi possível processar este arquivo. Tente de novo.',
 };
