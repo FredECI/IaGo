@@ -219,7 +219,7 @@ void main() {
       await signInAna(tester);
       await tapVisible(tester, find.byKey(const Key('conecta-card')));
       expect(find.text('Conecta'), findsWidgets);
-      expect(find.byKey(const Key('placeholder-back')), findsOneWidget);
+      expect(find.byKey(const Key('community-matematica')), findsOneWidget);
     });
   });
 

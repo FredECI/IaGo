@@ -339,7 +339,7 @@ void main() {
       );
       await signIn(tester);
       await tapVisible(tester, find.byKey(const Key('conecta-card')));
-      expect(find.byKey(const Key('placeholder-back')), findsOneWidget);
+      expect(find.byKey(const Key('community-matematica')), findsOneWidget);
     });
 
     testWidgets('conta sem participação não vê o card', (tester) async {

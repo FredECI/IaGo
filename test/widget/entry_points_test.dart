@@ -14,13 +14,6 @@ import '../helpers/test_app.dart';
 void main() {
   setUpAll(initTestLocale);
 
-  Future<void> expectPlaceholderAndBack(WidgetTester tester) async {
-    expect(find.byKey(const Key('placeholder-back')), findsOneWidget);
-    await tester.tap(find.byKey(const Key('placeholder-back')));
-    await tester.pumpAndSettle();
-    expect(find.byKey(const Key('placeholder-back')), findsNothing);
-  }
-
   testWidgets('Painel: card do Direciona mostra a próxima etapa simulada', (
     tester,
   ) async {
@@ -44,7 +37,8 @@ void main() {
     await enterDemo(tester);
     await tapVisible(tester, find.byKey(const Key('conecta-card')));
     expect(find.text('Conecta'), findsWidgets);
-    await expectPlaceholderAndBack(tester);
+    expect(find.byKey(const Key('community-simulated')), findsOneWidget);
+    expect(find.byKey(const Key('community-matematica')), findsOneWidget);
   });
 
   testWidgets('Questões: Acervo e Importar abrem as páginas', (tester) async {

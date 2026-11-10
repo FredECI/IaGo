@@ -71,7 +71,7 @@ void main() {
           e.key.startsWith('/direciona') ||
                   e.key.startsWith('/questoes/acervo') ||
                   e.key == '/importar' ||
-                  e.key == '/conecta/membro'
+                  e.key.startsWith('/conecta')
               ? findsNothing
               : findsOneWidget,
         );

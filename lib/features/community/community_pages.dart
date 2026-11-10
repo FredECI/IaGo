@@ -10,54 +10,14 @@ import '../../domain/community_models.dart';
 import '../../domain/community_validation.dart';
 import '../../domain/user_profile.dart';
 import '../../shared/common_widgets.dart';
-import '../../shared/placeholder_page.dart';
 import 'community_access.dart';
 import 'community_providers.dart';
 
-/// Provisória: a tela de verdade é a C2.
-class CommunityHomePage extends StatelessWidget {
-  const CommunityHomePage({super.key});
-
-  @override
-  Widget build(BuildContext context) => const PlaceholderPage(
-    title: 'Conecta',
-    message: 'Comunidades em que estudantes se ajudam, em breve nesta tela.',
-    icon: Icons.groups_outlined,
-  );
-}
-
-/// Provisória: uma comunidade e suas conversas (C2).
-class CommunityPage extends StatelessWidget {
-  const CommunityPage({super.key, required this.communityId});
-
-  final String communityId;
-
-  @override
-  Widget build(BuildContext context) => const PlaceholderPage(
-    title: 'Comunidade',
-    message: 'As conversas desta comunidade chegam em breve.',
-    icon: Icons.groups_outlined,
-  );
-}
-
-/// Provisória: uma conversa (C2).
-class CommunityPostPage extends StatelessWidget {
-  const CommunityPostPage({
-    super.key,
-    required this.communityId,
-    required this.postId,
-  });
-
-  final String communityId;
-  final String postId;
-
-  @override
-  Widget build(BuildContext context) => const PlaceholderPage(
-    title: 'Conversa',
-    message: 'A conversa e as respostas chegam em breve.',
-    icon: Icons.forum_outlined,
-  );
-}
+// As telas do Conecta moram em arquivos próprios; o roteador importa só este.
+export 'community_home_page.dart';
+export 'community_post_page.dart';
+export 'community_room_page.dart';
+export 'moderation_page.dart';
 
 /// Resumo das regras da comunidade (a versão completa é o documento
 /// `docs/conecta/regras-da-comunidade.md`, versão `communityRulesVersion`).
@@ -387,16 +347,4 @@ class _BecomeMemberPageState extends ConsumerState<BecomeMemberPage> {
       ],
     );
   }
-}
-
-/// Provisória: fila de moderação (C3).
-class ModerationPage extends StatelessWidget {
-  const ModerationPage({super.key});
-
-  @override
-  Widget build(BuildContext context) => const PlaceholderPage(
-    title: 'Moderação',
-    message: 'A fila de denúncias chega em breve.',
-    icon: Icons.shield_outlined,
-  );
 }
