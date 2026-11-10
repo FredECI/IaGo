@@ -81,6 +81,18 @@ class CommunityHomePage extends ConsumerWidget {
                       onTap: () => context.push(Routes.communityRoom(c.id)),
                     ),
                   ),
+                if (isDemo)
+                  SwitchListTile(
+                    key: const Key('demo-moderator-switch'),
+                    contentPadding: EdgeInsets.zero,
+                    title: const Text('Ver como moderador (demonstração)'),
+                    subtitle: const Text(
+                      'Só na demo: abre a fila de denúncias simulada.',
+                    ),
+                    value: ref.watch(demoModeratorModeProvider),
+                    onChanged: (v) =>
+                        ref.read(demoModeratorModeProvider.notifier).set(v),
+                  ),
                 if (moderator && !banned)
                   Card(
                     child: ListTile(

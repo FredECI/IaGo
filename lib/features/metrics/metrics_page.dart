@@ -6,7 +6,7 @@ import '../../domain/pilot_metrics.dart';
 import '../../shared/common_widgets.dart';
 import 'metrics_providers.dart';
 
-/// "Métricas do piloto": H1–H4 do canvas calculadas na hora, cada número ao
+/// "Métricas do piloto": H1–H6 do canvas calculadas na hora, cada número ao
 /// lado da sua meta. Restrita a administradores; na demo, dados simulados.
 class MetricsPage extends ConsumerWidget {
   const MetricsPage({super.key});
@@ -61,8 +61,10 @@ class _Report extends ConsumerWidget {
                 const SizedBox(height: 12),
               ],
               Text(
-                'Como medimos: ativação = 10+ questões salvas nos 7 dias após o '
-                'cadastro; retenção = uso em cada uma das 4 primeiras semanas; '
+                'Como medimos: ativação = 10+ questões próprias (à mão ou '
+                'importadas, sem o acervo) nos 7 dias após o '
+                'cadastro; H5 e H6 têm meta provisória, a confirmar pelo '
+                'grupo; retenção = uso em cada uma das 4 primeiras semanas; '
                 'tempo de montagem = da primeira busca/seleção até a 1ª '
                 'exportação, em listas de 7 a 13 questões, comparado com a '
                 'linha de base de ${report.baselineMinutes.round()} min.',

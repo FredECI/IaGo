@@ -16,6 +16,12 @@ abstract final class AppInfo {
   /// e deve valer o mesmo que `termsMinAge()` em `firestore.rules`.
   static const int termsMinAge = 18;
 
+  /// E-mail do projeto para contestar moderação e pedir remoção de conteúdo
+  /// (Conecta, acervo e termos). Ainda é um marcador: o e-mail real sai da
+  /// D6/P4 e é obrigatório antes da publicação de 26/11 (veja
+  /// `test/publish_ready_test.dart`).
+  static const String projectContactEmail = '<e-mail do projeto>';
+
   /// Meta de tempo para salvar uma questão (requisito do beta).
   static const Duration saveQuestionGoal = Duration(seconds: 30);
 }

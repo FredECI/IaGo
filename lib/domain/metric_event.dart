@@ -1,4 +1,4 @@
-/// Eventos de uso que alimentam as hipóteses do piloto (H1–H4).
+/// Eventos de uso que alimentam as hipóteses do piloto (H1–H6).
 ///
 /// Guardados em `users/{uid}/events` (contas reais) ou na memória (demo).
 /// Nada de conteúdo das questões: só tipo, data e números.

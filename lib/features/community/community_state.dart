@@ -1,13 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/app_info.dart';
 import '../../data/local/memory_community_repository.dart';
 import '../../data/providers.dart';
 import '../../domain/community_models.dart';
 import 'community_providers.dart';
 
-/// Contato para contestar uma decisão da moderação. Ainda é um marcador: o
-/// e-mail do projeto sai da D6 (veja `docs/conecta/regras-da-comunidade.md`).
-const String communityContactEmail = '<e-mail do projeto>';
+/// Contato para contestar uma decisão da moderação: o e-mail do projeto.
+const String communityContactEmail = AppInfo.projectContactEmail;
 
 /// Uid de quem usa o Conecta (na demo, o do repositório em memória). As telas
 /// só o usam para reconhecer o que é do próprio usuário.
@@ -26,6 +26,29 @@ final isModeratorProvider = FutureProvider<bool>((ref) async {
     return false;
   }
 });
+
+/// "Ver como moderador (demonstração)": só existe na demo. Liga o papel de
+/// moderador no repositório em memória; volta a desligado a cada nova sessão.
+/// Conta real nunca usa isto (o papel vem do Firestore).
+class DemoModeratorMode extends Notifier<bool> {
+  @override
+  bool build() {
+    ref.watch(dataOwnerProvider);
+    return false;
+  }
+
+  void set(bool value) {
+    final repo = ref.read(communityRepositoryProvider);
+    if (repo is! MemoryCommunityRepository) return;
+    repo.moderator = value;
+    state = value;
+    ref.invalidate(isModeratorProvider);
+  }
+}
+
+final demoModeratorModeProvider = NotifierProvider<DemoModeratorMode, bool>(
+  DemoModeratorMode.new,
+);
 
 /// Banido? Falha vale "não" (o servidor nega a escrita do mesmo jeito).
 final isBannedProvider = FutureProvider<bool>((ref) async {

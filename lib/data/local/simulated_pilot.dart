@@ -1,5 +1,8 @@
 import 'dart:math';
 
+import 'package:collection/collection.dart';
+
+import '../../domain/direction_models.dart';
 import '../../domain/metric_event.dart';
 import '../../domain/pilot_metrics.dart';
 import '../../domain/user_profile.dart';
@@ -34,10 +37,13 @@ List<MetricEvent> simulatedPilotEvents(DateTime now) {
   const scores = [9, 8, 10, 7, 9, 8, 6, 9, 10, 8, 9, 7, 8];
 
   var answered = 0;
+  final userActiveTimes = <String, List<DateTime>>{};
+  final signupAt = <String, DateTime>{};
   for (var i = 0; i < simulatedPilotUsers; i++) {
     final uid = 'simulado-${(i + 1).toString().padLeft(2, '0')}';
     final daysAgo = 6 + (i * 36 ~/ (simulatedPilotUsers - 1));
     final signup = now.subtract(Duration(days: daysAgo, hours: 3 + i % 8));
+    signupAt[uid] = signup;
     DateTime day(double offsetDays) =>
         signup.add(Duration(minutes: (offsetDays * 24 * 60).round()));
     void add(MetricEventType type, DateTime at, [Map<String, Object?>? data]) {
@@ -67,9 +73,33 @@ List<MetricEvent> simulatedPilotEvents(DateTime now) {
       for (var w = 0; w < weeks; w++)
         if (retained.contains(i) || w < 2 || (i + w) % 4 == 0) w,
     ];
+    final activeTimes = <DateTime>[];
     for (final w in activeWeeks) {
-      add(MetricEventType.active, day(w * 7 + 1 + random.nextDouble() * 5));
+      final at = day(w * 7 + 1 + random.nextDouble() * 5);
+      activeTimes.add(at);
+      add(MetricEventType.active, at);
     }
+
+    // H5 (sem Random: o fluxo de H1 a H4 não muda). Cada etapa cai no mesmo
+    // instante de um dia de uso, então a retenção também não muda.
+    for (var k = 0; k < 2 + i % 3; k++) {
+      if (activeTimes.isEmpty) break;
+      final at = activeTimes[k % activeTimes.length];
+      final outcome = (i + k * 3) % 7;
+      final data = {
+        'source': k.isEven ? 'rules' : 'ai',
+        'action': StepAction.values[(i + k) % StepAction.values.length].name,
+      };
+      if (outcome <= 4) {
+        add(MetricEventType.directionStepDone, at, {
+          ...data,
+          'onTime': outcome <= 3,
+        });
+      } else {
+        add(MetricEventType.directionStepMissed, at, data);
+      }
+    }
+    userActiveTimes[uid] = activeTimes;
 
     // H2/H3: listas exportadas (cerca de 0,8 por usuário por semana).
     final rate = 0.4 + (i % 5) * 0.2;
@@ -94,6 +124,78 @@ List<MetricEvent> simulatedPilotEvents(DateTime now) {
         'platformsNow': 1 + random.nextInt(3),
       });
       answered++;
+    }
+  }
+  events.addAll(_simulatedCommunity(now, userActiveTimes, signupAt));
+  return events;
+}
+
+/// H6 simulada: 10 pessoas postam; 3 que usam toda semana respondem. Posts e
+/// "Ajudou" caem em instantes de uso (a retenção não muda). Sem Random.
+List<MetricEvent> _simulatedCommunity(
+  DateTime now,
+  Map<String, List<DateTime>> activeTimes,
+  Map<String, DateTime> signupAt,
+) {
+  String uidOf(int i) => 'simulado-${(i + 1).toString().padLeft(2, '0')}';
+  final events = <MetricEvent>[];
+  final repliers = [12, 14, 17].map(uidOf).toList();
+  var n = 0;
+  for (final poster in [0, 2, 4, 6, 8, 10, 12, 14, 16, 18]) {
+    final uid = uidOf(poster);
+    final times = activeTimes[uid] ?? const <DateTime>[];
+    for (var k = 0; k < 2 && k < times.length; k++, n++) {
+      final postAt = times[k];
+      if (postAt.isAfter(now)) continue;
+      events.add(
+        MetricEvent(
+          type: MetricEventType.communityPost,
+          at: postAt,
+          uid: uid,
+          data: {'communityId': 'enem-geral', 'postId': 'sim-p$n'},
+        ),
+      );
+      // Ordem fixa: 4 em 7 posts recebem resposta rápida, 1 em 7 demora.
+      final kind = n % 7;
+      if (kind >= 5) continue;
+      final replier = repliers[n % repliers.length];
+      final replyAt = postAt.add(
+        Duration(hours: kind <= 3 ? 3 + kind * 5 : 60),
+      );
+      if (replier == uid ||
+          replyAt.isAfter(now) ||
+          signupAt[replier]!.isAfter(postAt)) {
+        continue;
+      }
+      events.add(
+        MetricEvent(
+          type: MetricEventType.communityReply,
+          at: replyAt,
+          uid: replier,
+          data: {
+            'communityId': 'enem-geral',
+            'postId': 'sim-p$n',
+            'replyId': 'sim-r$n',
+          },
+        ),
+      );
+      // Só a resposta rápida de n múltiplo de 4 vira "Ajudou". O instante é o
+      // do próximo dia de uso de quem agradece, para não mexer na retenção.
+      final later = times.where((t) => t.isAfter(replyAt)).firstOrNull;
+      if (n % 4 == 0 && kind <= 3 && later != null && !later.isAfter(now)) {
+        events.add(
+          MetricEvent(
+            type: MetricEventType.helpfulGiven,
+            at: later,
+            uid: uid,
+            data: {
+              'communityId': 'enem-geral',
+              'postId': 'sim-p$n',
+              'replyId': 'sim-r$n',
+            },
+          ),
+        );
+      }
     }
   }
   return events;

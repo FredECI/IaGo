@@ -81,8 +81,8 @@ class AccountPage extends ConsumerWidget {
               title: const Text('Métricas do piloto'),
               subtitle: Text(
                 isDemo
-                    ? 'H1–H4 com dados simulados'
-                    : 'H1–H4 com os dados reais (administrador)',
+                    ? 'H1–H6 com dados simulados'
+                    : 'H1–H6 com os dados reais (administrador)',
               ),
               trailing: const Icon(Icons.chevron_right),
               onTap: () => context.push(Routes.metrics),

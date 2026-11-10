@@ -23,9 +23,17 @@ class MemoryCommunityRepository implements CommunityRepository {
     List<Reply> replies = const [],
     Map<String, int> votes = const {},
     this._moderator = false,
+    List<ReportRecord> reports = const [],
   }) : _posts = [...posts],
        _replies = [...replies],
-       _otherVotes = {...votes};
+       _otherVotes = {...votes} {
+    for (final rec in reports) {
+      final String? author = rec.targetType == ReportTarget.post
+          ? _posts.where((p) => p.id == rec.targetId).firstOrNull?.authorUid
+          : _replies.where((r) => r.id == rec.targetId).firstOrNull?.authorUid;
+      if (author != null) _reports[rec.id] = _StoredReport(rec, author);
+    }
+  }
 
   /// Uid do usuário da demo.
   static const String demoUid = 'demo-me';
@@ -33,7 +41,11 @@ class MemoryCommunityRepository implements CommunityRepository {
   final Clock _clock;
   final String uid;
   Membership? _membership;
-  final bool _moderator;
+  bool _moderator;
+
+  /// Liga ou desliga o papel de moderador. Existe só na versão em memória
+  /// (interruptor "Ver como moderador" da demo); o Firestore nunca tem isso.
+  set moderator(bool value) => _moderator = value;
   final List<Post> _posts;
   final List<Reply> _replies;
 

@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../core/app_info.dart';
 import '../../domain/bank_source.dart';
 import '../../shared/common_widgets.dart';
 import 'bank_format.dart';
@@ -9,7 +10,7 @@ import 'bank_providers.dart';
 
 /// Contato para pedir a remoção de uma questão. Marcador até a D6/P4 definir o
 /// e-mail do projeto: trocar aqui, uma vez só.
-const String bankRemovalContact = '<e-mail do projeto>';
+const String bankRemovalContact = AppInfo.projectContactEmail;
 
 /// "Fontes e licenças": de onde vem cada questão, o link oficial, como pedir
 /// a remoção e o que o acervo não tem (CA-B7). Nunca afirma licença.

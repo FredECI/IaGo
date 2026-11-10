@@ -38,6 +38,7 @@ class _CommunityPostPageState extends ConsumerState<CommunityPostPage> {
   String? _error;
   bool _started = false;
 
+  final Set<String> _helpfulBusy = {};
   final _reply = TextEditingController();
   bool _sending = false;
   String? _replyError;
@@ -111,6 +112,8 @@ class _CommunityPostPageState extends ConsumerState<CommunityPostPage> {
   }
 
   Future<void> _toggleHelpful(Reply reply) async {
+    // Dois toques rápidos não podem contar duas vezes.
+    if (!_helpfulBusy.add(reply.id)) return;
     final marked = _myVotes.contains(reply.id);
     try {
       await _repo.setHelpful(reply, helpful: !marked);
@@ -131,6 +134,8 @@ class _CommunityPostPageState extends ConsumerState<CommunityPostPage> {
       });
     } catch (failure) {
       if (mounted) showMessage(context, communityErrorText(failure));
+    } finally {
+      _helpfulBusy.remove(reply.id);
     }
   }
 

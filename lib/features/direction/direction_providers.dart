@@ -13,7 +13,9 @@ import '../../domain/direction_models.dart';
 import '../../domain/direction_planner.dart';
 import '../../domain/direction_progress.dart';
 import '../../domain/session.dart';
+import '../../domain/metric_event.dart';
 import '../lists/lists_providers.dart';
+import '../metrics/metrics_providers.dart';
 import '../questions/questions_providers.dart';
 
 /// Direciona do usuário atual: demo → memória com dados simulados (recriados a
@@ -162,7 +164,10 @@ class DirectionActions {
       }
       final pending = updated.where(isPending).toList();
       if (pending.isNotEmpty) {
-        if (changed.isNotEmpty) await _repo.updateSteps(changed);
+        if (changed.isNotEmpty) {
+          await _repo.updateSteps(changed);
+          _logMissed(changed);
+        }
         return pending;
       }
 
@@ -186,6 +191,13 @@ class DirectionActions {
       ];
       // Uma escrita só: as vencidas como perdidas e as etapas novas.
       await _repo.updateSteps([...changed, ...created]);
+      _logMissed(changed);
+      if (created.isNotEmpty) {
+        _ref.read(metricsLoggerProvider).log(
+          MetricEventType.directionPlanCreated,
+          {'source': StepSource.rules.name},
+        );
+      }
       return created;
     } catch (_) {
       return const [];
@@ -195,7 +207,29 @@ class DirectionActions {
   /// `true` se gravou.
   Future<bool> accept(StudyStep step) => _write(acceptStep(step));
 
-  Future<bool> complete(StudyStep step) => _write(completeStep(step, _now));
+  /// Conclui a etapa. Registra se foi no prazo (H5), sem conteúdo.
+  Future<bool> complete(StudyStep step) async {
+    final now = _now;
+    final wasDone = step.status == StepStatus.done;
+    final ok = await _write(completeStep(step, now));
+    if (ok && !wasDone) {
+      _ref.read(metricsLoggerProvider).log(MetricEventType.directionStepDone, {
+        'onTime': !now.isAfter(step.dueAt),
+        'source': step.source.name,
+        'action': step.action.name,
+      });
+    }
+    return ok;
+  }
+
+  void _logMissed(Iterable<StudyStep> missed) {
+    for (final s in missed) {
+      _ref.read(metricsLoggerProvider).log(
+        MetricEventType.directionStepMissed,
+        {'source': s.source.name, 'action': s.action.name},
+      );
+    }
+  }
 
   /// `false` se já foi adiada antes (CA-D8) ou se a gravação falhou.
   Future<bool> postpone(StudyStep step) async {

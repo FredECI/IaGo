@@ -3,7 +3,7 @@ import 'package:material_ui/material_ui.dart';
 import '../../core/app_info.dart';
 
 /// Marcador do e-mail de contato até a D6/P4. Trocar aqui quando existir.
-const String projectEmailPlaceholder = '<e-mail do projeto>';
+const String projectEmailPlaceholder = AppInfo.projectContactEmail;
 
 /// Termos de Uso e Política de Privacidade (LGPD), em linguagem simples.
 class TermsPage extends StatelessWidget {

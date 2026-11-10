@@ -137,4 +137,77 @@ class CommunityDemoData {
       votes: const {'demo-r1': 3, 'demo-r2': 1, 'demo-r3': 2},
     );
   }
+
+  /// Conteúdo já denunciado, para a fila de moderação da demo. Só aparece
+  /// para o Pedro com "Ver como moderador" ligado (os itens estão pendentes).
+  /// Os autores são os mesmos membros fictícios de [build].
+  static CommunityModerationSeed buildModeration(DateTime now) {
+    final posts = [
+      Post(
+        id: 'demo-p7',
+        communityId: 'humanas',
+        authorUid: uidOf('duda_historia'),
+        authorNickname: 'duda_historia',
+        title: 'Venda de resumos prontos',
+        body:
+            'Tenho resumos de todas as matérias. Chame no meu contato '
+            'para combinar o preço.',
+        status: ContentStatus.pending,
+        createdAt: now.subtract(const Duration(hours: 6)),
+      ),
+    ];
+    final replies = [
+      Reply(
+        id: 'demo-r4',
+        postId: 'demo-p1',
+        authorUid: uidOf('leo_redacao'),
+        authorNickname: 'leo_redacao',
+        body: 'Isso é pergunta de quem não estudou. Desista da prova.',
+        status: ContentStatus.pending,
+        createdAt: now.subtract(const Duration(hours: 2)),
+      ),
+    ];
+    final reports = [
+      ReportRecord(
+        id: 'demo-p7_${uidOf('ana_funcoes')}',
+        targetType: ReportTarget.post,
+        targetId: 'demo-p7',
+        postId: 'demo-p7',
+        reason: ReportReason.spam,
+        details: 'Oferta de venda fora do propósito da comunidade.',
+        reporterUid: uidOf('ana_funcoes'),
+        open: true,
+        createdAt: now.subtract(const Duration(hours: 5)),
+      ),
+      ReportRecord(
+        id: 'demo-r4_${uidOf('caio_log')}',
+        targetType: ReportTarget.reply,
+        targetId: 'demo-r4',
+        postId: 'demo-p1',
+        reason: ReportReason.offensive,
+        details: 'Tom ofensivo com quem perguntou.',
+        reporterUid: uidOf('caio_log'),
+        open: true,
+        createdAt: now.subtract(const Duration(hours: 1)),
+      ),
+    ];
+    return CommunityModerationSeed(
+      posts: posts,
+      replies: replies,
+      reports: reports,
+    );
+  }
+}
+
+/// Posts, respostas e denúncias simulados para a fila de moderação da demo.
+class CommunityModerationSeed {
+  const CommunityModerationSeed({
+    required this.posts,
+    required this.replies,
+    required this.reports,
+  });
+
+  final List<Post> posts;
+  final List<Reply> replies;
+  final List<ReportRecord> reports;
 }

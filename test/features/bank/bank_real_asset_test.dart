@@ -250,25 +250,6 @@ void main() {
     expect(find.textContaining('Pedir a remoção'), findsOneWidget);
   });
 
-  testWidgets(
-    'BUG: CA-B7 o e-mail de remoção é só um marcador',
-    // pendente: e-mail do projeto (D6/P4), obrigatório antes da publicação.
-    // (testWidgets só aceita bool em `skip`, não texto.)
-    skip: true,
-    (tester) async {
-      await openRealBank(tester, path: '/questoes/acervo/fontes');
-      await reveal(tester, find.byKey(const Key('sources-removal')));
-      // CA-B7 exige "o e-mail para pedir remoção"; hoje é o marcador do código
-      // (bankRemovalContact em bank_sources_page.dart:12), à espera da D6/P4.
-      expect(
-        find.textContaining('<e-mail do projeto>'),
-        findsNothing,
-        reason:
-            'BUG: o e-mail de remoção ainda é o marcador "<e-mail do projeto>"',
-      );
-    },
-  );
-
   test(
     'CA-B9: busca e facetas no asset real em menos de 100 ms (após carregar)',
     () async {

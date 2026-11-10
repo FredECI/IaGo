@@ -65,7 +65,7 @@ abstract final class Routes {
   /// Editor de uma lista (aba Listas).
   static String list(String id) => '$lists/$id';
 
-  /// H1–H4 do piloto (administradores; na demo, dados simulados).
+  /// H1–H6 do piloto (administradores; na demo, dados simulados).
   static const String metrics = '/metricas';
 }
 
