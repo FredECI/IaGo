@@ -85,19 +85,20 @@ class BankSourcesPage extends ConsumerWidget {
                 'gráfico ou tabela em figura não estão aqui.',
               ),
             ),
-            _Notice(
-              key: const Key('sources-unclassified'),
-              icon: Icons.category_outlined,
-              title: 'Matérias ainda sem classificação',
-              body: Text(
-                unclassified > 0
-                    ? '${bankQuestions(unclassified)} ainda estão sem matéria. '
-                          'Elas aparecem na busca e no filtro por área, mas '
-                          'não no filtro por matéria.'
-                    : 'Questões sem matéria aparecem na busca e no filtro '
-                          'por área, mas não no filtro por matéria.',
+            if (unclassified > 0)
+              _Notice(
+                key: const Key('sources-unclassified'),
+                icon: Icons.category_outlined,
+                title: 'Matérias ainda sem classificação',
+                body: Text(
+                  unclassified > 0
+                      ? '${bankQuestions(unclassified)} ainda estão sem matéria. '
+                            'Elas aparecem na busca e no filtro por área, mas '
+                            'não no filtro por matéria.'
+                      : 'Questões sem matéria aparecem na busca e no filtro '
+                            'por área, mas não no filtro por matéria.',
+                ),
               ),
-            ),
           ],
         ),
       ),

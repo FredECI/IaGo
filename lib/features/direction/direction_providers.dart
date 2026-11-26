@@ -263,7 +263,12 @@ class DirectionActions {
       final steps = await _repo.watchSteps().first.timeout(timeout);
       final todo = [
         for (final s in steps)
-          if (isPending(s) && s.bankAvailableAtProposal == null) s,
+          // 0 sem ids também conta como "não anexado": a seed da demo nasce
+          // com bankAvailable 0, antes de o acervo ser lido.
+          if (isPending(s) &&
+              (s.bankAvailableAtProposal ?? 0) == 0 &&
+              s.bankIds.isEmpty)
+            s,
       ];
       if (todo.isEmpty) return;
       final questions = await _ref
