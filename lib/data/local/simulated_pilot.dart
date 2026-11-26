@@ -86,9 +86,14 @@ List<MetricEvent> simulatedPilotEvents(DateTime now) {
       if (activeTimes.isEmpty) break;
       final at = activeTimes[k % activeTimes.length];
       final outcome = (i + k * 3) % 7;
+      // Sugestão do acervo (BM10), também sem Random: quem concluiu no prazo
+      // tem mais sugestão, e a lista só é montada onde havia sugestão.
+      final hadBank = outcome <= 3 ? (i + k) % 3 != 0 : (i + k) % 3 == 0;
       final data = {
         'source': k.isEven ? 'rules' : 'ai',
         'action': StepAction.values[(i + k) % StepAction.values.length].name,
+        'hadBankSuggestion': hadBank,
+        'bankListCreated': hadBank && (i + k) % 4 != 1,
       };
       if (outcome <= 4) {
         add(MetricEventType.directionStepDone, at, {
@@ -100,6 +105,28 @@ List<MetricEvent> simulatedPilotEvents(DateTime now) {
       }
     }
     userActiveTimes[uid] = activeTimes;
+
+    // H7 (sem Random): propostas com sugestão e listas montadas por elas.
+    if (activeTimes.isNotEmpty) {
+      final suggested = 1 + i % 3;
+      add(MetricEventType.directionPlanCreated, activeTimes.first, {
+        'source': 'rules',
+        'bankSuggestedSteps': suggested,
+        'catalogGeneratedAt': '2026-11-07',
+      });
+      for (var k = 0; k < suggested; k++) {
+        if ((i + k) % 3 == 2) continue;
+        add(
+          MetricEventType.directionBankListCreated,
+          activeTimes[k % activeTimes.length],
+          {
+            'stepId': 'sim-$i-$k',
+            'questionCount': 10,
+            'difficultyTarget': 1 + (i + k) % 3,
+          },
+        );
+      }
+    }
 
     // H2/H3: listas exportadas (cerca de 0,8 por usuário por semana).
     final rate = 0.4 + (i % 5) * 0.2;
@@ -113,6 +140,7 @@ List<MetricEvent> simulatedPilotEvents(DateTime now) {
           'questionCount': 8 + random.nextInt(5),
           'assemblySeconds': (8 + random.nextInt(12)) * 60 + random.nextInt(60),
           'exportIndex': x + 1,
+          'fromDirectionStep': (i + x) % 5 == 0,
         },
       );
     }

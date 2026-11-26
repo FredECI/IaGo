@@ -122,6 +122,13 @@ Map<String, Object?> stepToMap(StudyStep s) => {
   'source': s.source.name,
   'rationale': s.rationale,
   'createdAt': s.createdAt,
+  // Campos do acervo: só gravados quando existem (documento antigo continua
+  // válido, sem migração).
+  if (s.bankIds.isNotEmpty) 'bankIds': s.bankIds,
+  if (s.difficultyTarget != null) 'difficultyTarget': s.difficultyTarget,
+  if (s.bankListId != null) 'bankListId': s.bankListId,
+  if (s.bankAvailableAtProposal != null)
+    'bankAvailableAtProposal': s.bankAvailableAtProposal,
 };
 
 StudyStep? stepFromMap(String id, Map<String, Object?> map) {
@@ -149,6 +156,10 @@ StudyStep? stepFromMap(String id, Map<String, Object?> map) {
   final postponedAt = map['postponedAt'];
   final doneAt = map['doneAt'];
   final rationale = map['rationale'];
+  final rawIds = map['bankIds'];
+  final difficulty = map['difficultyTarget'];
+  final listId = map['bankListId'];
+  final available = map['bankAvailableAtProposal'];
   return StudyStep(
     id: id,
     action: action,
@@ -162,5 +173,24 @@ StudyStep? stepFromMap(String id, Map<String, Object?> map) {
     source: source,
     rationale: rationale is String ? rationale : '',
     createdAt: createdAt,
+    // Campos do acervo: tipo errado é ignorado, nunca descarta a etapa.
+    bankIds: [
+      if (rawIds is List)
+        for (final id in rawIds.take(maxBankIdsPerStep))
+          if (id is String && bankIdFormat.hasMatch(id)) id,
+    ],
+    difficultyTarget: difficulty is int && difficulty >= 1 && difficulty <= 3
+        ? difficulty
+        : null,
+    bankListId: listId is String && listId.isNotEmpty ? listId : null,
+    bankAvailableAtProposal: available is int && available >= 0
+        ? available
+        : null,
   );
 }
+
+/// Até 30 ids por etapa (igual a `maxBankListQuestions`).
+const int maxBankIdsPerStep = 30;
+
+/// Mesmo formato de `bankIdOk()` das regras: fonte-resto (CA-R4).
+final RegExp bankIdFormat = RegExp(r'^[a-z][a-z0-9]{1,15}-[a-z0-9-]{1,48}$');

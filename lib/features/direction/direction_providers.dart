@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/clock.dart';
 import '../../core/ids.dart';
+import '../../data/bank_catalog.dart';
 import '../../data/direction_repository.dart';
 import '../../data/policy_providers.dart';
 import '../../data/firebase/firestore_direction_repository.dart';
@@ -15,11 +16,16 @@ import '../../data/local/direction_memory_repository.dart';
 import '../../data/providers.dart';
 import '../../domain/ai_ports.dart';
 import '../../domain/direction_ai_policy.dart';
+import '../../domain/bank_summary.dart';
+import '../../domain/direction_bank.dart';
 import '../../domain/direction_models.dart';
+import '../../domain/question.dart';
+import '../../domain/question_filter.dart';
 import '../../domain/direction_planner.dart';
 import '../../domain/direction_progress.dart';
 import '../../domain/session.dart';
 import '../../domain/metric_event.dart';
+import '../bank/bank_providers.dart';
 import '../community/community_access.dart';
 import '../lists/lists_providers.dart';
 import '../metrics/metrics_providers.dart';
@@ -96,6 +102,16 @@ final directionContextProvider = Provider<DirectionContext?>((ref) {
 final directionReadTimeoutProvider = Provider<Duration>(
   (ref) => const Duration(seconds: 4),
 );
+
+/// Espera máxima pelo resumo do acervo (só o índice). Estourou: sem acervo.
+const Duration bankSummaryTimeout = Duration(seconds: 2);
+
+/// Espera máxima, no total, pelas sugestões de lista. Estourou: etapas sem
+/// sugestão (a proposta nunca falha por causa do acervo).
+const Duration bankSuggestionTimeout = Duration(seconds: 2);
+
+/// Candidatas lidas do acervo por matéria (a maior tem menos de 300).
+const int maxSuggestionPool = 500;
 
 final directionActionsProvider = Provider<DirectionActions>(
   DirectionActions.new,
@@ -180,19 +196,25 @@ class DirectionActions {
         return pending;
       }
 
-      final context = buildDirectionContext(
+      final base = buildDirectionContext(
         goal: goal,
         questions: questions,
         lists: lists,
         steps: updated,
         now: now,
       );
+      // Acervo: resumo com timeout; sem ele (ou com o interruptor desligado)
+      // o contexto fica como no MVP.
+      final summary = await _loadBankSummary();
+      final context = summary == null
+          ? base
+          : _withBank(base, summary, questions);
       final today = DateTime(now.year, now.month, now.day);
       // IA se puder; qualquer falha, resposta inválida ou lista vazia cai nas
       // regras (CA-D4 e CA-D5): nunca vira erro para a tela.
       final byAi = await _proposeWithAi(goal, context, now);
       final source = byAi == null ? StepSource.rules : StepSource.ai;
-      final created = [
+      var created = [
         for (final p in byAi ?? planDirection(context))
           StudyStep.fromProposed(
             p,
@@ -202,13 +224,24 @@ class DirectionActions {
             createdAt: now,
           ),
       ];
+      if (summary != null) {
+        created = await _attachBank(created, context, summary, questions);
+      }
       // Uma escrita só: as vencidas como perdidas e as etapas novas.
       await _repo.updateSteps([...changed, ...created]);
       _logMissed(changed);
       if (created.isNotEmpty) {
         _ref.read(metricsLoggerProvider).log(
           MetricEventType.directionPlanCreated,
-          {'source': source.name},
+          {
+            'source': source.name,
+            if (summary != null) ...{
+              'bankSuggestedSteps': created
+                  .where((s) => s.bankIds.isNotEmpty)
+                  .length,
+              'catalogGeneratedAt': summary.generatedAt,
+            },
+          },
         );
         if (source == StepSource.ai) await _markAiProposal(now);
       }
@@ -216,6 +249,172 @@ class DirectionActions {
     } catch (_) {
       return const [];
     }
+  }
+
+  /// Etapas simuladas da demo nascem sem acervo (os dados são montados de
+  /// forma síncrona). Esta chamada anexa a sugestão às pendentes que ainda não
+  /// têm `bankAvailableAtProposal`, sem mudar matéria, ação nem prazo. Idempotente
+  /// e nunca lança.
+  Future<void> attachBankToPendingSteps() async {
+    try {
+      final timeout = _ref.read(directionReadTimeoutProvider);
+      final goal = await _repo.watchGoal().first.timeout(timeout);
+      if (goal == null) return;
+      final steps = await _repo.watchSteps().first.timeout(timeout);
+      final todo = [
+        for (final s in steps)
+          if (isPending(s) && s.bankAvailableAtProposal == null) s,
+      ];
+      if (todo.isEmpty) return;
+      final questions = await _ref
+          .read(questionRepositoryProvider)
+          .watchAll()
+          .first
+          .timeout(timeout);
+      final lists = await _ref
+          .read(listRepositoryProvider)
+          .watchAll()
+          .first
+          .timeout(timeout);
+      final summary = await _loadBankSummary();
+      if (summary == null) return;
+      final context = _withBank(
+        buildDirectionContext(
+          goal: goal,
+          questions: questions,
+          lists: lists,
+          steps: steps,
+          now: _now,
+        ),
+        summary,
+        questions,
+      );
+      final enriched = await _attachBank(todo, context, summary, questions);
+      await _repo.updateSteps(enriched);
+    } catch (_) {
+      // O acervo nunca atrapalha o Direciona.
+    }
+  }
+
+  /// Resumo do acervo, ou `null` se o interruptor está desligado, o índice
+  /// não carregou ou estourou [bankSummaryTimeout]. Nunca lança.
+  Future<BankSummary?> _loadBankSummary() async {
+    try {
+      if (_ref.read(accessPolicyAsyncProvider).isLoading) {
+        await _ref
+            .read(accessPolicyAsyncProvider.future)
+            .timeout(bankSummaryTimeout);
+      }
+    } catch (_) {
+      // Sem a política, vale o padrão (ligado).
+    }
+    try {
+      if (!_ref.read(accessPolicyProvider).directionBankEnabled) return null;
+      return await _ref
+          .read(bankCatalogProvider)
+          .summary()
+          .timeout(bankSummaryTimeout);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Cópias do acervo já salvas, por matéria.
+  static Map<String, int> _savedBankCopies(Iterable<Question> questions) {
+    final out = <String, int>{};
+    for (final q in questions) {
+      if (q.origin == QuestionOrigin.bank) {
+        out[q.subject] = (out[q.subject] ?? 0) + 1;
+      }
+    }
+    return out;
+  }
+
+  DirectionContext _withBank(
+    DirectionContext base,
+    BankSummary summary,
+    Iterable<Question> questions,
+  ) => DirectionContext(
+    today: base.today,
+    goal: base.goal,
+    coverage: withBankAvailability(
+      base.coverage,
+      available: summary.available,
+      savedBankCopies: _savedBankCopies(questions),
+    ),
+    history: base.history,
+    limits: base.limits,
+  );
+
+  /// Anota `bankAvailableAtProposal` em todas as etapas e anexa a sugestão de
+  /// lista às de `buildList` e `practice` com acervo disponível. Total limitado
+  /// por [bankSuggestionTimeout]; qualquer falha deixa as etapas sem sugestão.
+  Future<List<StudyStep>> _attachBank(
+    List<StudyStep> steps,
+    DirectionContext context,
+    BankSummary summary,
+    Iterable<Question> questions,
+  ) async {
+    int availableOf(StudyStep s) {
+      for (final c in context.coverage) {
+        if (c.area == s.area && c.subject == s.subject) return c.bankAvailable;
+      }
+      return 0;
+    }
+
+    final annotated = [
+      for (final s in steps)
+        s.withBank(bankAvailableAtProposal: availableOf(s)),
+    ];
+    try {
+      final catalog = _ref.read(bankCatalogProvider);
+      final excluded = {
+        for (final q in questions)
+          if (q.origin == QuestionOrigin.bank && q.bankId != null) q.bankId!,
+      };
+      final band = targetDifficulty(context.history);
+      return await Future.wait([
+        for (final s in annotated)
+          _suggestFor(s, catalog, summary, excluded, band),
+      ]).timeout(bankSuggestionTimeout);
+    } catch (_) {
+      return annotated;
+    }
+  }
+
+  Future<StudyStep> _suggestFor(
+    StudyStep step,
+    BankCatalog catalog,
+    BankSummary summary,
+    Set<String> excluded,
+    int band,
+  ) async {
+    final eligible =
+        step.action == StepAction.buildList ||
+        step.action == StepAction.practice;
+    if (!eligible || (step.bankAvailableAtProposal ?? 0) <= 0) return step;
+    final page = await catalog.search(
+      QuestionFilter(subjects: {step.subject}),
+      limit: maxSuggestionPool,
+    );
+    // Só usa a faixa se o acervo da matéria tem alguma questão com faixa.
+    final hasBand =
+        summary.available(step.subject) >
+        summary.availableAt(step.subject, null);
+    final count = step.targetCount < maxBankListQuestions
+        ? step.targetCount
+        : maxBankListQuestions;
+    final ids = suggestBankQuestions(
+      candidates: page.items,
+      excludeBankIds: excluded,
+      count: count,
+      seed: step.id,
+      targetBand: hasBand ? band : null,
+      difficultyOf: (q) => q.bankDifficulty,
+      topicOrder: summary.taxonomy[step.subject] ?? const [],
+    );
+    if (ids.isEmpty) return step;
+    return step.withBank(bankIds: ids, difficultyTarget: hasBand ? band : null);
   }
 
   /// Tenta a proposta pela IA. `null` = usar as regras. Só conta real, membro,
@@ -328,6 +527,8 @@ class DirectionActions {
         'onTime': !now.isAfter(step.dueAt),
         'source': step.source.name,
         'action': step.action.name,
+        'hadBankSuggestion': step.bankIds.isNotEmpty,
+        'bankListCreated': step.bankListId != null,
       });
     }
     return ok;
@@ -337,7 +538,12 @@ class DirectionActions {
     for (final s in missed) {
       _ref.read(metricsLoggerProvider).log(
         MetricEventType.directionStepMissed,
-        {'source': s.source.name, 'action': s.action.name},
+        {
+          'source': s.source.name,
+          'action': s.action.name,
+          'hadBankSuggestion': s.bankIds.isNotEmpty,
+          'bankListCreated': s.bankListId != null,
+        },
       );
     }
   }

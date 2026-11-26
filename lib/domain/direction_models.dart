@@ -153,7 +153,41 @@ class StudyStep {
 
   /// `bankAvailable` da matéria na proposta (botão "Escolher no acervo").
   final int? bankAvailableAtProposal;
+
+  /// Cópia com os campos do acervo trocados. Os demais ficam como estão.
+  /// `bankListId` com `null` explícito limpa a lista montada.
+  StudyStep withBank({
+    List<String>? bankIds,
+    Object? difficultyTarget = _keepField,
+    Object? bankListId = _keepField,
+    Object? bankAvailableAtProposal = _keepField,
+  }) => StudyStep(
+    id: id,
+    action: action,
+    area: area,
+    subject: subject,
+    targetCount: targetCount,
+    dueAt: dueAt,
+    status: status,
+    postponedAt: postponedAt,
+    doneAt: doneAt,
+    source: source,
+    rationale: rationale,
+    createdAt: createdAt,
+    bankIds: bankIds ?? this.bankIds,
+    difficultyTarget: identical(difficultyTarget, _keepField)
+        ? this.difficultyTarget
+        : difficultyTarget as int?,
+    bankListId: identical(bankListId, _keepField)
+        ? this.bankListId
+        : bankListId as String?,
+    bankAvailableAtProposal: identical(bankAvailableAtProposal, _keepField)
+        ? this.bankAvailableAtProposal
+        : bankAvailableAtProposal as int?,
+  );
 }
+
+const Object _keepField = Object();
 
 /// Etapa proposta (pelas regras ou pela IA), ainda sem data: só `dueInDays`.
 class ProposedStep {

@@ -8,10 +8,12 @@ import 'package:iago/core/clock.dart';
 import 'package:iago/data/local/direction_demo_data.dart';
 import 'package:iago/data/local/direction_memory_repository.dart';
 import 'package:iago/domain/direction_models.dart';
+import 'package:iago/features/bank/bank_providers.dart';
 import 'package:iago/features/direction/direction_pages.dart';
 import 'package:iago/features/direction/direction_providers.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../../helpers/fake_bank_catalog.dart';
 import '../../helpers/test_app.dart';
 
 /// Repositório cujas escritas de etapa falham.
@@ -49,6 +51,9 @@ Future<void> _pump(
     ProviderScope(
       overrides: <Override>[
         clockProvider.overrideWithValue(() => testNow),
+        bankCatalogProvider.overrideWithValue(
+          FakeBankCatalog(delay: Duration.zero),
+        ),
         directionRepositoryProvider.overrideWith(
           (ref) => repo ?? MemoryDirectionRepository(),
         ),
@@ -152,6 +157,7 @@ void main() {
     await _pump(tester, repo: _demoRepo(), simulated: true);
     expect(find.text('Demonstração: proposta simulada'), findsOneWidget);
     expect(find.text('Proposta automática'), findsNWidgets(3));
+    await letTimeoutsExpire(tester);
   });
 
   testWidgets('adicionar à agenda abre a URL com título e data (CA-D9)', (
