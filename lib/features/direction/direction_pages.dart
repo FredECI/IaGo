@@ -93,7 +93,9 @@ class _DirectionPageState extends ConsumerState<DirectionPage> {
     ref
         .read(bankFilterProvider.notifier)
         .replace(QuestionFilter(areas: {step.area}, subjects: {step.subject}));
-    context.push(Routes.bank);
+    // `go`, não `push`: o Direciona fica fora das abas, e empilhar uma rota
+    // da aba Questões por cima dele deixava a tela em branco.
+    context.go(Routes.bank);
   }
 
   /// "Ver minhas questões de {matéria}".
