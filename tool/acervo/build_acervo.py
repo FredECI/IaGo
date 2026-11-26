@@ -18,6 +18,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)  # necessário com `python -I`; só código nosso mora aqui
 
 import acervo_v2 as v2  # noqa: E402
+from dedupe import dedupe  # noqa: E402
 from fetcher import Fetcher  # noqa: E402
 from glyphs import covered_codepoints, missing_chars  # noqa: E402
 from sources import ADAPTERS  # noqa: E402
@@ -109,7 +110,7 @@ def question_to_dict(q):
     return d
 
 
-def build(sources, fetcher_factory, covered, generated_at, log=print):
+def build(sources, fetcher_factory, covered, generated_at, log=print, published=(), info=None):
     kept, excluded = [], []  # excluded: (RawQuestion, reasons)
     used_sources = []
     for s in sources:
@@ -126,7 +127,14 @@ def build(sources, fetcher_factory, covered, generated_at, log=print):
     if len(ids) != len(set(ids)):
         dup = sorted({i for i in ids if ids.count(i) > 1})
         raise ValueError(f"ids repetidos: {dup[:5]}")
-    kept.sort(key=lambda q: (q.source, q.edition, q.number, q.id))
+    order = {s["id"]: i for i, s in enumerate(sources)}
+    kept, removed, protected, near = dedupe(kept, order, published)
+    for q, other in removed:
+        excluded.append((q, ["duplicata"]))
+    if info is not None:
+        info.update(removed=[(q.id, other) for q, other in removed],
+                    protected=[(q.id, other) for q, other in protected], near=near)
+    kept.sort(key=lambda q: (q.source, q.edition, getattr(q, "variant", None) or "", q.number, q.id))
     asset = {
         "schemaVersion": SCHEMA_VERSION,
         "generatedAt": generated_at,
@@ -178,7 +186,7 @@ def _count(items):
     return sorted(counts.items(), key=lambda x: (-x[1], x[0]))
 
 
-def report_text(kept, excluded):
+def report_text(kept, excluded, info=None):
     areas = list(AREA_LABEL)
     total = len(kept) + len(excluded)
     lines = ["# Relatório do acervo", ""]
@@ -207,6 +215,22 @@ def report_text(kept, excluded):
     lines += ["", "## Exclusões por área", ""]
     for a in areas:
         lines.append(f"- {AREA_LABEL[a]}: {sum(e[0].area == a for e in excluded)}")
+    lines += ["", "## Por edição e variante (aproveitadas / lidas / excluídas por imagem)", ""]
+    variants = sorted({(q.edition, getattr(q, "variant", None) or "") for q in kept}
+                      | {(e[0].edition, getattr(e[0], "variant", None) or "") for e in excluded})
+    for y, v in variants:
+        k = sum(q.edition == y and (getattr(q, "variant", None) or "") == v for q in kept)
+        ex = [e for e in excluded if e[0].edition == y and (getattr(e[0], "variant", None) or "") == v]
+        img = sum(any(r.startswith("imagem") for r in e[1]) for e in ex)
+        lines.append(f"- {y} {v or 'regular'}: {k} / {k + len(ex)} / {img}")
+    if info is not None:
+        lines += ["", "## Deduplicação (BM15)", ""]
+        lines.append(f"- Duplicatas exatas removidas: {len(info['removed'])}")
+        lines += [f"  - {a} (igual a {b})" for a, b in info["removed"]]
+        lines.append(f"- Duplicatas mantidas por já estarem publicadas: {len(info['protected'])}")
+        lines += [f"  - {a} (igual a {b})" for a, b in info["protected"]]
+        lines.append(f"- Quase duplicatas, só sinalizadas para revisão humana: {len(info['near'])}")
+        lines += [f"  - {a} ~ {b}" for a, b in info["near"]]
     return "\n".join(lines) + "\n"
 
 
@@ -311,8 +335,13 @@ def main(argv=None):
         fetchers.append(f)
         return f
 
-    asset, kept, excluded = build(sources, factory, covered, gen, log=lambda m: print(m, flush=True))
-    report = report_text(kept, excluded)
+    info = {}
+    published = v2.load_ids_v1(args.ids_v1) if args.format == "v2" else ()
+    asset, kept, excluded = build(
+        sources, factory, covered, gen, log=lambda m: print(m, flush=True),
+        published=published, info=info,
+    )
+    report = report_text(kept, excluded, info)
     if args.format == "v1":
         out = dump_asset(asset)
         if has_forbidden_word(out):
