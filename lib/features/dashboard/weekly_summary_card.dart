@@ -113,7 +113,7 @@ class WeeklySummaryCard extends ConsumerWidget {
               _Line(
                 icon: AppIcons.area(top.area),
                 text:
-                    '${top.area.label} concentra ${top.percent}% do seu acervo '
+                    '${top.area.label} concentra ${top.percent}% das suas questões '
                     '(${top.count} de ${Formatters.questions(top.total)}), em '
                     '${summary.areasCovered} de 4 áreas.',
               ),

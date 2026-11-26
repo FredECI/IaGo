@@ -1,4 +1,4 @@
-/// Eventos de uso que alimentam as hipóteses do piloto (H1–H4).
+/// Eventos de uso que alimentam as hipóteses do piloto (H1–H6).
 ///
 /// Guardados em `users/{uid}/events` (contas reais) ou na memória (demo).
 /// Nada de conteúdo das questões: só tipo, data e números.
@@ -22,7 +22,40 @@ enum MetricEventType {
   satisfaction('satisfaction'),
 
   /// O estudante dispensou a pesquisa (não perguntar de novo).
-  satisfactionDismissed('satisfaction_dismissed');
+  satisfactionDismissed('satisfaction_dismissed'),
+
+  /// Lote salvo (importação ou acervo): origin, count, seconds, discardedCount.
+  questionsBulkSaved('questions_bulk_saved'),
+
+  /// Importação executada: source, files, extracted, failedFiles, partial.
+  importRun('import_run'),
+
+  /// Plano do Direciona criado: source.
+  directionPlanCreated('direction_plan_created'),
+
+  /// Etapa concluída: onTime, source, action.
+  directionStepDone('direction_step_done'),
+
+  /// Etapa perdida: source, action.
+  directionStepMissed('direction_step_missed'),
+
+  /// A IA falhou e as regras assumiram: feature, reason.
+  aiFallback('ai_fallback'),
+
+  /// Avaliação de questão do acervo salva (sem dados).
+  ratingSaved('rating_saved'),
+
+  /// Post na comunidade: communityId.
+  communityPost('community_post'),
+
+  /// Resposta na comunidade: communityId.
+  communityReply('community_reply'),
+
+  /// Resposta marcada como útil: communityId.
+  helpfulGiven('helpful_given'),
+
+  /// Denúncia registrada: reason.
+  reportFiled('report_filed');
 
   const MetricEventType(this.code);
 

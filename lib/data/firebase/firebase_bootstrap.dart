@@ -17,6 +17,10 @@ enum FirebaseStatus {
   unavailable,
 }
 
+/// O App Check **não** é ativado aqui: carregaria o reCAPTCHA na abertura e a
+/// demo precisa seguir 100% offline. Ele é ativado na primeira vez que o
+/// gateway de IA é usado por uma conta real (`ensureAppCheckActivated`).
+///
 /// Inicializa o Firebase **sem travar a abertura do app**: a demonstração
 /// funciona enquanto isso (e mesmo se falhar). Na web o SDK do Firebase vem
 /// de um CDN; sem internet, o resultado é [FirebaseStatus.unavailable].

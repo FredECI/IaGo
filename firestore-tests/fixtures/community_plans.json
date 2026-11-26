@@ -1,0 +1,400 @@
+{
+  "join": [
+    {
+      "kind": "set",
+      "path": "memberships/novo",
+      "data": {
+        "nickname": "novo_ok",
+        "inviteCode": "turma1",
+        "declaredMinAge": 18,
+        "rulesVersion": "2026-11-08",
+        "joinedAt": {
+          "$": "serverTimestamp"
+        }
+      }
+    },
+    {
+      "kind": "set",
+      "path": "profiles/novo",
+      "data": {
+        "nickname": "novo_ok",
+        "joinedAt": {
+          "$": "serverTimestamp"
+        }
+      }
+    }
+  ],
+  "joinNoInvite": [
+    {
+      "kind": "set",
+      "path": "memberships/novo",
+      "data": {
+        "nickname": "novo_ok",
+        "declaredMinAge": 18,
+        "rulesVersion": "2026-11-08",
+        "joinedAt": {
+          "$": "serverTimestamp"
+        }
+      }
+    },
+    {
+      "kind": "set",
+      "path": "profiles/novo",
+      "data": {
+        "nickname": "novo_ok",
+        "joinedAt": {
+          "$": "serverTimestamp"
+        }
+      }
+    }
+  ],
+  "rename": [
+    {
+      "kind": "update",
+      "path": "memberships/ana",
+      "data": {
+        "nickname": "ana_nova"
+      }
+    },
+    {
+      "kind": "update",
+      "path": "profiles/ana",
+      "data": {
+        "nickname": "ana_nova"
+      }
+    }
+  ],
+  "leave": [
+    {
+      "kind": "delete",
+      "path": "memberships/ana"
+    },
+    {
+      "kind": "delete",
+      "path": "profiles/ana"
+    }
+  ],
+  "post": [
+    {
+      "kind": "set",
+      "path": "posts/pNovo",
+      "data": {
+        "communityId": "matematica",
+        "authorUid": "ana",
+        "authorNickname": "ana_ok",
+        "title": "Dúvida em funções",
+        "body": "Como começo?",
+        "status": "visible",
+        "createdAt": {
+          "$": "serverTimestamp"
+        }
+      }
+    },
+    {
+      "kind": "set",
+      "path": "conectaLimits/ana",
+      "data": {
+        "lastWriteAt": {
+          "$": "serverTimestamp"
+        },
+        "lastDocPath": "posts/pNovo"
+      }
+    }
+  ],
+  "postBank": [
+    {
+      "kind": "set",
+      "path": "posts/pNovo",
+      "data": {
+        "communityId": "matematica",
+        "authorUid": "ana",
+        "authorNickname": "ana_ok",
+        "title": "Dúvida em funções",
+        "body": "Como começo?",
+        "bankId": "enem-2022-136",
+        "status": "visible",
+        "createdAt": {
+          "$": "serverTimestamp"
+        }
+      }
+    },
+    {
+      "kind": "set",
+      "path": "conectaLimits/ana",
+      "data": {
+        "lastWriteAt": {
+          "$": "serverTimestamp"
+        },
+        "lastDocPath": "posts/pNovo"
+      }
+    }
+  ],
+  "reply": [
+    {
+      "kind": "set",
+      "path": "replies/rNovo",
+      "data": {
+        "postId": "p1",
+        "authorUid": "bob",
+        "authorNickname": "bob_ok",
+        "body": "Comece pelo gráfico.",
+        "status": "visible",
+        "createdAt": {
+          "$": "serverTimestamp"
+        }
+      }
+    },
+    {
+      "kind": "set",
+      "path": "conectaLimits/bob",
+      "data": {
+        "lastWriteAt": {
+          "$": "serverTimestamp"
+        },
+        "lastDocPath": "replies/rNovo"
+      }
+    }
+  ],
+  "helpful": [
+    {
+      "kind": "set",
+      "path": "helpfulVotes/r1_ana",
+      "data": {
+        "replyId": "r1",
+        "postId": "p1",
+        "authorUid": "bob",
+        "voterUid": "ana",
+        "createdAt": {
+          "$": "serverTimestamp"
+        }
+      }
+    }
+  ],
+  "unhelpful": [
+    {
+      "kind": "delete",
+      "path": "helpfulVotes/r1_ana"
+    }
+  ],
+  "reportPost": [
+    {
+      "kind": "set",
+      "path": "reports/p1_bob",
+      "data": {
+        "targetType": "post",
+        "targetId": "p1",
+        "postId": "p1",
+        "reason": "spam",
+        "details": "propaganda",
+        "reporterUid": "bob",
+        "status": "open",
+        "createdAt": {
+          "$": "serverTimestamp"
+        }
+      }
+    },
+    {
+      "kind": "update",
+      "path": "posts/p1",
+      "data": {
+        "status": "pending"
+      }
+    }
+  ],
+  "reportPostNoHide": [
+    {
+      "kind": "set",
+      "path": "reports/p1_bob",
+      "data": {
+        "targetType": "post",
+        "targetId": "p1",
+        "postId": "p1",
+        "reason": "other",
+        "details": "",
+        "reporterUid": "bob",
+        "status": "open",
+        "createdAt": {
+          "$": "serverTimestamp"
+        }
+      }
+    }
+  ],
+  "reportReply": [
+    {
+      "kind": "set",
+      "path": "reports/r1_bob",
+      "data": {
+        "targetType": "reply",
+        "targetId": "r1",
+        "postId": "p1",
+        "reason": "personal_data",
+        "details": "telefone",
+        "reporterUid": "bob",
+        "status": "open",
+        "createdAt": {
+          "$": "serverTimestamp"
+        }
+      }
+    },
+    {
+      "kind": "update",
+      "path": "replies/r1",
+      "data": {
+        "status": "pending"
+      }
+    }
+  ],
+  "resolveRestorePost": [
+    {
+      "kind": "update",
+      "path": "posts/p1",
+      "data": {
+        "status": "visible",
+        "moderationReason": {
+          "$": "delete"
+        },
+        "moderatedAt": {
+          "$": "serverTimestamp"
+        }
+      }
+    },
+    {
+      "kind": "update",
+      "path": "reports/p1_bob",
+      "data": {
+        "status": "resolved",
+        "decision": "restored",
+        "resolvedBy": "mod",
+        "resolvedAt": {
+          "$": "serverTimestamp"
+        }
+      }
+    }
+  ],
+  "resolveHidePost": [
+    {
+      "kind": "update",
+      "path": "posts/p1",
+      "data": {
+        "status": "hidden",
+        "moderationReason": "spam",
+        "moderatedAt": {
+          "$": "serverTimestamp"
+        }
+      }
+    },
+    {
+      "kind": "update",
+      "path": "reports/p1_bob",
+      "data": {
+        "status": "resolved",
+        "decision": "hidden",
+        "resolvedBy": "mod",
+        "resolvedAt": {
+          "$": "serverTimestamp"
+        }
+      }
+    }
+  ],
+  "resolveBanPost": [
+    {
+      "kind": "update",
+      "path": "posts/p1",
+      "data": {
+        "status": "hidden",
+        "moderationReason": "spam",
+        "moderatedAt": {
+          "$": "serverTimestamp"
+        }
+      }
+    },
+    {
+      "kind": "update",
+      "path": "reports/p1_bob",
+      "data": {
+        "status": "resolved",
+        "decision": "hidden_banned",
+        "resolvedBy": "mod",
+        "resolvedAt": {
+          "$": "serverTimestamp"
+        }
+      }
+    },
+    {
+      "kind": "set",
+      "path": "bans/ana",
+      "data": {
+        "at": {
+          "$": "serverTimestamp"
+        },
+        "reason": "spam"
+      }
+    }
+  ],
+  "resolveHideReply": [
+    {
+      "kind": "update",
+      "path": "replies/r1",
+      "data": {
+        "status": "hidden",
+        "moderationReason": "ofensa",
+        "moderatedAt": {
+          "$": "serverTimestamp"
+        }
+      }
+    },
+    {
+      "kind": "update",
+      "path": "reports/r1_bob",
+      "data": {
+        "status": "resolved",
+        "decision": "hidden",
+        "resolvedBy": "mod",
+        "resolvedAt": {
+          "$": "serverTimestamp"
+        }
+      }
+    }
+  ],
+  "resolveDeletedTarget": [
+    {
+      "kind": "update",
+      "path": "reports/p1_bob",
+      "data": {
+        "status": "resolved",
+        "decision": "targetDeleted",
+        "resolvedBy": "mod",
+        "resolvedAt": {
+          "$": "serverTimestamp"
+        }
+      }
+    }
+  ],
+  "resolveRestoreReply": [
+    {
+      "kind": "update",
+      "path": "replies/r1",
+      "data": {
+        "status": "visible",
+        "moderationReason": {
+          "$": "delete"
+        },
+        "moderatedAt": {
+          "$": "serverTimestamp"
+        }
+      }
+    },
+    {
+      "kind": "update",
+      "path": "reports/r1_bob",
+      "data": {
+        "status": "resolved",
+        "decision": "restored",
+        "resolvedBy": "mod",
+        "resolvedAt": {
+          "$": "serverTimestamp"
+        }
+      }
+    }
+  ]
+}

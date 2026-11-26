@@ -1,0 +1,40 @@
+{
+  "stages": [
+    [
+      {
+        "kind": "delete",
+        "path": "posts/p1"
+      },
+      {
+        "kind": "delete",
+        "path": "replies/r1"
+      },
+      {
+        "kind": "delete",
+        "path": "helpfulVotes/r9_ana"
+      },
+      {
+        "kind": "delete",
+        "path": "questionRatings/enem-2022-1_ana"
+      },
+      {
+        "kind": "delete",
+        "path": "reports/p8_ana"
+      }
+    ],
+    [
+      {
+        "kind": "delete",
+        "path": "conectaLimits/ana"
+      },
+      {
+        "kind": "delete",
+        "path": "memberships/ana"
+      },
+      {
+        "kind": "delete",
+        "path": "profiles/ana"
+      }
+    ]
+  ]
+}

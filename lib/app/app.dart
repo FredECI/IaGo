@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../core/app_info.dart';
+import '../features/auth/terms_gate.dart';
 import 'router.dart';
 import 'theme.dart';
 import 'theme_mode_controller.dart';
@@ -21,6 +22,9 @@ class IagoApp extends ConsumerWidget {
       locale: const Locale('pt', 'BR'),
       supportedLocales: const [Locale('pt', 'BR')],
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
+      // Termos novos: a conta em versão antiga só vê o novo aceite (CA-T8).
+      builder: (context, child) =>
+          TermsGate(child: child ?? const SizedBox.shrink()),
     );
   }
 }

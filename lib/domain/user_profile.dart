@@ -25,6 +25,7 @@ class SignUpData {
     required this.password,
     required this.referralSource,
     required this.termsVersion,
+    required this.declaredMinAge,
     this.platformsBefore,
   });
 
@@ -36,17 +37,26 @@ class SignUpData {
   /// Versão dos Termos e da Política de Privacidade aceita (LGPD).
   final String termsVersion;
 
+  /// Idade mínima que a pessoa declarou ter (a da política, hoje 18).
+  final int declaredMinAge;
+
   /// "Em quantas plataformas você estuda hoje?" (opcional; H2, antes × depois).
   final int? platformsBefore;
 }
 
 /// Usuário autenticado (sem detalhes do Firebase).
 class AuthUser {
-  const AuthUser({required this.uid, this.email, this.displayName});
+  const AuthUser({
+    required this.uid,
+    this.email,
+    this.displayName,
+    this.emailVerified = false,
+  });
 
   final String uid;
   final String? email;
   final String? displayName;
+  final bool emailVerified;
 }
 
 /// Erro de autenticação já com a mensagem para o usuário, em português.

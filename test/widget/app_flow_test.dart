@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:iago/core/app_info.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../helpers/test_app.dart';
@@ -12,17 +13,18 @@ void main() {
     await pumpIagoApp(tester);
 
     // Tela inicial com selo Beta.
-    expect(find.text('Beta 0.1'), findsOneWidget);
+    expect(find.text(AppInfo.versionLabel), findsOneWidget);
     await enterDemo(tester);
 
-    // Painel: saudação, resumo relativo, atalhos e o roteiro "Em breve".
+    // Painel: saudação, resumo relativo, atalhos e os pilares (sem "Em breve").
     expect(find.text('Olá, Pedro'), findsOneWidget);
     expect(find.byKey(const Key('saved-this-week')), findsOneWidget);
     expect(find.text('3 a mais que nos 7 dias anteriores'), findsOneWidget);
-    await reveal(tester, find.text('Em breve: Conecta'));
+    await reveal(tester, find.byKey(const Key('conecta-card')));
     expect(find.text('Salvar questão'), findsOneWidget);
-    expect(find.text('Em breve: Direciona'), findsOneWidget);
-    expect(find.text('Em breve: Conecta'), findsOneWidget);
+    expect(find.byKey(const Key('direction-card')), findsOneWidget);
+    expect(find.byKey(const Key('conecta-card')), findsOneWidget);
+    expect(find.textContaining('Em breve'), findsNothing);
 
     // Questões: as 40 de exemplo.
     await tester.tap(find.text('Questões').last);

@@ -149,6 +149,30 @@ class _QuestionsPageState extends ConsumerState<QuestionsPage> {
                       ),
                     ),
                     const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton.icon(
+                            key: const Key('open-bank'),
+                            style: _entryStyle,
+                            onPressed: () => context.push(Routes.bank),
+                            icon: const Icon(Icons.local_library_outlined),
+                            label: const Text('Acervo'),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: OutlinedButton.icon(
+                            key: const Key('open-import'),
+                            style: _entryStyle,
+                            onPressed: () => context.push(Routes.import),
+                            icon: const Icon(Icons.upload_file_outlined),
+                            label: const Text('Importar'),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
                     const QuestionFilterBar(),
                     const SizedBox(height: 8),
                     Row(
@@ -273,6 +297,10 @@ class _QuestionsPageState extends ConsumerState<QuestionsPage> {
       ),
     );
   }
+
+  static final ButtonStyle _entryStyle = OutlinedButton.styleFrom(
+    minimumSize: const Size.fromHeight(48),
+  );
 
   /// "40 questões" sem filtro; "9 de 40 questões" com filtro (nunca solto).
   static String _resultsLabel(int? shown, int? total, bool unfiltered) {

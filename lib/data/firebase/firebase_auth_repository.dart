@@ -1,10 +1,17 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../core/clock.dart';
+import '../../domain/community_models.dart';
 import '../../domain/metric_event.dart';
 import '../../domain/user_profile.dart';
 import '../auth_repository.dart';
+import 'account_erasure.dart';
+import 'community_write_plans.dart';
+import 'firestore_community_repository.dart';
+import 'firestore_mapping.dart';
 
 /// Cadastro e login com e-mail e senha (Firebase Auth) e perfil em
 /// `users/{uid}`. Nada de servidor próprio: as regras do Firestore garantem
@@ -26,6 +33,8 @@ class FirebaseAuthRepository implements AuthRepository {
     'questionImages',
     'lists',
     'events',
+    'direction',
+    'directionSteps',
   ];
 
   /// `userChanges` também avisa mudanças de perfil (o nome gravado logo
@@ -38,8 +47,65 @@ class FirebaseAuthRepository implements AuthRepository {
             uid: user.uid,
             email: user.email,
             displayName: user.displayName,
+            emailVerified: user.emailVerified,
           ),
   );
+
+  @override
+  Stream<String?> watchAcceptedTermsVersion() {
+    final uid = _auth.currentUser?.uid;
+    if (uid == null) return const Stream.empty();
+    return _db
+        .collection('users')
+        .doc(uid)
+        .snapshots()
+        .where((snap) => snap.exists)
+        .map((snap) {
+          final version = snap.data()?['termsVersion'];
+          return version is String ? version : null;
+        });
+  }
+
+  @override
+  Future<void> acceptTerms({
+    required String termsVersion,
+    required int declaredMinAge,
+  }) => _guard(() async {
+    final uid = _auth.currentUser?.uid;
+    if (uid == null) {
+      throw const AuthFailure('Entre na conta antes de aceitar os termos.');
+    }
+    final now = _clock();
+    await commitOrQueue(
+      _db.collection('users').doc(uid).set({
+        'termsVersion': termsVersion,
+        'termsAcceptedAt': now,
+        'declaredMinAge': declaredMinAge,
+        'declaredMinAgeAt': now,
+      }, SetOptions(merge: true)),
+    );
+  });
+
+  @override
+  Future<void> sendEmailVerification() => _guard(() async {
+    final user = _auth.currentUser;
+    if (user == null) {
+      throw const AuthFailure('Entre na conta antes de verificar o e-mail.');
+    }
+    await user.sendEmailVerification();
+  });
+
+  @override
+  Future<bool> refreshEmailVerified() => _guardValue(() async {
+    final user = _auth.currentUser;
+    if (user == null) return false;
+    await user.reload();
+    final verified = _auth.currentUser?.emailVerified ?? false;
+    // `reload` não renova o ID token, e as regras de `memberships` leem
+    // `email_verified` do token: sem isto, a entrada seria negada por até 1 h.
+    if (verified) await _auth.currentUser?.getIdToken(true);
+    return verified;
+  });
 
   @override
   Future<void> signIn({required String email, required String password}) =>
@@ -66,8 +132,17 @@ class FirebaseAuthRepository implements AuthRepository {
       'platformsBefore': ?data.platformsBefore,
       'termsVersion': data.termsVersion,
       'termsAcceptedAt': now,
+      'declaredMinAge': data.declaredMinAge,
+      'declaredMinAgeAt': now,
       'createdAt': now,
     });
+    // Verificação do e-mail: se falhar (rede), a pessoa pede de novo na tela
+    // "Entrar no piloto". Nunca impede o cadastro.
+    try {
+      await user.sendEmailVerification();
+    } on FirebaseException {
+      // Segue sem o envio.
+    }
     // H4 (origem) e H2 (plataformas antes): evento de cadastro.
     await _db.collection('users').doc(user.uid).collection('events').add({
       'type': MetricEventType.signedUp.code,
@@ -94,25 +169,94 @@ class FirebaseAuthRepository implements AuthRepository {
     await user.reauthenticateWithCredential(
       EmailAuthProvider.credential(email: user.email!, password: password),
     );
-    final userDoc = _db.collection('users').doc(user.uid);
-    for (final name in userCollections) {
-      final docs = await userDoc.collection(name).get();
-      // Lotes de até 400 exclusões (o limite do Firestore é 500).
-      for (var i = 0; i < docs.docs.length; i += 400) {
-        final batch = _db.batch();
-        for (final doc in docs.docs.skip(i).take(400)) {
-          batch.delete(doc.reference);
-        }
-        await batch.commit();
-      }
+    final uid = user.uid;
+    AccountErasureState.inProgress = true;
+    try {
+      await _eraseAll(user, uid);
+    } finally {
+      AccountErasureState.inProgress = false;
     }
-    await userDoc.delete();
-    await user.delete();
   });
 
-  Future<void> _guard(Future<void> Function() action) async {
+  Future<void> _eraseAll(User user, String uid) async {
+    // Ordem: dados públicos, participação e perfil, subcoleções privadas e,
+    // por último, o usuário do Auth (depois dele, as regras negam tudo). Se
+    // uma etapa falhar, o Auth fica intacto e uma nova tentativa continua.
     try {
-      await action();
+      await AccountEraser(
+        inventory: () => _inventory(uid),
+        commit: _commitDeletes,
+        deleteUserData: () => _deleteUserData(uid),
+      ).run(uid);
+    } on FirebaseException catch (e) {
+      throw AuthFailure(
+        'Não foi possível apagar todos os seus dados agora '
+        '(${messageFor(e.code)}) A conta não foi excluída: tente de novo.',
+      );
+    } on CommunityFailure {
+      throw const AuthFailure(
+        'Não foi possível ler seus dados do Conecta agora. '
+        'A conta não foi excluída: tente de novo.',
+      );
+    } on TimeoutException {
+      throw const AuthFailure(
+        'Sem conexão para apagar seus dados. '
+        'A conta não foi excluída: tente de novo.',
+      );
+    }
+    await user.delete();
+  }
+
+  Future<ErasureInventory> _inventory(String uid) async {
+    final footprint = await FirestoreCommunityRepository(
+      db: _db,
+      uid: uid,
+      clock: _clock,
+    ).myFootprint(fromServer: true);
+    // As regras deixam cada pessoa listar as próprias avaliações, mesmo sem ser
+    // membro ou banida (C5): falha aqui não pode virar "sem avaliações".
+    final snap = await _db
+        .collection('questionRatings')
+        .where('uid', isEqualTo: uid)
+        .get(const GetOptions(source: Source.server));
+    final ratingIds = [for (final d in snap.docs) d.id];
+    return ErasureInventory(footprint: footprint, ratingIds: ratingIds);
+  }
+
+  /// Sem `commitOrQueue`: na exclusão, escrita só na fila não vale.
+  Future<void> _commitDeletes(List<PlannedWrite> writes) {
+    final batch = _db.batch();
+    for (final w in writes) {
+      batch.delete(_db.doc(w.path));
+    }
+    return batch.commit().timeout(_erasureTimeout);
+  }
+
+  static const Duration _erasureTimeout = Duration(seconds: 30);
+
+  Future<void> _deleteUserData(String uid) async {
+    final userDoc = _db.collection('users').doc(uid);
+    for (final name in userCollections) {
+      final docs = await userDoc
+          .collection(name)
+          .get(const GetOptions(source: Source.server));
+      for (var i = 0; i < docs.docs.length; i += erasureBatchSize) {
+        final batch = _db.batch();
+        for (final doc in docs.docs.skip(i).take(erasureBatchSize)) {
+          batch.delete(doc.reference);
+        }
+        await batch.commit().timeout(_erasureTimeout);
+      }
+    }
+    await userDoc.delete().timeout(_erasureTimeout);
+  }
+
+  Future<void> _guard(Future<void> Function() action) =>
+      _guardValue<void>(action);
+
+  Future<T> _guardValue<T>(Future<T> Function() action) async {
+    try {
+      return await action();
     } on FirebaseAuthException catch (e) {
       throw AuthFailure(messageFor(e.code));
     } on FirebaseException catch (e) {

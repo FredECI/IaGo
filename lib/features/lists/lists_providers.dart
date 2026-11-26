@@ -3,10 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/clock.dart';
 import '../../data/providers.dart';
+import '../../domain/direction_models.dart';
 import '../../domain/list_builder.dart';
 import '../../domain/metric_event.dart';
+import '../../domain/question.dart';
 import '../../domain/question_list.dart';
+import '../direction/direction_providers.dart';
 import '../metrics/metrics_providers.dart';
+import '../questions/questions_providers.dart';
 
 /// Todas as listas do usuário atual, mais recentes primeiro.
 final listsProvider = StreamProvider<List<QuestionList>>(
@@ -108,11 +112,31 @@ class ListActions {
     final saved = await _ref
         .read(listRepositoryProvider)
         .registerExport(list.id);
+    final origin = _exportOrigin(list);
     _ref.read(metricsLoggerProvider).log(MetricEventType.listExported, {
       'questionCount': list.length,
       'exportIndex': list.exportCount + 1,
       'assemblySeconds': ?assemblySeconds,
+      'bankQuestionCount': origin.bankCount,
+      'hadAcceptedListStep': origin.hadAcceptedListStep,
     });
     return saved;
+  }
+
+  /// Quantas questões da lista vêm do acervo (H2) e se há uma etapa
+  /// `buildList` aceita e pendente (H3). Só contagens, lidas do que já está
+  /// carregado (sem esperar rede): se ainda não carregou, vale 0 e `false`.
+  ({int bankCount, bool hadAcceptedListStep}) _exportOrigin(QuestionList list) {
+    final questions = _ref.read(questionsProvider).value ?? const <Question>[];
+    final ids = list.questionIds.toSet();
+    final bankCount = questions
+        .where((q) => ids.contains(q.id) && q.origin == QuestionOrigin.bank)
+        .length;
+    final steps = _ref.read(studyStepsProvider).value ?? const <StudyStep>[];
+    final hadAcceptedListStep = steps.any(
+      (s) =>
+          s.action == StepAction.buildList && s.status == StepStatus.accepted,
+    );
+    return (bankCount: bankCount, hadAcceptedListStep: hadAcceptedListStep);
   }
 }

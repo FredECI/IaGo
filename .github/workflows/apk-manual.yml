@@ -1,0 +1,83 @@
+# APK manual do IaGo: assinado, com Firebase, para spike de IA (CP0) e teste no celular (Q2).
+# Roda SOMENTE por disparo manual (workflow_dispatch), nunca em push ou PR, e só em
+# main ou em branches feat/mvp* (autorizado pelo Fred em 07/11). É o único lugar fora
+# da main que lê os secrets FIREBASE_ENV_JSON e ANDROID_DEBUG_KEYSTORE.
+# Mesmos passos e flags do APK do ci.yml (ARM, useLegacyPackaging no Gradle, assinatura fixa).
+# NUNCA grave token de depuracao do App Check no secret nem passe-o como define:
+# o passo de configuração falha se encontrar algo parecido.
+name: APK manual
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: apk-manual-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  apk:
+    name: APK assinado (manual)
+    if: github.event_name == 'workflow_dispatch' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/feat/mvp'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.9'
+          channel: stable
+          cache: true
+
+      - run: flutter pub get
+
+      # Aqui os secrets são obrigatórios: APK sem Firebase ou com outra chave não serve ao teste.
+      - name: Configuração do Firebase
+        env:
+          FIREBASE_ENV_JSON: ${{ secrets.FIREBASE_ENV_JSON }}
+        run: |
+          if [ -z "$FIREBASE_ENV_JSON" ]; then
+            echo "::error::Secret FIREBASE_ENV_JSON ausente."
+            exit 1
+          fi
+          printf '%s' "$FIREBASE_ENV_JSON" | sed '1s/^\xEF\xBB\xBF//' | tr -d '\r' > env/firebase.json
+          if grep -qiE 'debug.?token' env/firebase.json; then
+            rm -f env/firebase.json
+            echo "::error::Token de depuração do App Check não pode entrar no build."
+            exit 1
+          fi
+          echo "DEFINES=--dart-define-from-file=env/firebase.json" >> "$GITHUB_ENV"
+
+      - name: Chave de assinatura estável
+        env:
+          ANDROID_DEBUG_KEYSTORE: ${{ secrets.ANDROID_DEBUG_KEYSTORE }}
+        run: |
+          if [ -z "$ANDROID_DEBUG_KEYSTORE" ]; then
+            echo "::error::Secret ANDROID_DEBUG_KEYSTORE ausente."
+            exit 1
+          fi
+          mkdir -p "$HOME/.android"
+          printf '%s' "$ANDROID_DEBUG_KEYSTORE" | tr -cd 'A-Za-z0-9+/=' | base64 -d > "$HOME/.android/debug.keystore"
+          echo "ANDROID_USER_HOME=$HOME/.android" >> "$GITHUB_ENV"
+
+      - name: Build APK de release (chave de debug)
+        run: flutter build apk --release --target-platform android-arm,android-arm64 $DEFINES
+
+      - name: Assinatura do APK
+        run: |
+          APKSIGNER="$(ls -d "$ANDROID_HOME"/build-tools/*/ | sort -V | tail -1)apksigner"
+          "$APKSIGNER" verify --print-certs build/app/outputs/flutter-apk/app-release.apk | grep -i "SHA-256"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iago-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+          retention-days: 14

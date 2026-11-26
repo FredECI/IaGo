@@ -73,7 +73,7 @@ final isAdminProvider = FutureProvider<bool>((ref) async {
   return false;
 });
 
-/// Relatório H1–H4 calculado na hora a partir dos eventos.
+/// Relatório H1–H6 calculado na hora a partir dos eventos.
 class PilotReport {
   const PilotReport({
     required this.simulated,

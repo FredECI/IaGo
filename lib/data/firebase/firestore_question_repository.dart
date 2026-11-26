@@ -4,8 +4,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../core/clock.dart';
 import '../../domain/question.dart';
+import '../../domain/rating_models.dart';
 import '../repositories.dart';
 import 'firestore_mapping.dart';
+import 'rating_write_plans.dart';
 
 /// Questões em `users/{uid}/questions`; a imagem compactada fica à parte, em
 /// `users/{uid}/questionImages/{id}` (lida só no detalhe e no PDF).
@@ -59,6 +61,30 @@ class FirestoreQuestionRepository implements QuestionRepository {
   }
 
   @override
+  Future<List<Question>> createMany(List<Question> questions) async {
+    if (questions.length > QuestionRepository.maxCreateMany) {
+      throw ArgumentError.value(questions.length, 'questions', 'lote grande');
+    }
+    if (questions.isEmpty) return const [];
+    final now = _clock();
+    final batch = _db.batch();
+    final saved = <Question>[];
+    for (final q in QuestionRepository.dedupeById(questions)) {
+      final doc = q.id.isEmpty ? _questions.doc() : _questions.doc(q.id);
+      final item = q.copyWith(
+        id: doc.id,
+        createdAt: now,
+        updatedAt: now,
+        hasImage: false,
+      );
+      batch.set(doc, toFirestore(item.toMap()));
+      saved.add(item);
+    }
+    await commitOrQueue(batch.commit());
+    return saved;
+  }
+
+  @override
   Future<Question> update(
     Question question, {
     Uint8List? image,
@@ -87,6 +113,35 @@ class FirestoreQuestionRepository implements QuestionRepository {
           ..delete(_images.doc(id)))
         .commit(),
   );
+
+  @override
+  Future<void> setPrivateRating(
+    String id, {
+    int? difficulty,
+    int? quality,
+  }) async {
+    final plan = privateRatingPlan(
+      uid: _uid,
+      questionId: id,
+      difficulty: difficulty,
+      quality: quality,
+    );
+    final batch = _db.batch();
+    for (final w in plan) {
+      batch.update(_db.doc(w.path), w.data!);
+    }
+    try {
+      await commitOrQueue(batch.commit());
+    } on FirebaseException catch (e) {
+      if (e.code == 'not-found') {
+        throw const RatingFailure(
+          RatingFailureKind.invalid,
+          'Questão não encontrada.',
+        );
+      }
+      rethrow;
+    }
+  }
 
   @override
   Future<Uint8List?> loadImage(String questionId) async {

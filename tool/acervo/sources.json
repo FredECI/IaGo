@@ -1,0 +1,16 @@
+{
+  "sources": [
+    {
+      "id": "enem",
+      "name": "ENEM (INEP)",
+      "via": "api.enem.dev",
+      "officialUrl": "https://www.gov.br/inep/pt-br/areas-de-atuacao/avaliacao-e-exames-educacionais/enem/provas-e-gabaritos",
+      "license": "Licença do rodapé do site do INEP (CC BY-ND 3.0), não confirmada para as provas. Registro interno: não exibir",
+      "licenseUrl": "https://creativecommons.org/licenses/by-nd/3.0/legalcode",
+      "licenseEvidence": "Licença do rodapé do site do INEP; aplicação às provas não confirmada (ver a seção Direitos autorais em docs/specs/mvp-27-11.md). Link: https://www.gov.br/inep/pt-br/areas-de-atuacao/avaliacao-e-exames-educacionais/enem/provas-e-gabaritos",
+      "attribution": "Provas do ENEM, INEP.",
+      "notice": "Texto das provas do INEP, reproduzido para uso educacional. Formatação ajustada. Confira o original em https://www.gov.br/inep/pt-br/areas-de-atuacao/avaliacao-e-exames-educacionais/enem/provas-e-gabaritos",
+      "authorized": true
+    }
+  ]
+}
