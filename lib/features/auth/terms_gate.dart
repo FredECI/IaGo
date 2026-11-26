@@ -80,6 +80,7 @@ class TermsGate extends ConsumerWidget {
     return switch (ref.watch(termsGateProvider)) {
       TermsGateState.ok => child,
       TermsGateState.checking => _GateShell(
+        key: const ValueKey('terms-checking'),
         child: Scaffold(
           body: Center(
             child: Semantics(
@@ -90,6 +91,7 @@ class TermsGate extends ConsumerWidget {
         ),
       ),
       TermsGateState.needsAccept => const _GateShell(
+        key: ValueKey('terms-needs-accept'),
         child: TermsReacceptPage(),
       ),
     };
@@ -97,8 +99,12 @@ class TermsGate extends ConsumerWidget {
 }
 
 /// O gate fica acima do `Navigator`; campos de texto precisam de um `Overlay`.
+///
+/// Cada estado usa uma `key` própria: o `Overlay` só lê `initialEntries` ao
+/// nascer, então, sem a chave, a troca "conferindo" -> "novo aceite" mantinha
+/// o indicador de carregamento na tela para sempre (conta com termos antigos).
 class _GateShell extends StatelessWidget {
-  const _GateShell({required this.child});
+  const _GateShell({super.key, required this.child});
 
   final Widget child;
 

@@ -52,6 +52,15 @@ class _DeafAuth extends FakeAuthRepository {
       : StreamController<String?>().stream;
 }
 
+/// Conta do beta 0.1: o perfil chega depois do login, com os termos antigos.
+class _LateOldTermsAuth extends FakeAuthRepository {
+  @override
+  Stream<String?> watchAcceptedTermsVersion() async* {
+    await Future<void>.delayed(const Duration(milliseconds: 300));
+    yield '2026-11-03';
+  }
+}
+
 Future<void> signIn(WidgetTester tester) async {
   await tester.enterText(find.byKey(const Key('login-email')), 'ana@ex.com');
   await tester.enterText(
@@ -138,6 +147,21 @@ void main() {
       auth.acceptedTerms = null;
       await signIn(tester);
       await tester.pumpAndSettle();
+      expect(find.text('Novos termos de uso'), findsOneWidget);
+    });
+
+    testWidgets('regressão: conta do beta com termos antigos, que chegam '
+        'depois do "conferindo", mostra o reaceite (não fica carregando)', (
+      tester,
+    ) async {
+      final auth = _LateOldTermsAuth();
+      await pumpIagoApp(tester, overrides: await _overrides(auth));
+      await signIn(tester);
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      await tester.pump(const Duration(milliseconds: 400));
+      await tester.pumpAndSettle();
+      expect(find.byType(CircularProgressIndicator), findsNothing);
       expect(find.text('Novos termos de uso'), findsOneWidget);
     });
 

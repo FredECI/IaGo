@@ -160,6 +160,7 @@ void main() {
         'saved',
         'savedLast14d',
         'listsExportedLast14d',
+        'bankAvailable',
       });
       final text = jsonEncode(json).toLowerCase();
       for (final forbidden in ['uid', 'email', 'e-mail', 'name', 'stem']) {
