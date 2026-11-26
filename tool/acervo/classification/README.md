@@ -6,6 +6,7 @@ Cada questão do acervo precisa de uma **matéria** (lista fechada por área) e,
 
 - `batches/lote-1.jsonl` a `lote-8.jsonl`: as 1.687 questões, em 8 lotes de ~211. **Entrada** (gerada por `classify.py batches`, não edite).
 - `out/lote-N.jsonl`: a **saída** de cada classificador, uma por lote. O classificador do lote N grava só o `out/lote-N.jsonl`.
+- `inep.jsonl`: matéria e assunto das questões de 2024 a 2026 (PDFs do INEP), classificadas por agente no mesmo formato, sem lotes. Quem classificar de novo acrescenta linhas com `"by":"human"` em outro arquivo.
 - `enem.jsonl`: resultado do `merge` (é o que o `build_acervo.py` lê). Não edite à mão; correção humana é uma linha nova com `"by":"human"` em outro `.jsonl` desta pasta.
 
 ## Entrada: uma questão por linha em `batches/lote-N.jsonl`

@@ -1,0 +1,569 @@
+{"id":"enem-2024-46","subject":"Geografia","topic":"Relevo, solos e geologia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-48","subject":"Geografia","topic":"Biomas e questões ambientais","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-50","subject":"História","topic":"Idade Moderna","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-51","subject":"História","topic":"Idade Moderna","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-52","subject":"Sociologia","topic":"Movimentos sociais e cidadania","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-54","subject":"Sociologia","topic":"Desigualdade social","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-56","subject":"Sociologia","topic":"Cultura e identidade","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-58","subject":"Filosofia","topic":"Filosofia antiga","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-59","subject":"História","topic":"Antiguidade e Idade Média","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-60","subject":"Geografia","topic":"Biomas e questões ambientais","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-61","subject":"Filosofia","topic":"Filosofia contemporânea","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-62","subject":"Filosofia","topic":"Teoria do conhecimento","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-64","subject":"História","topic":"Brasil Império","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-66","subject":"Sociologia","topic":"Cultura e identidade","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-67","subject":"Sociologia","topic":"Comunicação e tecnologia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-68","subject":"Geografia","topic":"Climatologia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-69","subject":"História","topic":"Revoluções e século XIX","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-71","subject":"Geografia","topic":"Biomas e questões ambientais","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-73","subject":"História","topic":"Primeira República","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-74","subject":"Sociologia","topic":"Cultura e identidade","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-75","subject":"História","topic":"Idade Moderna","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-78","subject":"Filosofia","topic":"Ética e moral","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-80","subject":"Sociologia","topic":"Comunicação e tecnologia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-81","subject":"História","topic":"África e povos indígenas","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-82","subject":"Filosofia","topic":"Teoria do conhecimento","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-83","subject":"Geografia","topic":"Cartografia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-84","subject":"História","topic":"Brasil Império","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-87","subject":"Filosofia","topic":"Política e Estado","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-88","subject":"Geografia","topic":"Urbanização","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-89","subject":"Geografia","topic":"Globalização e geopolítica","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-46","subject":"História","topic":"Redemocratização e Brasil atual","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-48","subject":"Geografia","topic":"Indústria e energia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-50","subject":"História","topic":"Guerras mundiais e Guerra Fria","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-52","subject":"Geografia","topic":"Cartografia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-54","subject":"História","topic":"Brasil Colônia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-59","subject":"Geografia","topic":"Espaço rural e agropecuária","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-60","subject":"Sociologia","topic":"Cultura e identidade","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-62","subject":"Geografia","topic":"Biomas e questões ambientais","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-64","subject":"Sociologia","topic":"Trabalho e sociedade","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-66","subject":"Geografia","topic":"População e migrações","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-67","subject":"Sociologia","topic":"Cultura e identidade","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-68","subject":"Filosofia","topic":"Teoria do conhecimento","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-69","subject":"Geografia","topic":"Espaço rural e agropecuária","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-71","subject":"História","topic":"Brasil Império","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-73","subject":"Sociologia","topic":"Cultura e identidade","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-75","subject":"Geografia","topic":"Globalização e geopolítica","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-77","subject":"Filosofia","topic":"Filosofia contemporânea","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-80","subject":"Sociologia","topic":"Cultura e identidade","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-81","subject":"Geografia","topic":"Espaço rural e agropecuária","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-82","subject":"História","topic":"Era Vargas","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-84","subject":"História","topic":"Cidadania e movimentos sociais","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-86","subject":"Filosofia","topic":"Filosofia contemporânea","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-87","subject":"História","topic":"Brasil Colônia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-46","subject":"Geografia","topic":"Globalização e geopolítica","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-48","subject":"Filosofia","topic":"Filosofia moderna","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-50","subject":"Filosofia","topic":"Filosofia contemporânea","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-51","subject":"Sociologia","topic":"Cultura e identidade","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-52","subject":"História","topic":"Guerras mundiais e Guerra Fria","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-53","subject":"Sociologia","topic":"Cultura e identidade","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-54","subject":"Geografia","topic":"Urbanização","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-55","subject":"Filosofia","topic":"Filosofia contemporânea","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-56","subject":"Geografia","topic":"Hidrografia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-57","subject":"Geografia","topic":"Urbanização","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-58","subject":"História","topic":"Brasil Império","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-59","subject":"Geografia","topic":"Indústria e energia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-60","subject":"Sociologia","topic":"Trabalho e sociedade","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-61","subject":"Filosofia","topic":"Política e Estado","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-62","subject":"Sociologia","topic":"Movimentos sociais e cidadania","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-64","subject":"História","topic":"Redemocratização e Brasil atual","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-65","subject":"Filosofia","topic":"Ética e moral","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-66","subject":"Filosofia","topic":"Filosofia contemporânea","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-67","subject":"Geografia","topic":"Espaço rural e agropecuária","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-69","subject":"História","topic":"Antiguidade e Idade Média","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-70","subject":"Geografia","topic":"Relevo, solos e geologia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-71","subject":"História","topic":"Guerras mundiais e Guerra Fria","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-72","subject":"Filosofia","topic":"Filosofia antiga","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-73","subject":"História","topic":"Brasil Colônia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-74","subject":"Sociologia","topic":"Cultura e identidade","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-75","subject":"Geografia","topic":"Espaço rural e agropecuária","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-76","subject":"Sociologia","topic":"Movimentos sociais e cidadania","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-78","subject":"História","topic":"Brasil Império","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-79","subject":"Filosofia","topic":"Ética e moral","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-80","subject":"Geografia","topic":"Urbanização","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-81","subject":"Sociologia","topic":"Desigualdade social","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-82","subject":"Filosofia","topic":"Filosofia antiga","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-83","subject":"História","topic":"Brasil Império","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-84","subject":"Geografia","topic":"Biomas e questões ambientais","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-85","subject":"Sociologia","topic":"Comunicação e tecnologia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-86","subject":"Geografia","topic":"Indústria e energia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-87","subject":"História","topic":"Antiguidade e Idade Média","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-88","subject":"História","topic":"Cidadania e movimentos sociais","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-89","subject":"História","topic":"Antiguidade e Idade Média","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-46","subject":"Geografia","topic":"Biomas e questões ambientais","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-48","subject":"Sociologia","topic":"Política, poder e Estado","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-49","subject":"Filosofia","topic":"Ética e moral","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-50","subject":"História","topic":"Brasil Império","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-51","subject":"Geografia","topic":"Biomas e questões ambientais","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-52","subject":"Filosofia","topic":"Filosofia contemporânea","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-53","subject":"Sociologia","topic":"Movimentos sociais e cidadania","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-54","subject":"Sociologia","topic":"Comunicação e tecnologia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-55","subject":"História","topic":"Ditadura militar","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-56","subject":"Geografia","topic":"Espaço rural e agropecuária","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-58","subject":"Geografia","topic":"Globalização e geopolítica","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-59","subject":"Sociologia","topic":"Cultura e identidade","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-60","subject":"Sociologia","topic":"Desigualdade social","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-61","subject":"Geografia","topic":"Globalização e geopolítica","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-62","subject":"Geografia","topic":"Relevo, solos e geologia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-63","subject":"Sociologia","topic":"Movimentos sociais e cidadania","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-64","subject":"Geografia","topic":"Indústria e energia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-65","subject":"História","topic":"Brasil Colônia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-66","subject":"Geografia","topic":"Urbanização","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-67","subject":"Filosofia","topic":"Filosofia antiga","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-68","subject":"História","topic":"Brasil Império","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-69","subject":"Filosofia","topic":"Filosofia contemporânea","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-70","subject":"Sociologia","topic":"Trabalho e sociedade","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-71","subject":"Sociologia","topic":"Desigualdade social","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-72","subject":"Sociologia","topic":"Cultura e identidade","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-73","subject":"Filosofia","topic":"Filosofia antiga","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-74","subject":"História","topic":"Brasil Império","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-75","subject":"Geografia","topic":"Globalização e geopolítica","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-76","subject":"História","topic":"Brasil Colônia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-78","subject":"História","topic":"Primeira República","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-79","subject":"Geografia","topic":"Biomas e questões ambientais","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-80","subject":"Geografia","topic":"Espaço rural e agropecuária","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-81","subject":"Sociologia","topic":"Cultura e identidade","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-82","subject":"Filosofia","topic":"Filosofia medieval","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-84","subject":"História","topic":"Brasil Colônia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-85","subject":"Sociologia","topic":"Cultura e identidade","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-86","subject":"História","topic":"Brasil Império","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-87","subject":"Sociologia","topic":"Comunicação e tecnologia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-88","subject":"Geografia","topic":"Globalização e geopolítica","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-89","subject":"Geografia","topic":"Globalização e geopolítica","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-46","subject":"Sociologia","topic":"Cultura e identidade","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-47","subject":"Filosofia","topic":"Política e Estado","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-49","subject":"História","topic":"Revoluções e século XIX","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-50","subject":"Geografia","topic":"Biomas e questões ambientais","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-51","subject":"Sociologia","topic":"Movimentos sociais e cidadania","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-52","subject":"Geografia","topic":"Espaço rural e agropecuária","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-53","subject":"Filosofia","topic":"Política e Estado","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-54","subject":"História","topic":"Revoluções e século XIX","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-55","subject":"Sociologia","topic":"Trabalho e sociedade","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-56","subject":"História","topic":"Primeira República","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-58","subject":"Geografia","topic":"Urbanização","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-59","subject":"História","topic":"Brasil Colônia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-60","subject":"História","topic":"Primeira República","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-61","subject":"Sociologia","topic":"Movimentos sociais e cidadania","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-63","subject":"História","topic":"Antiguidade e Idade Média","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-67","subject":"História","topic":"Idade Moderna","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-68","subject":"Geografia","topic":"Biomas e questões ambientais","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-70","subject":"Filosofia","topic":"Filosofia medieval","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-71","subject":"Geografia","topic":"Espaço rural e agropecuária","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-72","subject":"Filosofia","topic":"Política e Estado","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-74","subject":"Filosofia","topic":"Política e Estado","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-75","subject":"Geografia","topic":"Urbanização","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-77","subject":"Sociologia","topic":"Comunicação e tecnologia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-78","subject":"Filosofia","topic":"Teoria do conhecimento","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-79","subject":"Sociologia","topic":"Movimentos sociais e cidadania","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-80","subject":"História","topic":"Redemocratização e Brasil atual","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-81","subject":"Filosofia","topic":"Política e Estado","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-82","subject":"Geografia","topic":"Indústria e energia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-85","subject":"Geografia","topic":"Hidrografia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-86","subject":"História","topic":"Ditadura militar","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-87","subject":"Filosofia","topic":"Ética e moral","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-88","subject":"Geografia","topic":"Urbanização","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-89","subject":"Filosofia","topic":"Política e Estado","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-51","subject":"Filosofia","topic":"Política e Estado","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-52","subject":"Sociologia","topic":"Trabalho e sociedade","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-53","subject":"Geografia","topic":"Indústria e energia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-54","subject":"Filosofia","topic":"Ética e moral","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-56","subject":"Geografia","topic":"Biomas e questões ambientais","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-57","subject":"Geografia","topic":"Biomas e questões ambientais","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-58","subject":"História","topic":"Brasil Colônia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-59","subject":"Filosofia","topic":"Filosofia antiga","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-62","subject":"História","topic":"Antiguidade e Idade Média","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-63","subject":"Sociologia","topic":"Desigualdade social","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-65","subject":"História","topic":"Ditadura militar","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-66","subject":"História","topic":"África e povos indígenas","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-68","subject":"História","topic":"Brasil Império","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-69","subject":"Filosofia","topic":"Ética e moral","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-70","subject":"Geografia","topic":"Relevo, solos e geologia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-71","subject":"Filosofia","topic":"Ética e moral","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-72","subject":"Sociologia","topic":"Trabalho e sociedade","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-73","subject":"História","topic":"Idade Moderna","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-74","subject":"Geografia","topic":"Biomas e questões ambientais","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-75","subject":"Sociologia","topic":"Política, poder e Estado","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-76","subject":"Geografia","topic":"Espaço rural e agropecuária","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-77","subject":"Filosofia","topic":"Ética e moral","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-78","subject":"História","topic":"Antiguidade e Idade Média","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-79","subject":"Sociologia","topic":"Cultura e identidade","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-80","subject":"Geografia","topic":"Espaço rural e agropecuária","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-81","subject":"História","topic":"Primeira República","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-82","subject":"História","topic":"Ditadura militar","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-83","subject":"Geografia","topic":"Urbanização","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-84","subject":"História","topic":"Cidadania e movimentos sociais","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-85","subject":"Filosofia","topic":"Filosofia contemporânea","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-87","subject":"História","topic":"Brasil Colônia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-88","subject":"Geografia","topic":"Espaço rural e agropecuária","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-89","subject":"Sociologia","topic":"Cultura e identidade","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-1-espanhol","subject":"Espanhol","topic":"Interpretação de texto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-12","subject":"Português","topic":"Variação linguística","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-13","subject":"Português","topic":"Funções da linguagem","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-14","subject":"Português","topic":"Variação linguística","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-16","subject":"Artes","topic":"Artes visuais","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-18","subject":"Educação Física","topic":"Corpo, saúde e atividade física","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-19","subject":"Literatura","topic":"Realismo e Naturalismo","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-2-espanhol","subject":"Espanhol","topic":"Interpretação de texto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-2-ingles","subject":"Inglês","topic":"Vocabulário em contexto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-20","subject":"Português","topic":"Coesão e coerência","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-23","subject":"Português","topic":"Argumentação","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-24","subject":"Literatura","topic":"Modernismo","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-26","subject":"Educação Física","topic":"Esporte e sociedade","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-29","subject":"Literatura","topic":"Literatura contemporânea","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-30","subject":"Artes","topic":"Artes visuais","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-31","subject":"Literatura","topic":"Realismo e Naturalismo","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-32","subject":"Literatura","topic":"Literatura contemporânea","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-35","subject":"Literatura","topic":"Romantismo","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-37","subject":"Português","topic":"Argumentação","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-4-espanhol","subject":"Espanhol","topic":"Interpretação de texto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-4-ingles","subject":"Inglês","topic":"Interpretação de texto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-40","subject":"Educação Física","topic":"Esporte e sociedade","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-41","subject":"Português","topic":"Gêneros textuais","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-42","subject":"Literatura","topic":"Poesia e recursos poéticos","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-6","subject":"Português","topic":"Variação linguística","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-7","subject":"Educação Física","topic":"Esporte e sociedade","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-8","subject":"Artes","topic":"Música","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-9","subject":"Educação Física","topic":"Corpo, saúde e atividade física","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-11","subject":"Literatura","topic":"Realismo e Naturalismo","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-13","subject":"Literatura","topic":"Literatura contemporânea","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-15","subject":"Literatura","topic":"Modernismo","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-17","subject":"Português","topic":"Gêneros textuais","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-18","subject":"Português","topic":"Variação linguística","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-2-espanhol","subject":"Espanhol","topic":"Interpretação de texto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-2-ingles","subject":"Inglês","topic":"Vocabulário em contexto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-20","subject":"Português","topic":"Variação linguística","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-23","subject":"Educação Física","topic":"Esporte e sociedade","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-24","subject":"Português","topic":"Gramática no texto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-29","subject":"Português","topic":"Funções da linguagem","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-30","subject":"Português","topic":"Interpretação de texto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-32","subject":"Literatura","topic":"Poesia e recursos poéticos","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-34","subject":"Português","topic":"Argumentação","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-36","subject":"Português","topic":"Gêneros textuais","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-37","subject":"Português","topic":"Funções da linguagem","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-41","subject":"Educação Física","topic":"Corpo, saúde e atividade física","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-42","subject":"Português","topic":"Variação linguística","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-5-espanhol","subject":"Espanhol","topic":"Interpretação de texto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-5-ingles","subject":"Inglês","topic":"Interpretação de texto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-7","subject":"Português","topic":"Gêneros textuais","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-1-espanhol","subject":"Espanhol","topic":"Interpretação de texto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-1-ingles","subject":"Inglês","topic":"Interpretação de texto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-11","subject":"Literatura","topic":"Romantismo","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-12","subject":"Educação Física","topic":"Esporte e sociedade","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-13","subject":"Português","topic":"Variação linguística","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-16","subject":"Literatura","topic":"Parnasianismo e Simbolismo","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-17","subject":"Português","topic":"Coesão e coerência","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-18","subject":"Educação Física","topic":"Esporte e sociedade","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-19","subject":"Educação Física","topic":"Corpo, saúde e atividade física","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-2-espanhol","subject":"Espanhol","topic":"Vocabulário em contexto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-2-ingles","subject":"Inglês","topic":"Interpretação de texto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-20","subject":"Português","topic":"Variação linguística","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-21","subject":"Literatura","topic":"Literatura contemporânea","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-25","subject":"Português","topic":"Argumentação","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-27","subject":"Educação Física","topic":"Práticas corporais e cultura","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-28","subject":"Literatura","topic":"Parnasianismo e Simbolismo","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-29","subject":"Literatura","topic":"Literatura contemporânea","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-3-espanhol","subject":"Espanhol","topic":"Interpretação de texto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-3-ingles","subject":"Inglês","topic":"Interpretação de texto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-30","subject":"Português","topic":"Gêneros textuais","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-32","subject":"Português","topic":"Gêneros textuais","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-35","subject":"Português","topic":"Argumentação","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-36","subject":"Português","topic":"Variação linguística","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-37","subject":"Português","topic":"Interpretação de texto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-38","subject":"Português","topic":"Coesão e coerência","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-39","subject":"Português","topic":"Interpretação de texto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-4-ingles","subject":"Inglês","topic":"Vocabulário em contexto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-40","subject":"Literatura","topic":"Realismo e Naturalismo","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-43","subject":"Português","topic":"Gêneros textuais","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-44","subject":"Português","topic":"Argumentação","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-5-espanhol","subject":"Espanhol","topic":"Vocabulário em contexto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-1-espanhol","subject":"Espanhol","topic":"Interpretação de texto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-1-ingles","subject":"Inglês","topic":"Vocabulário em contexto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-10","subject":"Português","topic":"Interpretação de texto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-11","subject":"Português","topic":"Interpretação de texto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-12","subject":"Português","topic":"Gêneros textuais","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-13","subject":"Literatura","topic":"Poesia e recursos poéticos","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-15","subject":"Educação Física","topic":"Corpo, saúde e atividade física","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-16","subject":"Literatura","topic":"Realismo e Naturalismo","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-17","subject":"Português","topic":"Variação linguística","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-18","subject":"Português","topic":"Gêneros textuais","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-19","subject":"Literatura","topic":"Modernismo","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-2-espanhol","subject":"Espanhol","topic":"Gêneros textuais","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-21","subject":"Educação Física","topic":"Práticas corporais e cultura","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-22","subject":"Literatura","topic":"Literatura contemporânea","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-23","subject":"Português","topic":"Funções da linguagem","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-24","subject":"Português","topic":"Gramática no texto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-25","subject":"Literatura","topic":"Poesia e recursos poéticos","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-26","subject":"Português","topic":"Argumentação","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-27","subject":"Português","topic":"Variação linguística","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-3-espanhol","subject":"Espanhol","topic":"Vocabulário em contexto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-30","subject":"Português","topic":"Coesão e coerência","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-33","subject":"Português","topic":"Gêneros textuais","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-34","subject":"Português","topic":"Gêneros textuais","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-35","subject":"Português","topic":"Gêneros textuais","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-36","subject":"Português","topic":"Interpretação de texto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-37","subject":"Literatura","topic":"Poesia e recursos poéticos","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-38","subject":"Português","topic":"Argumentação","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-39","subject":"Literatura","topic":"Literatura contemporânea","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-4-espanhol","subject":"Espanhol","topic":"Interpretação de texto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-4-ingles","subject":"Inglês","topic":"Interpretação de texto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-40","subject":"Português","topic":"Variação linguística","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-41","subject":"Português","topic":"Variação linguística","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-43","subject":"Português","topic":"Variação linguística","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-45","subject":"Literatura","topic":"Literatura contemporânea","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-5-ingles","subject":"Inglês","topic":"Interpretação de texto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-6","subject":"Educação Física","topic":"Esporte e sociedade","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-8","subject":"Português","topic":"Gêneros textuais","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-1-ingles","subject":"Inglês","topic":"Interpretação de texto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-12","subject":"Educação Física","topic":"Esporte e sociedade","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-13","subject":"Português","topic":"Gêneros textuais","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-16","subject":"Português","topic":"Gêneros textuais","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-17","subject":"Literatura","topic":"Literatura contemporânea","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-19","subject":"Português","topic":"Variação linguística","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-2-espanhol","subject":"Espanhol","topic":"Vocabulário em contexto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-2-ingles","subject":"Inglês","topic":"Interpretação de texto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-20","subject":"Literatura","topic":"Literatura contemporânea","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-21","subject":"Educação Física","topic":"Esporte e sociedade","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-22","subject":"Literatura","topic":"Poesia e recursos poéticos","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-23","subject":"Literatura","topic":"Literatura contemporânea","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-24","subject":"Português","topic":"Variação linguística","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-27","subject":"Artes","topic":"Artes visuais","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-28","subject":"Português","topic":"Argumentação","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-29","subject":"Literatura","topic":"Romantismo","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-30","subject":"Artes","topic":"Patrimônio cultural","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-31","subject":"Educação Física","topic":"Esporte e sociedade","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-32","subject":"Literatura","topic":"Pré-Modernismo","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-33","subject":"Português","topic":"Coesão e coerência","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-34","subject":"Português","topic":"Gêneros textuais","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-35","subject":"Literatura","topic":"Literatura contemporânea","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-36","subject":"Português","topic":"Argumentação","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-37","subject":"Português","topic":"Argumentação","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-39","subject":"Português","topic":"Variação linguística","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-4-espanhol","subject":"Espanhol","topic":"Interpretação de texto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-40","subject":"Literatura","topic":"Literatura contemporânea","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-41","subject":"Literatura","topic":"Modernismo","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-43","subject":"Português","topic":"Funções da linguagem","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-45","subject":"Português","topic":"Variação linguística","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-5-espanhol","subject":"Espanhol","topic":"Interpretação de texto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-5-ingles","subject":"Inglês","topic":"Interpretação de texto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-1-ingles","subject":"Inglês","topic":"Vocabulário em contexto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-14","subject":"Educação Física","topic":"Esporte e sociedade","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-15","subject":"Português","topic":"Gêneros textuais","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-17","subject":"Educação Física","topic":"Corpo, saúde e atividade física","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-18","subject":"Português","topic":"Gêneros textuais","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-19","subject":"Literatura","topic":"Poesia e recursos poéticos","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-2-espanhol","subject":"Espanhol","topic":"Interpretação de texto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-2-ingles","subject":"Inglês","topic":"Interpretação de texto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-20","subject":"Literatura","topic":"Modernismo","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-21","subject":"Artes","topic":"Música","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-22","subject":"Português","topic":"Funções da linguagem","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-23","subject":"Português","topic":"Gêneros textuais","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-25","subject":"Literatura","topic":"Literatura contemporânea","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-26","subject":"Educação Física","topic":"Corpo, saúde e atividade física","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-28","subject":"Literatura","topic":"Poesia e recursos poéticos","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-29","subject":"Literatura","topic":"Literatura contemporânea","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-3-espanhol","subject":"Espanhol","topic":"Interpretação de texto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-3-ingles","subject":"Inglês","topic":"Interpretação de texto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-30","subject":"Português","topic":"Figuras de linguagem","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-31","subject":"Português","topic":"Argumentação","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-32","subject":"Português","topic":"Variação linguística","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-33","subject":"Português","topic":"Interpretação de texto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-34","subject":"Português","topic":"Gêneros textuais","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-35","subject":"Português","topic":"Argumentação","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-38","subject":"Português","topic":"Argumentação","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-4-espanhol","subject":"Espanhol","topic":"Interpretação de texto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-4-ingles","subject":"Inglês","topic":"Interpretação de texto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-40","subject":"Português","topic":"Interpretação de texto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-41","subject":"Português","topic":"Interpretação de texto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-42","subject":"Educação Física","topic":"Esporte e sociedade","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-43","subject":"Português","topic":"Variação linguística","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-44","subject":"Português","topic":"Argumentação","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-5-espanhol","subject":"Espanhol","topic":"Interpretação de texto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-5-ingles","subject":"Inglês","topic":"Interpretação de texto","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-8","subject":"Português","topic":"Variação linguística","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-138","subject":"Matemática","topic":"Razão, proporção e porcentagem","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-143","subject":"Matemática","topic":"Matemática financeira","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-157","subject":"Matemática","topic":"Grandezas e medidas","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-160","subject":"Matemática","topic":"Álgebra e equações","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-164","subject":"Matemática","topic":"Estatística","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-170","subject":"Matemática","topic":"Razão, proporção e porcentagem","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-172","subject":"Matemática","topic":"Geometria plana","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-177","subject":"Matemática","topic":"Funções","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-136","subject":"Matemática","topic":"Razão, proporção e porcentagem","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-140","subject":"Matemática","topic":"Funções","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-141","subject":"Matemática","topic":"Razão, proporção e porcentagem","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-145","subject":"Matemática","topic":"Razão, proporção e porcentagem","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-148","subject":"Matemática","topic":"Geometria espacial","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-149","subject":"Matemática","topic":"Geometria espacial","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-151","subject":"Matemática","topic":"Álgebra e equações","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-155","subject":"Matemática","topic":"Razão, proporção e porcentagem","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-156","subject":"Matemática","topic":"Razão, proporção e porcentagem","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-165","subject":"Matemática","topic":"Geometria plana","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-167","subject":"Matemática","topic":"Razão, proporção e porcentagem","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-171","subject":"Matemática","topic":"Estatística","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-172","subject":"Matemática","topic":"Razão, proporção e porcentagem","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-174","subject":"Matemática","topic":"Razão, proporção e porcentagem","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-179","subject":"Matemática","topic":"Álgebra e equações","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-137","subject":"Matemática","topic":"Razão, proporção e porcentagem","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-138","subject":"Matemática","topic":"Álgebra e equações","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-141","subject":"Matemática","topic":"Geometria espacial","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-143","subject":"Matemática","topic":"Números e operações","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-146","subject":"Matemática","topic":"Grandezas e medidas","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-152","subject":"Matemática","topic":"Razão, proporção e porcentagem","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-153","subject":"Matemática","topic":"Números e operações","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-161","subject":"Matemática","topic":"Álgebra e equações","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-162","subject":"Matemática","topic":"Probabilidade e combinatória","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-165","subject":"Matemática","topic":"Álgebra e equações","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-166","subject":"Matemática","topic":"Grandezas e medidas","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-175","subject":"Matemática","topic":"Geometria plana","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-178","subject":"Matemática","topic":"Álgebra e equações","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-179","subject":"Matemática","topic":"Probabilidade e combinatória","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-140","subject":"Matemática","topic":"Geometria espacial","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-141","subject":"Matemática","topic":"Números e operações","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-143","subject":"Matemática","topic":"Números e operações","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-145","subject":"Matemática","topic":"Razão, proporção e porcentagem","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-146","subject":"Matemática","topic":"Razão, proporção e porcentagem","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-152","subject":"Matemática","topic":"Funções","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-154","subject":"Matemática","topic":"Geometria plana","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-156","subject":"Matemática","topic":"Geometria espacial","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-159","subject":"Matemática","topic":"Números e operações","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-169","subject":"Matemática","topic":"Probabilidade e combinatória","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-174","subject":"Matemática","topic":"Razão, proporção e porcentagem","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-176","subject":"Matemática","topic":"Razão, proporção e porcentagem","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-179","subject":"Matemática","topic":"Razão, proporção e porcentagem","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-139","subject":"Matemática","topic":"Razão, proporção e porcentagem","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-140","subject":"Matemática","topic":"Razão, proporção e porcentagem","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-143","subject":"Matemática","topic":"Números e operações","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-149","subject":"Matemática","topic":"Razão, proporção e porcentagem","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-150","subject":"Matemática","topic":"Álgebra e equações","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-153","subject":"Matemática","topic":"Geometria espacial","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-157","subject":"Matemática","topic":"Geometria plana","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-159","subject":"Matemática","topic":"Grandezas e medidas","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-160","subject":"Matemática","topic":"Funções","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-161","subject":"Matemática","topic":"Razão, proporção e porcentagem","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-163","subject":"Matemática","topic":"Números e operações","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-166","subject":"Matemática","topic":"Matemática financeira","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-170","subject":"Matemática","topic":"Estatística","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-173","subject":"Matemática","topic":"Estatística","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-175","subject":"Matemática","topic":"Álgebra e equações","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-178","subject":"Matemática","topic":"Estatística","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-179","subject":"Matemática","topic":"Álgebra e equações","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-137","subject":"Matemática","topic":"Razão, proporção e porcentagem","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-139","subject":"Matemática","topic":"Probabilidade e combinatória","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-140","subject":"Matemática","topic":"Probabilidade e combinatória","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-142","subject":"Matemática","topic":"Geometria espacial","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-147","subject":"Matemática","topic":"Grandezas e medidas","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-149","subject":"Matemática","topic":"Razão, proporção e porcentagem","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-150","subject":"Matemática","topic":"Grandezas e medidas","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-151","subject":"Matemática","topic":"Razão, proporção e porcentagem","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-154","subject":"Matemática","topic":"Matemática financeira","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-156","subject":"Matemática","topic":"Grandezas e medidas","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-157","subject":"Matemática","topic":"Números e operações","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-159","subject":"Matemática","topic":"Álgebra e equações","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-161","subject":"Matemática","topic":"Estatística","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-163","subject":"Matemática","topic":"Álgebra e equações","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-172","subject":"Matemática","topic":"Razão, proporção e porcentagem","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-173","subject":"Matemática","topic":"Geometria espacial","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-178","subject":"Matemática","topic":"Geometria plana","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-102","subject":"Física","topic":"Termologia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-108","subject":"Química","topic":"Estequiometria","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-113","subject":"Biologia","topic":"Biotecnologia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-115","subject":"Química","topic":"Soluções","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-121","subject":"Química","topic":"Química orgânica","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-125","subject":"Biologia","topic":"Bioquímica","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-128","subject":"Biologia","topic":"Fisiologia humana","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-130","subject":"Biologia","topic":"Fisiologia humana","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-131","subject":"Biologia","topic":"Ecologia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-134","subject":"Biologia","topic":"Zoologia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-93","subject":"Biologia","topic":"Zoologia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-102","subject":"Biologia","topic":"Zoologia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-105","subject":"Biologia","topic":"Saúde e doenças","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-115","subject":"Física","topic":"Eletricidade","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-120","subject":"Biologia","topic":"Saúde e doenças","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-91","subject":"Biologia","topic":"Evolução","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-92","subject":"Biologia","topic":"Botânica","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-94","subject":"Física","topic":"Dinâmica","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-95","subject":"Biologia","topic":"Biotecnologia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-97","subject":"Química","topic":"Química ambiental","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2024-ppl-98","subject":"Biologia","topic":"Evolução","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-100","subject":"Química","topic":"Química ambiental","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-110","subject":"Física","topic":"Física moderna","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-112","subject":"Biologia","topic":"Biotecnologia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-119","subject":"Química","topic":"Funções inorgânicas","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-121","subject":"Biologia","topic":"Bioquímica","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-122","subject":"Biologia","topic":"Ecologia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-124","subject":"Física","topic":"Hidrostática","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-133","subject":"Biologia","topic":"Genética","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-134","subject":"Biologia","topic":"Zoologia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-91","subject":"Física","topic":"Termologia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-92","subject":"Biologia","topic":"Ecologia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-94","subject":"Biologia","topic":"Ecologia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-95","subject":"Biologia","topic":"Evolução","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-96","subject":"Química","topic":"Soluções","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-97","subject":"Biologia","topic":"Fisiologia humana","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-98","subject":"Biologia","topic":"Saúde e doenças","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-99","subject":"Biologia","topic":"Citologia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-100","subject":"Química","topic":"Química ambiental","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-101","subject":"Química","topic":"Ligações e propriedades","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-102","subject":"Biologia","topic":"Ecologia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-103","subject":"Biologia","topic":"Bioquímica","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-114","subject":"Química","topic":"Estequiometria","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-115","subject":"Biologia","topic":"Biotecnologia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-117","subject":"Biologia","topic":"Citologia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-120","subject":"Biologia","topic":"Biotecnologia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-121","subject":"Biologia","topic":"Zoologia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-124","subject":"Biologia","topic":"Ecologia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-125","subject":"Biologia","topic":"Saúde e doenças","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-128","subject":"Biologia","topic":"Botânica","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-129","subject":"Física","topic":"Eletricidade","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-132","subject":"Biologia","topic":"Genética","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-134","subject":"Biologia","topic":"Saúde e doenças","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-92","subject":"Biologia","topic":"Botânica","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-93","subject":"Biologia","topic":"Saúde e doenças","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-94","subject":"Biologia","topic":"Ecologia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-ppl-96","subject":"Biologia","topic":"Ecologia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-100","subject":"Biologia","topic":"Evolução","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-101","subject":"Biologia","topic":"Saúde e doenças","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-102","subject":"Biologia","topic":"Evolução","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-103","subject":"Biologia","topic":"Saúde e doenças","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-107","subject":"Biologia","topic":"Ecologia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-108","subject":"Biologia","topic":"Fisiologia humana","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-109","subject":"Biologia","topic":"Citologia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-110","subject":"Química","topic":"Química orgânica","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-115","subject":"Biologia","topic":"Citologia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-116","subject":"Química","topic":"Estequiometria","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-117","subject":"Química","topic":"Funções inorgânicas","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-118","subject":"Física","topic":"Dinâmica","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-119","subject":"Física","topic":"Magnetismo","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-120","subject":"Biologia","topic":"Evolução","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-121","subject":"Biologia","topic":"Genética","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-125","subject":"Biologia","topic":"Fisiologia humana","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-126","subject":"Física","topic":"Ondulatória e acústica","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-128","subject":"Física","topic":"Ondulatória e acústica","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-129","subject":"Biologia","topic":"Ecologia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-130","subject":"Biologia","topic":"Biotecnologia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-131","subject":"Biologia","topic":"Fisiologia humana","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-92","subject":"Biologia","topic":"Genética","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-93","subject":"Física","topic":"Eletricidade","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-95","subject":"Química","topic":"Química ambiental","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-96","subject":"Física","topic":"Termologia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-97","subject":"Biologia","topic":"Ecologia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-98","subject":"Química","topic":"Química ambiental","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2025-reap-99","subject":"Biologia","topic":"Biotecnologia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-100","subject":"Biologia","topic":"Zoologia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-103","subject":"Biologia","topic":"Ecologia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-105","subject":"Biologia","topic":"Evolução","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-109","subject":"Química","topic":"Química ambiental","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-116","subject":"Química","topic":"Química ambiental","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-119","subject":"Biologia","topic":"Biotecnologia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-120","subject":"Biologia","topic":"Botânica","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-122","subject":"Biologia","topic":"Genética","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-123","subject":"Química","topic":"Soluções","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-125","subject":"Biologia","topic":"Ecologia","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-126","subject":"Biologia","topic":"Saúde e doenças","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-128","subject":"Física","topic":"Óptica","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-130","subject":"Física","topic":"Hidrostática","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-132","subject":"Biologia","topic":"Genética","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-134","subject":"Biologia","topic":"Bioquímica","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-93","subject":"Química","topic":"Química ambiental","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-94","subject":"Física","topic":"Física moderna","by":"agent","confidence":"medium","reviewed":false}
+{"id":"enem-2026-97","subject":"Biologia","topic":"Ecologia","by":"agent","confidence":"medium","reviewed":false}

@@ -4,14 +4,15 @@
       "id": "enem",
       "kind": "questions",
       "adapters": [
-        "enem"
+        "enem",
+        "inep_pdf"
       ],
       "name": "ENEM (INEP)",
-      "via": "api.enem.dev",
+      "via": "api.enem.dev; PDFs do INEP",
       "officialUrl": "https://www.gov.br/inep/pt-br/areas-de-atuacao/avaliacao-e-exames-educacionais/enem/provas-e-gabaritos",
       "license": "Licença do rodapé do site do INEP (CC BY-ND 3.0), não confirmada para as provas. Registro interno: não exibir",
       "licenseUrl": "https://creativecommons.org/licenses/by-nd/3.0/legalcode",
-      "licenseEvidence": "Licença do rodapé do site do INEP; aplicação às provas não confirmada (ver a seção Direitos autorais em docs/specs/mvp-27-11.md). Link: https://www.gov.br/inep/pt-br/areas-de-atuacao/avaliacao-e-exames-educacionais/enem/provas-e-gabaritos",
+      "licenseEvidence": "Licença do rodapé do site do INEP; aplicação às provas não confirmada (ver a seção Direitos autorais em docs/specs/mvp-27-11.md). Link: https://www.gov.br/inep/pt-br/areas-de-atuacao/avaliacao-e-exames-educacionais/enem/provas-e-gabaritos Provas de 2024 a 2026 (PDF oficial do INEP, só o caderno de questões): DB2 aprovada em 26/11/2026, com as mesmas condições da D4 (docs/specs/banco-multifonte.md, levantamento de fontes).",
       "attribution": "Provas do ENEM, INEP.",
       "notice": "Texto das provas do INEP, reproduzido para uso educacional. Formatação ajustada. Confira o original em https://www.gov.br/inep/pt-br/areas-de-atuacao/avaliacao-e-exames-educacionais/enem/provas-e-gabaritos",
       "authorized": true

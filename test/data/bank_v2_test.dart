@@ -35,8 +35,8 @@ void main() {
         summary.counts.fold<int>(0, (n, c) => n + c.count),
         withSubject.length,
       );
-      expect(real.data.questions, hasLength(1687));
-      expect(summary.available('Matemática'), 221);
+      expect(real.data.questions, hasLength(2256));
+      expect(summary.available('Matemática'), 305);
     });
 
     test('taxonomia do índice cobre o catálogo de matérias do app', () {
@@ -115,9 +115,9 @@ void main() {
       final summary = await catalog.summary();
       await catalog.sources();
       expect(bundle.paths, [bankIndexPath]);
-      expect(summary.available('Matemática'), 221);
+      expect(summary.available('Matemática'), 305);
       expect(summary.available('Inexistente'), 0);
-      expect(summary.availableAt('Matemática', null), 221);
+      expect(summary.availableAt('Matemática', null), 305);
       expect(summary.availableAt('Matemática', 2), 0);
       expect(summary.taxonomy['História'], isNotEmpty);
       expect(summary.generatedAt, isNotEmpty);
@@ -130,7 +130,7 @@ void main() {
         const QuestionFilter(subjects: {'Matemática'}),
         limit: 3,
       );
-      expect(page.total, 221);
+      expect(page.total, 305);
       final math = real.index.shards.firstWhere(
         (s) => s.area == Area.mathematics,
       );
@@ -149,14 +149,14 @@ void main() {
       final bundle = FileAssetBundle();
       final catalog = AssetBankCatalog(bundle: bundle);
       final page = await catalog.search(const QuestionFilter(), limit: 1);
-      expect(page.total, 1687);
+      expect(page.total, 2256);
       expect(bundle.paths, hasLength(5));
     });
 
     test('MemoryBankCatalog calcula o resumo das questões', () async {
       final memory = MemoryBankCatalog(real.data);
       final summary = await memory.summary();
-      expect(summary.available('Matemática'), 221);
+      expect(summary.available('Matemática'), 305);
       expect(
         summary.counts.fold<int>(0, (n, c) => n + c.count),
         real.data.questions.where((q) => q.subject.isNotEmpty).length,

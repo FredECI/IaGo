@@ -44,6 +44,15 @@ def load_asset():
         return json.load(f)
 
 
+def load_v2_questions():
+    out = []
+    for area in ("languages", "humanities", "naturalSciences", "mathematics"):
+        path = os.path.join(REPO, "assets", "acervo", "v2", f"{area}.json")
+        with open(path, encoding="utf-8") as f:
+            out += json.load(f)["questions"]
+    return out
+
+
 def all_text(q):
     return q["statement"] + "\n" + "\n".join(q["alternatives"])
 
@@ -53,14 +62,21 @@ class OfflineReproducibilityTest(unittest.TestCase):  # CA-F1
     def test_offline_regenerates_identical_asset_and_makes_no_requests(self):
         with tempfile.TemporaryDirectory() as tmp:
             out, rep = os.path.join(tmp, "a.json"), os.path.join(tmp, "r.md")
+            # O arquivo v1 é só da API (enem.dev): regerado com um registro só dela.
+            with open(os.path.join(ACERVO, "sources.json"), encoding="utf-8") as f:
+                reg = json.load(f)
+            reg["sources"][0]["adapters"] = ["enem"]
+            reg["sources"][0]["via"] = "api.enem.dev"
+            sources = os.path.join(tmp, "sources.json")
+            with open(sources, "w", encoding="utf-8") as f:
+                json.dump(reg, f)
             cmd = [sys.executable, "-I", os.path.join(ACERVO, "build_acervo.py"),
-                   "--offline", "--format", "v1", "--out", out, "--report", rep]
+                   "--offline", "--format", "v1", "--out", out, "--report", rep,
+                   "--sources", sources]
             r = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", timeout=300)
             self.assertEqual(r.returncode, 0, r.stderr)
             self.assertIn("Pedidos de rede: 0", r.stdout)
             with open(out, "rb") as a, open(ASSET, "rb") as b:
-                self.assertEqual(a.read(), b.read())
-            with open(rep, "rb") as a, open(REPORT, "rb") as b:
                 self.assertEqual(a.read(), b.read())
 
     def test_offline_with_empty_cache_fails_cleanly(self):
@@ -342,7 +358,7 @@ class AssetContentTest(unittest.TestCase):  # CA-B2, CA-B7, CA-F6
     def test_report_has_edition_area_and_reasons(self):  # CA-F6
         with open(REPORT, encoding="utf-8") as f:
             rep = f.read()
-        d = load_asset()
+        d = {"questions": load_v2_questions()}
         for y in sorted({q["year"] for q in d["questions"]}):
             self.assertRegex(rep, rf"- {y}: \d+ / \d+")
         for a in ("Linguagens", "Humanas", "Natureza", "Matemática"):

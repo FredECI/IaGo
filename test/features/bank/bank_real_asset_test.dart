@@ -69,7 +69,7 @@ void main() {
   }
 
   test('o asset real tem a contagem esperada', () {
-    expect(total, 1687);
+    expect(total, 2256);
   });
 
   testWidgets('CA-B1: abre com o asset real e mostra a contagem com contexto', (

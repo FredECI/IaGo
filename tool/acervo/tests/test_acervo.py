@@ -22,15 +22,23 @@ from fetcher import Fetcher, FetchError  # noqa: E402
 from glyphs import covered_codepoints, missing_chars  # noqa: E402
 from sources import ADAPTERS  # noqa: E402
 from sources.base import RawQuestion, SourceAdapter  # noqa: E402
+from sources.inep_pdf import InepPdfAdapter  # noqa: E402
 from sources.enem_dev import BASE, EnemDevAdapter, clean_markup  # noqa: E402
+
+
+def setUpModule():
+    # Os testes do adaptador enem.dev não leem os PDFs extraídos do repositório.
+    InepPdfAdapter.extracted_dir = tempfile.mkdtemp()
+
 
 FONT = os.path.join(REPO, "assets", "fonts", "Inter-Regular.ttf")
 ASSET = os.path.join(REPO, "assets", "acervo", "acervo-v1.json")
 
 
-def api_item(index, year=2022, discipline="matematica", language=None, context="Texto.",
+def api_item(index, year=2022, discipline="matematica", language=None, context=None,
              intro="Qual?", alts=None, files=None, correct="B"):
     letters = "ABCDE"
+    context = context if context is not None else f"Texto {index}."  # único: a deduplicação não une
     alts = alts if alts is not None else [f"alt {c}" for c in letters]
     return {
         "title": f"Questão {index} - ENEM {year}",

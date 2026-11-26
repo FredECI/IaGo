@@ -1,0 +1,125 @@
+{
+  "note": "Só cadernos de questões (PV) do INEP; o gabarito nunca é baixado.",
+  "editions": {
+    "2024": {
+      "year": 2024,
+      "variant": null,
+      "files": [
+        {
+          "name": "2024_PV_impresso_D1_CD1.pdf",
+          "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2024_PV_impresso_D1_CD1.pdf",
+          "sha256": "b0adc1dc79a002aba36f725f1ef792cf53e47ff75ee012638ef34a4e6fbb18f5",
+          "bytes": 4808950,
+          "pages": 33
+        },
+        {
+          "name": "2024_PV_impresso_D2_CD5.pdf",
+          "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2024_PV_impresso_D2_CD5.pdf",
+          "sha256": "ec4e704ab4017762ffb1eba84c55285a429d3d02ed0e58258c1171315cb34937",
+          "bytes": 5003533,
+          "pages": 33
+        }
+      ]
+    },
+    "2024-ppl": {
+      "year": 2024,
+      "variant": "ppl",
+      "files": [
+        {
+          "name": "2024_PV_reaplicacao_PPL_D1_CD1.pdf",
+          "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2024_PV_reaplicacao_PPL_D1_CD1.pdf",
+          "sha256": "85b46694d838ab3932b6e5f2dbfb06bc7306867e723742517d9049dae6df486a",
+          "bytes": 5905326,
+          "pages": 33
+        },
+        {
+          "name": "2024_PV_reaplicacao_PPL_D2_CD5.pdf",
+          "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2024_PV_reaplicacao_PPL_D2_CD5.pdf",
+          "sha256": "50054a22a23039b1aa25f0b23051f4cafcbbde7811a29003b455b9981ca96ce4",
+          "bytes": 4905004,
+          "pages": 33
+        }
+      ]
+    },
+    "2025": {
+      "year": 2025,
+      "variant": null,
+      "files": [
+        {
+          "name": "2025_PV_impresso_D1_CD1.pdf",
+          "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_PV_impresso_D1_CD1.pdf",
+          "sha256": "a0f19f878d4ef3ba94c3e0f5ef9e57c13fb046d4bb362f72651898b473ddb7c8",
+          "bytes": 3343529,
+          "pages": 33
+        },
+        {
+          "name": "2025_PV_impresso_D2_CD5.pdf",
+          "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_PV_impresso_D2_CD5.pdf",
+          "sha256": "0a59697676989b55e6f3e40636fad164c1c26868ddba37d04e4fffc101168298",
+          "bytes": 3157985,
+          "pages": 33
+        }
+      ]
+    },
+    "2025-ppl": {
+      "year": 2025,
+      "variant": "ppl",
+      "files": [
+        {
+          "name": "2025_PV_impresso_D5_CD1.pdf",
+          "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_PV_impresso_D5_CD1.pdf",
+          "sha256": "0088e1b657b445b98ebfdcf14dc37dd0e453564f0064f1621b3663bf7a065001",
+          "bytes": 3228420,
+          "pages": 33
+        },
+        {
+          "name": "2025_PV_impresso_D6_CD5.pdf",
+          "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_PV_impresso_D6_CD5.pdf",
+          "sha256": "851a99e7802fab47256f050e755b5b24389dfc35bea3fe20176ac10a47bf09f2",
+          "bytes": 3073053,
+          "pages": 33
+        }
+      ]
+    },
+    "2025-reap-pa": {
+      "year": 2025,
+      "variant": "reaplicacao",
+      "files": [
+        {
+          "name": "2025_PV_impresso_D3_CD1.pdf",
+          "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_PV_impresso_D3_CD1.pdf",
+          "sha256": "5a79ada84a016c6d07841204bdeace2663c2f4e5278e8fbf611a496bc5307c66",
+          "bytes": 2994617,
+          "pages": 33
+        },
+        {
+          "name": "2025_PV_impresso_D4_CD5.pdf",
+          "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_PV_impresso_D4_CD5.pdf",
+          "sha256": "d3b0828ef2a699c0136c19fdbef35876907c4821f5c9cda3a6c956a869f44edc",
+          "bytes": 2425917,
+          "pages": 33
+        }
+      ]
+    },
+    "2026": {
+      "year": 2026,
+      "variant": null,
+      "files": [
+        {
+          "name": "2026_PV_impresso_D1_CD1.pdf",
+          "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D1_CD1.pdf",
+          "sha256": "a3619d4d70cf62e47c07a5b53d3319de8b34d5766a90e0e690db5a2c2647d9ea",
+          "bytes": 3400792,
+          "pages": 32
+        },
+        {
+          "name": "2026_PV_impresso_D2_CD5.pdf",
+          "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf",
+          "sha256": "5bbe113129239f10ab4c1533a73826067855b25e02fddad2096c4de82d1b640c",
+          "bytes": 2803997,
+          "pages": 32
+        }
+      ]
+    }
+  }
+}

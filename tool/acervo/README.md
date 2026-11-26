@@ -24,6 +24,24 @@ python -I tool/acervo/build_acervo.py
 - Limites: 3 MiB por parte e 12 MiB no total; o build falha se passar.
 - `sources.json` aceita `kind` (`questions` ou `metadata`) e `adapters`; ausentes, valem `questions` e `[id]`.
 
+## ENEM 2024 a 2026 pelos PDFs do INEP (BM12, BM13, BM15)
+
+A `enem.dev` vai só até 2023. As edições seguintes vêm dos cadernos de questões oficiais do INEP, pelo adaptador `inep_pdf` (que **só lê** `extracted/<edição>.json` e não acessa a rede).
+
+```bash
+pip install pymupdf                                  # só para extrair; não é dependência do app nem do build
+python -I tool/acervo/extract_inep.py download       # baixa só os cadernos "PV" para build/acervo-cache/inep/
+python -I tool/acervo/extract_inep.py extract        # gera extracted/<edição>.json e extracted/manifest.json
+python -I tool/acervo/build_acervo.py --offline --generated-at AAAA-MM-DD
+```
+
+- Cadernos de referência: caderno 1 (azul) no dia 1 e caderno 5 no dia 2, de cada aplicação (regular, PPL e reaplicação). A lista está em `EDITIONS` no `extract_inep.py`; o `manifest.json` guarda o link oficial, o tamanho, as páginas e o sha256 de cada PDF.
+- **O gabarito nunca é baixado nem lido:** `safe_name` recusa tudo que não seja caderno de questões (`PV`) e um teste confere que o manifesto e os textos não têm gabarito.
+- Questão com figura, gráfico, tabela, traço que possa ser fração, símbolo sem Unicode, índice sem caractere Unicode ou alternativa que falte sai do acervo (`hasFigure` ou `isComplete: false`) e fica no `extracted/` só com o número, sem o texto. A palavra "gabarito", mesmo em sentido comum, também tira a questão (regra do asset).
+- Ids: `enem-2024-136`, `enem-2024-3-ingles`, `enem-2024-ppl-140`, `enem-2025-reap-140`. Variantes: `ppl` (2ª aplicação, PPL) e `reaplicacao` (reaplicação do Pará).
+- Matéria e assunto das questões novas estão em `classification/inep.jsonl` (`by: agent`).
+- **Deduplicação** (`dedupe.py`): impressão digital do enunciado e das alternativas normalizados; a duplicata exata sai (fica a fonte que vem antes no registro, depois a de menor ano, variante e número), nunca um id já publicado (`ids-v1.txt`), e a quase duplicata só é sinalizada. O resultado vai no relatório (`build/acervo-report.md`, seção "Deduplicação").
+
 ## Testes
 
 ```bash
