@@ -21,6 +21,7 @@ class PlannerTuning {
     this.minDays = 2,
     this.maxDays = 7,
     this.dailyShareDivisor = 3,
+    this.deprioritizeEmptySubjects = true,
   });
 
   /// Abaixo disto a ação da matéria é `collect`.
@@ -48,4 +49,8 @@ class PlannerTuning {
 
   /// A etapa usa 1/[dailyShareDivisor] do tempo diário de estudo.
   final int dailyShareDivisor;
+
+  /// Matérias sem material (`saved == 0` e `bankAvailable == 0`) vão para o
+  /// fim, depois das áreas de foco.
+  final bool deprioritizeEmptySubjects;
 }
