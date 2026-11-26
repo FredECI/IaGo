@@ -596,6 +596,7 @@ void main() {
       'saved',
       'savedLast14d',
       'listsExportedLast14d',
+      'bankAvailable',
       'doneLast14d',
       'missedLast14d',
       'maxSteps',

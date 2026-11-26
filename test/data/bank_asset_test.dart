@@ -7,21 +7,25 @@ import 'package:iago/data/bank_asset_catalog.dart';
 import 'package:iago/data/local/bank_asset_parser.dart';
 import 'package:iago/data/local/demo_seed.dart';
 import 'package:iago/domain/area.dart';
+import 'package:iago/domain/bank_source.dart';
 import 'package:iago/domain/question.dart';
 import 'package:iago/domain/question_filter.dart';
 import 'package:pdf/pdf.dart';
 
+import '../helpers/real_bank.dart';
+
 /// A3: o asset do acervo (CA-B2) e o catálogo em memória (CA-B3, CA-B6, CA-B9).
+/// Lê o asset v2 (índice e uma parte por área).
 void main() {
-  final text = File('assets/acervo/acervo-v1.json').readAsStringSync();
-  final raw = jsonDecode(text) as Map<String, Object?>;
-  final rawQuestions = (raw['questions'] as List).cast<Map<String, Object?>>();
-  final data = parseBankAsset(text);
+  final real = RealBank.load();
+  final raw = real.indexJson;
+  final rawQuestions = real.rawQuestions;
+  final data = real.data;
   final catalog = MemoryBankCatalog(data);
 
   group('asset (CA-B2)', () {
-    test('schemaVersion 1 e fontes registradas com atribuição e aviso', () {
-      expect(raw['schemaVersion'], 1);
+    test('schemaVersion 2 e fontes registradas com atribuição e aviso', () {
+      expect(raw['schemaVersion'], 2);
       final sources = (raw['sources'] as List).cast<Map<String, Object?>>();
       expect(sources, isNotEmpty);
       for (final s in sources) {
@@ -35,6 +39,20 @@ void main() {
     test('schemaVersion desconhecido é recusado', () {
       expect(
         () => parseBankAsset('{"schemaVersion": 2, "questions": []}'),
+        throwsFormatException,
+      );
+      expect(
+        () => parseBankIndex('{"schemaVersion": 1}'),
+        throwsFormatException,
+      );
+      expect(
+        () => parseBankShard(
+          BankShardInput(
+            json: '{"schemaVersion": 1, "questions": []}',
+            sources: const [],
+            generatedAt: DateTime(2026),
+          ),
+        ),
         throwsFormatException,
       );
     });
@@ -88,6 +106,11 @@ void main() {
           'area',
           'subject',
           'topic',
+          'variant',
+          'classifiedBy',
+          'difficulty',
+          'difficultyBasis',
+          'skill',
           'statement',
           'alternatives',
           'media',
@@ -153,7 +176,80 @@ void main() {
     );
 
     test('questão sem matéria é aceita, com matéria vazia', () {
-      expect(data.questions.where((q) => q.subject.isEmpty), isNotEmpty);
+      final parsed = parseBankShard(
+        BankShardInput(
+          json:
+              '{"schemaVersion":2,"questions":[{"id":"x-1","source":"x",'
+              '"year":2001,"area":"humanities","statement":"s"}]}',
+          sources: const [
+            BankSource(
+              id: 'x',
+              name: 'X',
+              officialUrl: '',
+              attribution: '',
+              notice: '',
+            ),
+          ],
+          generatedAt: DateTime(2026),
+        ),
+      );
+      expect(parsed.single.subject, isEmpty);
+      expect(parsed.single.autoClassified, isFalse);
+    });
+
+    test('v2: variante, dificuldade e classificação automática', () {
+      final parsed = parseBankShard(
+        BankShardInput(
+          json: jsonEncode({
+            'schemaVersion': 2,
+            'area': 'mathematics',
+            'questions': [
+              {
+                'id': 'enem-2024-ppl-140',
+                'source': 'enem',
+                'year': 2024,
+                'variant': 'ppl',
+                'number': 140,
+                'area': 'mathematics',
+                'subject': 'Matemática',
+                'topic': 'Funções',
+                'classifiedBy': 'agent',
+                'difficulty': 3,
+                'difficultyBasis': 'tri',
+                'statement': 's',
+                'alternatives': ['a', 'b', 'c', 'd', 'e'],
+              },
+              {
+                'id': 'enem-2024-141',
+                'source': 'enem',
+                'year': 2024,
+                'area': 'mathematics',
+                'subject': 'Matemática',
+                'classifiedBy': 'source',
+                'difficulty': 9,
+                'statement': 's',
+              },
+            ],
+          }),
+          sources: const [
+            BankSource(
+              id: 'enem',
+              name: 'ENEM (INEP)',
+              officialUrl: 'https://x.gov.br',
+              attribution: 'a',
+              notice: 'n',
+            ),
+          ],
+          generatedAt: DateTime(2026, 11, 26),
+        ),
+      );
+      expect(parsed.first.platform, 'ENEM PPL 2024');
+      expect(parsed.first.bankDifficulty, 3);
+      expect(parsed.first.autoClassified, isTrue);
+      expect(parsed.first.topic, 'Funções');
+      expect(parsed.last.platform, 'ENEM 2024');
+      expect(parsed.last.bankDifficulty, isNull); // faixa fora de 1 a 3
+      expect(parsed.last.autoClassified, isFalse);
     });
 
     test('campos desconhecidos são ignorados e questão inválida é pulada', () {
@@ -286,7 +382,7 @@ void main() {
     TestWidgetsFlutterBinding.ensureInitialized();
 
     test(
-      'lê o asset só uma vez, só do bundle (sem rede, sem Firestore)',
+      'lê cada arquivo só uma vez, só do bundle (sem rede, sem Firestore)',
       () async {
         final bundle = _CountingBundle();
         final asset = AssetBankCatalog(bundle: bundle);
@@ -294,10 +390,14 @@ void main() {
         final b = await asset.facets(const QuestionFilter());
         await asset.byIds(['enem-2009-141']);
         await asset.sources();
+        await asset.summary();
         expect(a.total, greaterThan(0));
         expect(b.areas, hasLength(4));
-        expect(bundle.loads, 1);
-        expect(bundle.paths, [bankAssetPath]);
+        expect(bundle.paths.toSet(), hasLength(bundle.paths.length));
+        expect(bundle.paths.toSet(), {
+          bankIndexPath,
+          for (final s in real.index.shards) s.path,
+        });
       },
     );
 
@@ -306,7 +406,10 @@ void main() {
       final page = await asset.search(const QuestionFilter(), limit: 5);
       expect(page.total, data.questions.length);
       expect(page.items, hasLength(5));
-      expect((await rootBundle.loadString(bankAssetPath)).length, text.length);
+      expect(
+        (await rootBundle.loadString(bankIndexPath)).length,
+        File(bankIndexPath).readAsStringSync().length,
+      );
     });
 
     test('falha de leitura não trava o catálogo: tenta de novo', () async {
@@ -370,7 +473,15 @@ void main() {
       'o parse do asset roda fora da thread da tela e é rápido o bastante',
       () {
         final sw = Stopwatch()..start();
-        parseBankAsset(text);
+        for (final s in real.index.shards) {
+          parseBankShard(
+            BankShardInput(
+              json: real.shardJson[s.path]!,
+              sources: real.index.sources,
+              generatedAt: real.index.generatedAt,
+            ),
+          );
+        }
         // ignore: avoid_print
         print('parse do asset (thread de teste): ${sw.elapsedMilliseconds} ms');
       },

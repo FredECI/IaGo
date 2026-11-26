@@ -1,0 +1,35 @@
+{
+  "taxonomyVersion": 1,
+  "areas": {
+    "languages": ["Português", "Literatura", "Redação", "Inglês", "Espanhol", "Artes", "Educação Física"],
+    "humanities": ["História", "Geografia", "Filosofia", "Sociologia"],
+    "naturalSciences": ["Biologia", "Física", "Química"],
+    "mathematics": ["Matemática"]
+  },
+  "subjects": {
+    "Português": ["Interpretação de texto", "Gêneros textuais", "Variação linguística", "Funções da linguagem", "Figuras de linguagem", "Coesão e coerência", "Gramática no texto", "Argumentação"],
+    "Literatura": ["Barroco e Arcadismo", "Romantismo", "Realismo e Naturalismo", "Parnasianismo e Simbolismo", "Pré-Modernismo", "Modernismo", "Literatura contemporânea", "Poesia e recursos poéticos"],
+    "Redação": [],
+    "Inglês": ["Interpretação de texto", "Vocabulário em contexto", "Gêneros textuais"],
+    "Espanhol": ["Interpretação de texto", "Vocabulário em contexto", "Gêneros textuais"],
+    "Artes": ["Artes visuais", "Música", "Teatro e dança", "Arte contemporânea e tecnologia", "Patrimônio cultural"],
+    "Educação Física": ["Corpo, saúde e atividade física", "Esporte e sociedade", "Práticas corporais e cultura"],
+    "História": ["Antiguidade e Idade Média", "Idade Moderna", "Revoluções e século XIX", "Guerras mundiais e Guerra Fria", "Brasil Colônia", "Brasil Império", "Primeira República", "Era Vargas", "Ditadura militar", "Redemocratização e Brasil atual", "África e povos indígenas", "Cidadania e movimentos sociais"],
+    "Geografia": ["Cartografia", "Climatologia", "Relevo, solos e geologia", "Hidrografia", "Biomas e questões ambientais", "População e migrações", "Urbanização", "Espaço rural e agropecuária", "Indústria e energia", "Globalização e geopolítica"],
+    "Filosofia": ["Filosofia antiga", "Filosofia medieval", "Filosofia moderna", "Filosofia contemporânea", "Ética e moral", "Política e Estado", "Teoria do conhecimento"],
+    "Sociologia": ["Clássicos da Sociologia", "Cultura e identidade", "Trabalho e sociedade", "Movimentos sociais e cidadania", "Desigualdade social", "Política, poder e Estado", "Comunicação e tecnologia"],
+    "Biologia": ["Ecologia", "Genética", "Evolução", "Citologia", "Fisiologia humana", "Saúde e doenças", "Botânica", "Zoologia", "Biotecnologia", "Bioquímica"],
+    "Física": ["Cinemática", "Dinâmica", "Energia e trabalho", "Hidrostática", "Termologia", "Óptica", "Ondulatória e acústica", "Eletricidade", "Magnetismo", "Física moderna"],
+    "Química": ["Atomística e tabela periódica", "Ligações e propriedades", "Funções inorgânicas", "Estequiometria", "Soluções", "Termoquímica", "Cinética e equilíbrio", "Eletroquímica", "Química orgânica", "Química ambiental"],
+    "Matemática": ["Números e operações", "Razão, proporção e porcentagem", "Grandezas e medidas", "Geometria plana", "Geometria espacial", "Funções", "Álgebra e equações", "Estatística", "Probabilidade e combinatória", "Matemática financeira", "Leitura de gráficos e tabelas"]
+  },
+  "skillHints": [
+    {"from": 1, "to": 5, "topics": ["Números e operações"]},
+    {"from": 6, "to": 9, "topics": ["Geometria plana", "Geometria espacial"]},
+    {"from": 10, "to": 14, "topics": ["Grandezas e medidas"]},
+    {"from": 15, "to": 18, "topics": ["Razão, proporção e porcentagem"]},
+    {"from": 19, "to": 23, "topics": ["Funções", "Álgebra e equações"]},
+    {"from": 24, "to": 26, "topics": ["Leitura de gráficos e tabelas"]},
+    {"from": 27, "to": 30, "topics": ["Estatística", "Probabilidade e combinatória"]}
+  ]
+}

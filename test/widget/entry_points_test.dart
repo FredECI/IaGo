@@ -17,7 +17,14 @@ void main() {
   testWidgets('Painel: card do Direciona mostra a próxima etapa simulada', (
     tester,
   ) async {
-    await pumpIagoApp(tester);
+    await pumpIagoApp(
+      tester,
+      overrides: [
+        bankCatalogProvider.overrideWithValue(
+          FakeBankCatalog(delay: Duration.zero),
+        ),
+      ],
+    );
     await enterDemo(tester);
     await reveal(tester, find.byKey(const Key('direction-card')));
     expect(find.text('Próxima etapa (simulada)'), findsOneWidget);
@@ -30,6 +37,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Demonstração: proposta simulada'), findsNothing);
     expect(find.byKey(const Key('direction-card')), findsOneWidget);
+    await letTimeoutsExpire(tester);
   });
 
   testWidgets('Painel: card do Conecta abre na demo', (tester) async {

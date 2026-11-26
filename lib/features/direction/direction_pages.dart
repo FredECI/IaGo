@@ -10,8 +10,13 @@ import '../../data/policy_providers.dart';
 import '../../domain/direction_calendar.dart';
 import '../../domain/direction_models.dart';
 import '../../domain/direction_progress.dart';
+import '../../domain/question_filter.dart';
 import '../../shared/common_widgets.dart';
+import '../bank/bank_format.dart';
+import '../bank/bank_providers.dart';
 import '../community/community_access.dart';
+import '../lists/lists_providers.dart';
+import '../questions/questions_providers.dart';
 import 'direction_providers.dart';
 
 export 'goal_page.dart';
@@ -33,6 +38,21 @@ class DirectionPage extends ConsumerStatefulWidget {
 
 class _DirectionPageState extends ConsumerState<DirectionPage> {
   bool _busy = false;
+  bool _bankBusy = false;
+
+  /// Etapas cujas questões sugeridas sumiram do acervo (versão nova).
+  final Set<String> _gone = {};
+
+  @override
+  void initState() {
+    super.initState();
+    // As etapas simuladas da demo nascem sem acervo: anexa a sugestão.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && ref.read(directionSimulatedProvider)) {
+        ref.read(directionActionsProvider).attachBankToPendingSteps();
+      }
+    });
+  }
 
   /// Roda uma gravação sem toque duplo e avisa se falhar.
   Future<void> _run(Future<bool> Function() action, String failure) async {
@@ -67,8 +87,120 @@ class _DirectionPageState extends ConsumerState<DirectionPage> {
     }
   }
 
+  /// "Escolher no acervo" e "Ver o acervo": abre o acervo já filtrado pela área
+  /// e pela matéria da etapa. Não mexe no filtro de "Minhas questões".
+  void _openBank(StudyStep step) {
+    ref
+        .read(bankFilterProvider.notifier)
+        .replace(QuestionFilter(areas: {step.area}, subjects: {step.subject}));
+    context.push(Routes.bank);
+  }
+
+  /// "Ver minhas questões de {matéria}".
+  void _openMine(StudyStep step) {
+    ref
+        .read(questionFilterProvider.notifier)
+        .replace(QuestionFilter(areas: {step.area}, subjects: {step.subject}));
+    context.go(Routes.questions);
+  }
+
+  /// "Montar lista com N do acervo": busca as questões pelos ids, cria a lista
+  /// (as já salvas não duplicam), grava `bankListId` e abre o editor.
+  Future<void> _buildBankList(StudyStep step) async {
+    if (_bankBusy) return;
+    setState(() => _bankBusy = true);
+    try {
+      final questions = await ref.read(bankCatalogProvider).byIds(step.bankIds);
+      if (!mounted) return;
+      if (questions.isEmpty) {
+        setState(() => _gone.add(step.id));
+        return;
+      }
+      final list = await ref
+          .read(bankActionsProvider)
+          .createList(
+            name: 'Direciona: ${step.subject} até ${_shortDate(step.dueAt)}',
+            questions: questions,
+            fromStepId: step.id,
+          );
+      if (!mounted) return;
+      context.go(Routes.list(list.id));
+    } catch (_) {
+      if (mounted) {
+        showMessage(context, 'Não foi possível montar a lista. Tente de novo.');
+      }
+    } finally {
+      if (mounted) setState(() => _bankBusy = false);
+    }
+  }
+
+  /// Botões do acervo da etapa (vazio com o interruptor desligado).
+  List<_BankButton> _bankButtons(StudyStep step, bool enabled) {
+    if (!enabled) return const [];
+    final available = (step.bankAvailableAtProposal ?? 0) > 0;
+    switch (step.action) {
+      case StepAction.review:
+        return [
+          _BankButton(
+            key: Key('bank-mine-${step.id}'),
+            label: 'Ver minhas questões de ${step.subject}',
+            icon: Icons.folder_open_outlined,
+            primary: true,
+            onPressed: () => _openMine(step),
+          ),
+        ];
+      case StepAction.collect:
+        return [
+          if (available)
+            _BankButton(
+              key: Key('bank-choose-${step.id}'),
+              label: 'Escolher no acervo',
+              icon: Icons.travel_explore_outlined,
+              primary: true,
+              onPressed: () => _openBank(step),
+            ),
+        ];
+      case StepAction.buildList:
+      case StepAction.practice:
+        final lists = ref.read(listsProvider).value;
+        final listExists =
+            step.bankListId != null &&
+            (lists == null || lists.any((l) => l.id == step.bankListId));
+        return [
+          if (step.bankIds.isNotEmpty && !_gone.contains(step.id))
+            listExists
+                ? _BankButton(
+                    key: Key('bank-open-list-${step.id}'),
+                    label: 'Abrir lista',
+                    icon: Icons.list_alt_outlined,
+                    primary: true,
+                    onPressed: () => context.go(Routes.list(step.bankListId!)),
+                  )
+                : _BankButton(
+                    key: Key('bank-build-${step.id}'),
+                    label: 'Montar lista com ${step.bankIds.length} do acervo',
+                    icon: Icons.playlist_add_outlined,
+                    primary: true,
+                    onPressed: _bankBusy ? null : () => _buildBankList(step),
+                  ),
+          if (available)
+            _BankButton(
+              key: Key('bank-open-${step.id}'),
+              label: 'Ver o acervo de ${step.subject}',
+              icon: Icons.travel_explore_outlined,
+              onPressed: () => _openBank(step),
+            ),
+        ];
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final bankEnabled = ref.watch(accessPolicyProvider).directionBankEnabled;
+    // Mantém as listas e as questões ouvidas: o botão vira "Abrir lista" (ou
+    // volta a montar) e "Montar lista" confere as cópias já salvas.
+    ref.watch(listsProvider);
+    ref.watch(questionsProvider);
     final goalAsync = ref.watch(studyGoalProvider);
     final stepsAsync = ref.watch(studyStepsProvider);
     final pending = ref.watch(pendingStepsProvider);
@@ -154,6 +286,9 @@ class _DirectionPageState extends ConsumerState<DirectionPage> {
                     'Não foi possível adiar a etapa.',
                   ),
                   onCalendar: () => _addToCalendar(step),
+                  bankEnabled: bankEnabled,
+                  bankGone: _gone.contains(step.id),
+                  bankButtons: _bankButtons(step, bankEnabled),
                 ),
               ),
           if (ref.watch(canOfferJoinProvider) &&
@@ -337,6 +472,26 @@ class _NoSteps extends StatelessWidget {
   );
 }
 
+/// Dia e mês, como em "Direciona: Matemática até 12/11".
+String _shortDate(DateTime d) =>
+    '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}';
+
+class _BankButton {
+  const _BankButton({
+    required this.key,
+    required this.label,
+    required this.icon,
+    required this.onPressed,
+    this.primary = false,
+  });
+
+  final Key key;
+  final String label;
+  final IconData icon;
+  final bool primary;
+  final VoidCallback? onPressed;
+}
+
 class _StepCard extends StatelessWidget {
   const _StepCard({
     required this.step,
@@ -346,7 +501,14 @@ class _StepCard extends StatelessWidget {
     required this.onComplete,
     required this.onPostpone,
     required this.onCalendar,
+    required this.bankEnabled,
+    required this.bankGone,
+    required this.bankButtons,
   });
+
+  final bool bankEnabled;
+  final bool bankGone;
+  final List<_BankButton> bankButtons;
 
   final StudyStep step;
   final bool overdue;
@@ -385,12 +547,53 @@ class _StepCard extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             Text(step.rationale, style: theme.textTheme.bodyMedium),
+            if (bankEnabled && step.bankIds.isNotEmpty && !bankGone) ...[
+              const SizedBox(height: 4),
+              Text(
+                _suggestionLine(step),
+                key: Key('bank-line-${step.id}'),
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+            if (bankGone) ...[
+              const SizedBox(height: 4),
+              Text(
+                'As questões sugeridas não estão mais no acervo.',
+                key: Key('bank-gone-${step.id}'),
+                style: theme.textTheme.bodySmall,
+              ),
+            ],
             const SizedBox(height: 8),
             InfoTag(
               label: step.source.label,
               icon: Icons.auto_awesome_outlined,
             ),
             const SizedBox(height: 8),
+            for (final b in bankButtons)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: b.primary
+                    ? FilledButton.tonalIcon(
+                        key: b.key,
+                        style: FilledButton.styleFrom(
+                          minimumSize: const Size.fromHeight(48),
+                        ),
+                        onPressed: b.onPressed,
+                        icon: Icon(b.icon),
+                        label: Text(b.label),
+                      )
+                    : OutlinedButton.icon(
+                        key: b.key,
+                        style: OutlinedButton.styleFrom(
+                          minimumSize: const Size.fromHeight(48),
+                        ),
+                        onPressed: b.onPressed,
+                        icon: Icon(b.icon),
+                        label: Text(b.label),
+                      ),
+              ),
             Wrap(
               spacing: 8,
               runSpacing: 4,
@@ -429,4 +632,12 @@ class _StepCard extends StatelessWidget {
       ),
     );
   }
+}
+
+/// "Sugestão do acervo: 10 questões de Matemática, dificuldade Média". Sem
+/// faixa, a linha omite a dificuldade.
+String _suggestionLine(StudyStep step) {
+  final band = difficultyLabel(step.difficultyTarget);
+  return 'Sugestão do acervo: ${bankQuestions(step.bankIds.length)} de '
+      '${step.subject}${band == null ? '' : ', dificuldade $band'}';
 }

@@ -7,6 +7,7 @@ class BankSource {
     required this.attribution,
     required this.notice,
     this.via = '',
+    this.kind = 'questions',
   });
 
   final String id;
@@ -18,6 +19,11 @@ class BankSource {
   final String notice;
   final String via;
 
+  /// `questions` (fornece questões) ou `difficulty` (só dados de dificuldade).
+  final String kind;
+
+  bool get isDifficultyData => kind == 'difficulty';
+
   factory BankSource.fromMap(Map<String, Object?> map) => BankSource(
     id: map['id'] as String,
     name: map['name'] as String? ?? '',
@@ -25,5 +31,6 @@ class BankSource {
     attribution: map['attribution'] as String? ?? '',
     notice: map['notice'] as String? ?? '',
     via: map['via'] as String? ?? '',
+    kind: map['kind'] as String? ?? 'questions',
   );
 }

@@ -8,6 +8,7 @@ import '../../domain/bank_source.dart';
 import '../../domain/question.dart';
 import '../../shared/common_widgets.dart';
 import '../rating/rating_panel.dart';
+import 'bank_format.dart';
 import 'bank_providers.dart';
 
 /// Detalhe de uma questão do acervo: enunciado, alternativas, crédito e o
@@ -135,8 +136,23 @@ class _Body extends ConsumerWidget {
               label: question.type.label,
               icon: Icons.radio_button_checked,
             ),
+            if (question.autoClassified)
+              const InfoTag(
+                key: Key('bank-auto-classified'),
+                label: 'Classificação automática',
+                icon: Icons.auto_awesome_outlined,
+              ),
           ],
         ),
+        if (difficultyLabel(question.bankDifficulty) case final label?) ...[
+          const SizedBox(height: 8),
+          Text(
+            'Dificuldade estimada pelo INEP: $label '
+            '(${relativeDifficulty(question.bankDifficulty!, question.area.shortLabel)})',
+            key: const Key('bank-difficulty'),
+            style: theme.textTheme.bodyMedium,
+          ),
+        ],
         const SizedBox(height: 16),
         SelectableText(
           question.statement.trim(),

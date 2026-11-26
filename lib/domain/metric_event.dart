@@ -30,14 +30,18 @@ enum MetricEventType {
   /// Importação executada: source, files, extracted, failedFiles, partial.
   importRun('import_run'),
 
-  /// Plano do Direciona criado: source.
+  /// Plano do Direciona criado: source, bankSuggestedSteps, catalogGeneratedAt.
   directionPlanCreated('direction_plan_created'),
 
-  /// Etapa concluída: onTime, source, action.
+  /// Etapa concluída: onTime, source, action, hadBankSuggestion, bankListCreated.
   directionStepDone('direction_step_done'),
 
-  /// Etapa perdida: source, action.
+  /// Etapa perdida: source, action, hadBankSuggestion, bankListCreated.
   directionStepMissed('direction_step_missed'),
+
+  /// Lista montada pela sugestão do acervo numa etapa: stepId, questionCount e
+  /// difficultyTarget (sem ids de questão).
+  directionBankListCreated('direction_bank_list_created'),
 
   /// A IA falhou e as regras assumiram: feature, reason.
   aiFallback('ai_fallback'),

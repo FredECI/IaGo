@@ -27,7 +27,7 @@ void main() {
       now: now,
       parameters: params,
     );
-    expect(hs.map((h) => h.code), ['H1', 'H2', 'H3', 'H4', 'H5', 'H6']);
+    expect(hs.map((h) => h.code), ['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'H7']);
     final statuses = [
       for (final h in hs)
         for (final m in h.metrics) m.status,
@@ -118,13 +118,18 @@ void main() {
     final byCode = {for (final h in hs) h.code: h};
     final h5 = byCode['H5']!.metrics;
     final h6 = byCode['H6']!.metrics;
-    expect(h5, hasLength(1));
+    final h7 = byCode['H7']!.metrics;
+    expect(h5, hasLength(2));
     expect(h6, hasLength(2));
-    for (final m in [...h5, ...h6]) {
+    expect(h7, hasLength(2));
+    for (final m in [...h5, ...h6, ...h7]) {
       expect(m.target, startsWith('meta provisória'), reason: m.label);
       expect(m.status, isNot(MetricStatus.noData), reason: m.label);
     }
     expect(h5.first.target, 'meta provisória: 60%');
+    expect(h5.last.target, 'meta provisória: com sugestão, 10 pontos acima');
+    expect(h7[0].target, 'meta provisória: 40%');
+    expect(h7[1].target, 'meta provisória: 50%');
     expect(h6[0].target, 'meta provisória: 50%');
     expect(h6[1].target, 'meta provisória: 30%');
   });
@@ -149,7 +154,7 @@ void main() {
       ],
       now: now,
       parameters: params,
-    ).firstWhere((h) => h.code == 'H5').metrics.single;
+    ).firstWhere((h) => h.code == 'H5').metrics.first;
     expect(h5.value, '50%');
     expect(h5.status, MetricStatus.notMet);
     expect(h5.detail, '2 de 4 etapas');
@@ -214,6 +219,8 @@ void main() {
       const newTypes = {
         MetricEventType.directionStepDone,
         MetricEventType.directionStepMissed,
+        MetricEventType.directionPlanCreated,
+        MetricEventType.directionBankListCreated,
         MetricEventType.communityPost,
         MetricEventType.communityReply,
         MetricEventType.helpfulGiven,
@@ -339,5 +346,102 @@ void main() {
       data: const {'type': 'objective'},
     );
     expect(tricky.toMap()['type'], 'question_saved');
+  });
+
+  group('BM10: H5 dividida e H7', () {
+    MetricEvent step(bool done, {required bool bank, bool onTime = true}) =>
+        MetricEvent(
+          type: done
+              ? MetricEventType.directionStepDone
+              : MetricEventType.directionStepMissed,
+          at: now,
+          uid: 'a',
+          data: {
+            if (done) 'onTime': onTime,
+            'hadBankSuggestion': bank,
+            'bankListCreated': false,
+          },
+        );
+
+    List<PilotMetric> metricsOf(List<MetricEvent> events, String code) =>
+        computePilotMetrics(
+          events: events,
+          now: now,
+          parameters: params,
+        ).firstWhere((h) => h.code == code).metrics;
+
+    test('H5 dividida: com sugestão 10 pontos acima das sem sugestão', () {
+      final split = metricsOf([
+        for (var i = 0; i < 4; i++) step(true, bank: true), // 4 de 5
+        step(false, bank: true),
+        for (var i = 0; i < 3; i++) step(true, bank: false), // 3 de 5
+        step(true, bank: false, onTime: false),
+        step(false, bank: false),
+      ], 'H5').last;
+      expect(split.value, '80% × 60%');
+      expect(split.status, MetricStatus.met);
+      expect(split.detail, '4 de 5 com sugestão; 3 de 5 sem');
+    });
+
+    test('H5 dividida: abaixo de 10 pontos ou sem um dos grupos', () {
+      final close = metricsOf([
+        step(true, bank: true),
+        step(true, bank: false),
+      ], 'H5').last;
+      expect(close.status, MetricStatus.notMet);
+      final onlyOne = metricsOf([step(true, bank: true)], 'H5').last;
+      expect(onlyOne.value, '—');
+      expect(onlyOne.status, MetricStatus.noData);
+      // Evento antigo, sem o campo, conta como sem sugestão.
+      final old = metricsOf([
+        MetricEvent(
+          type: MetricEventType.directionStepDone,
+          at: now,
+          uid: 'a',
+          data: const {'onTime': true},
+        ),
+        step(true, bank: true),
+      ], 'H5').last;
+      expect(old.status, MetricStatus.notMet);
+      expect(old.detail, '1 de 1 com sugestão; 1 de 1 sem');
+    });
+
+    test('H7: lista montada por etapa com sugestão e exportação', () {
+      MetricEvent plan(int suggested) => MetricEvent(
+        type: MetricEventType.directionPlanCreated,
+        at: now,
+        uid: 'a',
+        data: {'source': 'rules', 'bankSuggestedSteps': suggested},
+      );
+      MetricEvent built(String stepId) => MetricEvent(
+        type: MetricEventType.directionBankListCreated,
+        at: now,
+        uid: 'a',
+        data: {'stepId': stepId, 'questionCount': 10},
+      );
+      MetricEvent export(bool fromStep) => MetricEvent(
+        type: MetricEventType.listExported,
+        at: now,
+        uid: 'a',
+        data: {'questionCount': 10, 'fromDirectionStep': fromStep},
+      );
+      final h7 = metricsOf([
+        plan(3),
+        plan(2),
+        built('s1'),
+        built('s1'), // lista refeita: a mesma etapa conta uma vez
+        built('s2'),
+        export(true),
+        export(false),
+      ], 'H7');
+      expect(h7[0].value, '40%');
+      expect(h7[0].status, MetricStatus.met);
+      expect(h7[0].detail, '2 de 5 etapas com sugestão');
+      expect(h7[1].value, '50%');
+      expect(h7[1].status, MetricStatus.met);
+
+      final empty = metricsOf(const [], 'H7');
+      expect(empty.map((m) => m.status), everyElement(MetricStatus.noData));
+    });
   });
 }

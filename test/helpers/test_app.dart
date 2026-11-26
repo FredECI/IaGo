@@ -94,3 +94,8 @@ Future<void> tapVisible(WidgetTester tester, Finder finder) async {
   await tester.tap(finder);
   await tester.pumpAndSettle();
 }
+
+/// Deixa vencerem os timeouts de leitura do Direciona (4 s) que ficam
+/// pendentes quando a leitura roda no relógio falso do teste.
+Future<void> letTimeoutsExpire(WidgetTester tester) =>
+    tester.pump(const Duration(seconds: 5));

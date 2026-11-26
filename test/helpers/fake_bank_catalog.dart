@@ -3,6 +3,7 @@ import 'package:iago/data/bank_asset_catalog.dart';
 import 'package:iago/data/local/bank_asset_parser.dart';
 import 'package:iago/domain/area.dart';
 import 'package:iago/domain/bank_source.dart';
+import 'package:iago/domain/bank_summary.dart';
 import 'package:iago/domain/question.dart';
 import 'package:iago/domain/question_filter.dart';
 
@@ -96,5 +97,11 @@ class FakeBankCatalog implements BankCatalog {
   Future<List<BankSource>> sources() async {
     await Future<void>.delayed(delay);
     return _inner.sources();
+  }
+
+  @override
+  Future<BankSummary> summary() async {
+    await Future<void>.delayed(delay);
+    return _inner.summary();
   }
 }

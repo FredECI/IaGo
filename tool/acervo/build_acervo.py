@@ -1,7 +1,8 @@
-"""Gera assets/acervo/acervo-v1.json a partir das fontes autorizadas.
+"""Gera o asset do acervo (padrão: v2, em assets/acervo/v2/) a partir das fontes autorizadas.
 
 Uso (na raiz do repositório):
-    python -I tool/acervo/build_acervo.py
+    python -I tool/acervo/build_acervo.py                    # v2: índice + uma parte por área
+    python -I tool/acervo/build_acervo.py --format v1        # arquivo único antigo
 
 Só este script acessa a rede; o app nunca acessa a API. Veja o README.md.
 """
@@ -16,6 +17,8 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)  # necessário com `python -I`; só código nosso mora aqui
 
+import acervo_v2 as v2  # noqa: E402
+from dedupe import dedupe  # noqa: E402
 from fetcher import Fetcher  # noqa: E402
 from glyphs import covered_codepoints, missing_chars  # noqa: E402
 from sources import ADAPTERS  # noqa: E402
@@ -33,7 +36,8 @@ AREA_LABEL = {
     "languages": "Linguagens", "humanities": "Humanas",
     "naturalSciences": "Natureza", "mathematics": "Matemática",
 }
-FORBIDDEN_KEYS = ("correctAlternative", "isCorrect", "gabarito")
+FORBIDDEN_KEYS = ("correctAlternative", "isCorrect", "gabarito", "answer", "TX_GABARITO")
+SOURCE_KINDS = ("questions", "metadata")
 
 _LATEX = re.compile(
     r"\\[a-zA-Z]+|\\\(|\$\$|\^\{|(?<![A-Za-z\d])\$(?=\S)[^$\n]*?(?<=\S)\$"
@@ -60,10 +64,18 @@ def load_sources(path):
             raise SourceRefused(f"fonte '{sid}' recusada: officialUrl e licenseUrl devem ser https")
         if sid in seen:
             raise SourceRefused(f"id de fonte repetido: {sid}")
-        if sid not in ADAPTERS:
-            raise SourceRefused(f"fonte '{sid}' sem adaptador em tool/acervo/sources/")
+        if s.get("kind", "questions") not in SOURCE_KINDS:
+            raise SourceRefused(f"fonte '{sid}' recusada: kind deve ser um de {SOURCE_KINDS}")
+        for name in source_adapters(s):
+            if name not in ADAPTERS:
+                raise SourceRefused(f"fonte '{sid}' sem adaptador '{name}' em tool/acervo/sources/")
         seen.add(sid)
     return sources
+
+
+def source_adapters(source):
+    """Adaptadores da fonte; ausente, vale o próprio id (registro antigo continua válido)."""
+    return list(source.get("adapters") or [source["id"]])
 
 
 def exclusion_reasons(q, covered):
@@ -98,21 +110,31 @@ def question_to_dict(q):
     return d
 
 
-def build(sources, fetcher_factory, covered, generated_at, log=print):
+def build(sources, fetcher_factory, covered, generated_at, log=print, published=(), info=None):
     kept, excluded = [], []  # excluded: (RawQuestion, reasons)
     used_sources = []
     for s in sources:
-        adapter = ADAPTERS[s["id"]](covered=covered)
-        fetcher = fetcher_factory(adapter)
         used_sources.append({k: s[k] for k in ASSET_SOURCE_FIELDS})
-        for q in adapter.iter_questions(fetcher.get_json, log):
-            reasons = exclusion_reasons(q, covered)
-            (excluded if reasons else kept).append((q, reasons) if reasons else q)
+        if s.get("kind", "questions") != "questions":
+            continue  # fonte de metadados não traz questão
+        for name in source_adapters(s):
+            adapter = ADAPTERS[name](covered=covered)
+            fetcher = fetcher_factory(adapter)
+            for q in adapter.iter_questions(fetcher.get_json, log):
+                reasons = exclusion_reasons(q, covered)
+                (excluded if reasons else kept).append((q, reasons) if reasons else q)
     ids = [q.id for q in kept] + [e[0].id for e in excluded]
     if len(ids) != len(set(ids)):
         dup = sorted({i for i in ids if ids.count(i) > 1})
         raise ValueError(f"ids repetidos: {dup[:5]}")
-    kept.sort(key=lambda q: (q.source, q.edition, q.number, q.id))
+    order = {s["id"]: i for i, s in enumerate(sources)}
+    kept, removed, protected, near = dedupe(kept, order, published)
+    for q, other in removed:
+        excluded.append((q, ["duplicata"]))
+    if info is not None:
+        info.update(removed=[(q.id, other) for q, other in removed],
+                    protected=[(q.id, other) for q, other in protected], near=near)
+    kept.sort(key=lambda q: (q.source, q.edition, getattr(q, "variant", None) or "", q.number, q.id))
     asset = {
         "schemaVersion": SCHEMA_VERSION,
         "generatedAt": generated_at,
@@ -164,7 +186,7 @@ def _count(items):
     return sorted(counts.items(), key=lambda x: (-x[1], x[0]))
 
 
-def report_text(kept, excluded):
+def report_text(kept, excluded, info=None):
     areas = list(AREA_LABEL)
     total = len(kept) + len(excluded)
     lines = ["# Relatório do acervo", ""]
@@ -193,7 +215,69 @@ def report_text(kept, excluded):
     lines += ["", "## Exclusões por área", ""]
     for a in areas:
         lines.append(f"- {AREA_LABEL[a]}: {sum(e[0].area == a for e in excluded)}")
+    lines += ["", "## Por edição e variante (aproveitadas / lidas / excluídas por imagem)", ""]
+    variants = sorted({(q.edition, getattr(q, "variant", None) or "") for q in kept}
+                      | {(e[0].edition, getattr(e[0], "variant", None) or "") for e in excluded})
+    for y, v in variants:
+        k = sum(q.edition == y and (getattr(q, "variant", None) or "") == v for q in kept)
+        ex = [e for e in excluded if e[0].edition == y and (getattr(e[0], "variant", None) or "") == v]
+        img = sum(any(r.startswith("imagem") for r in e[1]) for e in ex)
+        lines.append(f"- {y} {v or 'regular'}: {k} / {k + len(ex)} / {img}")
+    if info is not None:
+        lines += ["", "## Deduplicação (BM15)", ""]
+        lines.append(f"- Duplicatas exatas removidas: {len(info['removed'])}")
+        lines += [f"  - {a} (igual a {b})" for a, b in info["removed"]]
+        lines.append(f"- Duplicatas mantidas por já estarem publicadas: {len(info['protected'])}")
+        lines += [f"  - {a} (igual a {b})" for a, b in info["protected"]]
+        lines.append(f"- Quase duplicatas, só sinalizadas para revisão humana: {len(info['near'])}")
+        lines += [f"  - {a} ~ {b}" for a, b in info["near"]]
     return "\n".join(lines) + "\n"
+
+
+def build_v2(sources, kept, taxonomy, classification, generated_at,
+             ids_v1=(), removed=None, allow_unclassified=False,
+             shard_dir="assets/acervo/v2"):
+    """Monta os arquivos do asset v2. Devolve ({nome: texto}, [dict das questões]).
+
+    Falha (``BuildError``) se alguma questão ficar sem matéria (a menos que
+    ``allow_unclassified``), se a classificação citar id desconhecido ou assunto
+    fora da taxonomia, se um id publicado sumir sem estar em ``removed`` ou se
+    algum limite de tamanho estourar.
+    """
+    v2.check_classification_ids(classification, [q.id for q in kept])
+    questions, missing = [], []
+    for q in kept:
+        subject, topic, by = v2.resolve_question(q, classification.get(q.id), taxonomy, q.id)
+        if subject is None:
+            missing.append(q.id)
+        questions.append(v2.v2_question(
+            q, subject, topic, by, area=v2.fixed_area(q, classification.get(q.id))))
+    if missing and not allow_unclassified:
+        raise v2.BuildError(
+            f"{len(missing)} questão(ões) sem matéria (rode a classificação ou use "
+            f"--allow-unclassified): {missing[:5]}"
+        )
+    v2.check_published_ids(ids_v1, removed or {}, {q.id for q in kept})
+    by_area = v2.group_by_area(questions)
+    index_sources = [
+        {**{k: s[k] for k in ASSET_SOURCE_FIELDS}, "kind": s.get("kind", "questions")}
+        for s in sources
+    ]
+    index = v2.build_index(
+        generated_at, index_sources, taxonomy,
+        {a: len(by_area[a]) for a in v2.AREA_ORDER}, v2.build_counts(questions), shard_dir,
+    )
+    files = {"index.json": v2.dump_index(index)}
+    for a in v2.AREA_ORDER:
+        files[f"{a}.json"] = v2.dump_shard(a, by_area[a])
+    v2.check_sizes(files)
+    for name, text in files.items():
+        if has_forbidden_word(text):
+            raise v2.BuildError(f"a palavra 'gabarito' aparece em {name}")
+        bad = forbidden_keys(json.loads(text))
+        if bad:
+            raise v2.BuildError(f"campo de resposta em {name}: {sorted(bad)}")
+    return files, questions
 
 
 def generated_at_for(cache_dir, override):
@@ -214,9 +298,19 @@ def generated_at_for(cache_dir, override):
 
 def main(argv=None):
     p = argparse.ArgumentParser(description="Gera o asset do acervo de questões.")
+    p.add_argument("--format", choices=("v2", "v1"), default="v2")
     p.add_argument("--sources", default=os.path.join(HERE, "sources.json"))
     p.add_argument("--cache-dir", default=os.path.join(REPO, "build", "acervo-cache"))
-    p.add_argument("--out", default=os.path.join(REPO, "assets", "acervo", "acervo-v1.json"))
+    p.add_argument("--out", default=os.path.join(REPO, "assets", "acervo", "acervo-v1.json"),
+                   help="arquivo de saída do formato v1")
+    p.add_argument("--out-dir", default=os.path.join(REPO, "assets", "acervo", "v2"),
+                   help="pasta de saída do formato v2")
+    p.add_argument("--taxonomy", default=os.path.join(HERE, "taxonomy.json"))
+    p.add_argument("--classification-dir", default=os.path.join(HERE, "classification"))
+    p.add_argument("--ids-v1", default=os.path.join(HERE, "ids-v1.txt"))
+    p.add_argument("--removed", default=os.path.join(HERE, "removed.json"))
+    p.add_argument("--allow-unclassified", action="store_true",
+                   help="v2: aceita questão sem matéria (só até a classificação ficar pronta)")
     p.add_argument("--report", default=os.path.join(REPO, "build", "acervo-report.md"))
     p.add_argument("--font", default=os.path.join(REPO, "assets", "fonts", "Inter-Regular.ttf"))
     p.add_argument("--generated-at", default=None, help="AAAA-MM-DD (padrão: fixada no cache)")
@@ -241,17 +335,42 @@ def main(argv=None):
         fetchers.append(f)
         return f
 
-    asset, kept, excluded = build(sources, factory, covered, gen, log=lambda m: print(m, flush=True))
-    out = dump_asset(asset)
-    if has_forbidden_word(out):
-        print("ERRO: a palavra 'gabarito' aparece no asset", file=sys.stderr)
-        return 3
-    bad = forbidden_keys(asset)  # cinto e suspensório; o teste também confere
-    if bad:
-        print(f"ERRO: campo de resposta no asset: {sorted(bad)}", file=sys.stderr)
-        return 3
-    report = report_text(kept, excluded)
-    for path, text in ((args.out, out), (args.report, report)):
+    info = {}
+    published = v2.load_ids_v1(args.ids_v1) if args.format == "v2" else ()
+    asset, kept, excluded = build(
+        sources, factory, covered, gen, log=lambda m: print(m, flush=True),
+        published=published, info=info,
+    )
+    report = report_text(kept, excluded, info)
+    if args.format == "v1":
+        out = dump_asset(asset)
+        if has_forbidden_word(out):
+            print("ERRO: a palavra 'gabarito' aparece no asset", file=sys.stderr)
+            return 3
+        bad = forbidden_keys(asset)  # cinto e suspensório; o teste também confere
+        if bad:
+            print(f"ERRO: campo de resposta no asset: {sorted(bad)}", file=sys.stderr)
+            return 3
+        outputs = [(args.out, out), (args.report, report)]
+        shown = f"Asset: {args.out} ({len(out.encode('utf-8'))} bytes)"
+    else:
+        try:
+            taxonomy = v2.load_taxonomy(args.taxonomy)
+            classification = v2.read_classification(args.classification_dir)
+            files, questions = build_v2(
+                sources, kept, taxonomy, classification, gen,
+                ids_v1=v2.load_ids_v1(args.ids_v1), removed=v2.load_removed(args.removed),
+                allow_unclassified=args.allow_unclassified,
+            )
+        except v2.BuildError as e:
+            print(f"ERRO: {e}", file=sys.stderr)
+            return 4
+        report += v2.coverage_text(questions)
+        outputs = [(os.path.join(args.out_dir, n), t) for n, t in files.items()]
+        outputs.append((args.report, report))
+        total = sum(len(t.encode("utf-8")) for t in files.values())
+        shown = f"Asset v2: {args.out_dir} ({len(files)} arquivos, {total} bytes)"
+    for path, text in outputs:
         os.makedirs(os.path.dirname(path), exist_ok=True)
         with open(path, "w", encoding="utf-8", newline="\n") as f:
             f.write(text)
@@ -260,7 +379,7 @@ def main(argv=None):
         f"Pedidos de rede: {sum(f.network_requests for f in fetchers)}; "
         f"acertos de cache: {sum(f.cache_hits for f in fetchers)}"
     )
-    print(f"Asset: {args.out} ({len(out.encode('utf-8'))} bytes)")
+    print(shown)
     return 0
 
 

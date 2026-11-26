@@ -104,6 +104,10 @@ StudyStep _copy(
   source: s.source,
   rationale: s.rationale,
   createdAt: s.createdAt,
+  bankIds: s.bankIds,
+  difficultyTarget: s.difficultyTarget,
+  bankListId: s.bankListId,
+  bankAvailableAtProposal: s.bankAvailableAtProposal,
 );
 
 /// Marca como concluída. Idempotente: concluir de novo mantém a 1ª data.

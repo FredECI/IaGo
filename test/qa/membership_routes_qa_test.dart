@@ -61,7 +61,9 @@ void main() {
         await tester.pumpAndSettle();
         final loc = routerOf(tester).state.uri.path;
         expect(
-          loc == '/conecta/membro' && p != '/conecta/membro' && p != '/conecta/membro/'
+          loc == '/conecta/membro' &&
+                  p != '/conecta/membro' &&
+                  p != '/conecta/membro/'
               ? false
               : !loc.startsWith('/conecta') || loc == '/conecta/membro',
           isTrue,

@@ -56,7 +56,11 @@ void main() {
       testWidgets('abre ${e.key}', (tester) async {
         await pumpIagoApp(
           tester,
-          overrides: [bankCatalogProvider.overrideWithValue(FakeBankCatalog())],
+          overrides: [
+            bankCatalogProvider.overrideWithValue(
+              FakeBankCatalog(delay: Duration.zero),
+            ),
+          ],
         );
         await enterDemo(tester);
         await go(tester, e.key);
@@ -64,6 +68,7 @@ void main() {
         expect(find.textContaining(e.value), findsWidgets);
         // Qualquer estouro de layout vira exceção capturada pelo tester.
         expect(tester.takeException(), isNull);
+        await letTimeoutsExpire(tester);
         // Direciona (DI4) e Acervo (A4/A5) já são telas de verdade, sem
         // página provisória.
         expect(

@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/bank_asset_catalog.dart';
@@ -5,10 +6,14 @@ import '../../data/bank_catalog.dart';
 import '../../data/providers.dart';
 import '../../domain/area.dart';
 import '../../domain/bank_source.dart';
+import '../../domain/bank_summary.dart';
+import '../../domain/metric_event.dart';
 import '../../domain/question.dart';
 import '../../domain/question_filter.dart';
 import '../../domain/question_list.dart';
+import '../direction/direction_providers.dart';
 import '../lists/lists_providers.dart';
+import '../metrics/metrics_providers.dart';
 import '../questions/questions_providers.dart';
 
 /// Limite de questões do acervo numa lista (CA-R7: definido uma vez só).
@@ -28,6 +33,11 @@ final bankCatalogProvider = Provider<BankCatalog>((ref) => AssetBankCatalog());
 /// Fontes registradas (crédito e aviso exibidos na tela do acervo).
 final bankSourcesProvider = FutureProvider<List<BankSource>>(
   (ref) => ref.watch(bankCatalogProvider).sources(),
+);
+
+/// Contagens e data do acervo, lidas só do índice.
+final bankSummaryProvider = FutureProvider<BankSummary>(
+  (ref) => ref.watch(bankCatalogProvider).summary(),
 );
 
 /// Busca e filtros do acervo. É outro estado: buscar no acervo nunca mexe
@@ -72,6 +82,9 @@ class BankFilterController extends Notifier<QuestionFilter> {
   });
 
   void clearAll() => state = const QuestionFilter();
+
+  /// Troca o filtro inteiro (ex.: "Escolher no acervo" do Direciona).
+  void replace(QuestionFilter filter) => _set(filter);
 }
 
 /// Páginas já carregadas do resultado atual.
@@ -213,8 +226,16 @@ class BankActions {
 
   final Ref _ref;
 
+  /// A cópia salva é do estudante: a dificuldade e o rótulo "Classificação
+  /// automática" são do acervo e não vão com ela (nem para o Firestore).
+  static Question _forSave(Question q) =>
+      q.copyWith(bankDifficulty: null, autoClassified: false);
+
   Future<Set<String>> _savedIds() async {
-    final questions = await _ref.read(questionsProvider.future);
+    // O valor já carregado vale; senão espera o primeiro.
+    final List<Question> questions =
+        _ref.read(questionsProvider).value ??
+        await _ref.read(questionsProvider.future);
     return {for (final q in questions) q.id};
   }
 
@@ -222,15 +243,19 @@ class BankActions {
   /// já existe: regravar apagaria as edições do aluno (CA-B4).
   Future<bool> save(Question question) async {
     if ((await _savedIds()).contains(question.id)) return false;
-    await _ref.read(questionRepositoryProvider).createMany([question]);
+    await _ref.read(questionRepositoryProvider).createMany([
+      _forSave(question),
+    ]);
     return true;
   }
 
   /// Salva as cópias que faltam (as já salvas ficam como estão) e cria a
-  /// lista com todas, na ordem dada.
+  /// lista com todas, na ordem dada. Com [fromStepId], grava `bankListId` na
+  /// etapa do Direciona e registra `direction_bank_list_created`.
   Future<QuestionList> createList({
     required String name,
     required List<Question> questions,
+    String? fromStepId,
   }) async {
     if (questions.isEmpty || questions.length > maxBankListQuestions) {
       throw ArgumentError.value(
@@ -242,13 +267,38 @@ class BankActions {
     final saved = await _savedIds();
     final fresh = [
       for (final q in questions)
-        if (!saved.contains(q.id)) q,
+        if (!saved.contains(q.id)) _forSave(q),
     ];
     if (fresh.isNotEmpty) {
       await _ref.read(questionRepositoryProvider).createMany(fresh);
     }
-    return _ref
+    final list = await _ref
         .read(listActionsProvider)
         .create(name: name, questionIds: [for (final q in questions) q.id]);
+    if (fromStepId != null) await _linkStep(fromStepId, list, questions.length);
+    return list;
+  }
+
+  /// A lista já existe: falha aqui nunca desfaz nem esconde a lista.
+  Future<void> _linkStep(String stepId, QuestionList list, int count) async {
+    try {
+      final repo = _ref.read(directionRepositoryProvider);
+      final steps = await repo.watchSteps().first.timeout(
+        const Duration(seconds: 4),
+      );
+      final step = steps.where((s) => s.id == stepId).firstOrNull;
+      if (step == null) return;
+      await repo.updateStep(step.withBank(bankListId: list.id));
+      _ref.read(metricsLoggerProvider).log(
+        MetricEventType.directionBankListCreated,
+        {
+          'stepId': stepId,
+          'questionCount': count,
+          'difficultyTarget': ?step.difficultyTarget,
+        },
+      );
+    } catch (_) {
+      // Sem o vínculo, o botão só continua oferecendo montar.
+    }
   }
 }

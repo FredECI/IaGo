@@ -3,6 +3,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/app_info.dart';
+import '../../core/formatters.dart';
 import '../../domain/bank_source.dart';
 import '../../shared/common_widgets.dart';
 import 'bank_format.dart';
@@ -21,6 +22,9 @@ class BankSourcesPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final sources = ref.watch(bankSourcesProvider);
     final unclassified = ref.watch(bankUnclassifiedProvider).value ?? 0;
+    final generatedAt = DateTime.tryParse(
+      ref.watch(bankSummaryProvider).value?.generatedAt ?? '',
+    );
     final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(title: const Text('Fontes e licenças')),
@@ -45,6 +49,16 @@ class BankSourcesPage extends ConsumerWidget {
               'De onde vêm as questões do acervo. Confira sempre o original.',
               style: theme.textTheme.bodyMedium,
             ),
+            if (generatedAt != null) ...[
+              const SizedBox(height: 4),
+              Text(
+                'Acervo gerado em ${Formatters.date(generatedAt)}.',
+                key: const Key('sources-date'),
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
             const SizedBox(height: 12),
             if (list.isEmpty)
               const Text('Nenhuma fonte registrada.')
@@ -71,19 +85,20 @@ class BankSourcesPage extends ConsumerWidget {
                 'gráfico ou tabela em figura não estão aqui.',
               ),
             ),
-            _Notice(
-              key: const Key('sources-unclassified'),
-              icon: Icons.category_outlined,
-              title: 'Matérias ainda sem classificação',
-              body: Text(
-                unclassified > 0
-                    ? '${bankQuestions(unclassified)} ainda estão sem matéria. '
-                          'Elas aparecem na busca e no filtro por área, mas '
-                          'não no filtro por matéria.'
-                    : 'Questões sem matéria aparecem na busca e no filtro '
-                          'por área, mas não no filtro por matéria.',
+            if (unclassified > 0)
+              _Notice(
+                key: const Key('sources-unclassified'),
+                icon: Icons.category_outlined,
+                title: 'Matérias ainda sem classificação',
+                body: Text(
+                  unclassified > 0
+                      ? '${bankQuestions(unclassified)} ainda estão sem matéria. '
+                            'Elas aparecem na busca e no filtro por área, mas '
+                            'não no filtro por matéria.'
+                      : 'Questões sem matéria aparecem na busca e no filtro '
+                            'por área, mas não no filtro por matéria.',
+                ),
               ),
-            ),
           ],
         ),
       ),
@@ -106,6 +121,20 @@ class _SourceCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(source.name, style: theme.textTheme.titleMedium),
+            if (source.isDifficultyData) ...[
+              const SizedBox(height: 4),
+              InfoTag(
+                key: Key('source-kind-${source.id}'),
+                label: 'Dados de dificuldade',
+                icon: Icons.insights_outlined,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'Usados só para estimar a dificuldade; nenhuma questão vem '
+                'daqui.',
+                style: theme.textTheme.bodySmall,
+              ),
+            ],
             if (source.attribution.isNotEmpty) ...[
               const SizedBox(height: 4),
               Text(source.attribution),
@@ -119,7 +148,7 @@ class _SourceCard extends StatelessWidget {
                 ),
               ),
             ],
-            if (source.via.isNotEmpty) ...[
+            if (source.via.isNotEmpty && !source.isDifficultyData) ...[
               const SizedBox(height: 4),
               Text(
                 'Texto obtido por ${source.via}, só na preparação do acervo; '

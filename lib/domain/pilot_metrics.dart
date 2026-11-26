@@ -50,7 +50,7 @@ class PilotParameters {
   final double baselineListMinutes;
 }
 
-/// Calcula H1–H6 a partir dos eventos de todos os usuários do piloto.
+/// Calcula H1–H7 a partir dos eventos de todos os usuários do piloto.
 List<Hypothesis> computePilotMetrics({
   required List<MetricEvent> events,
   required DateTime now,
@@ -267,12 +267,17 @@ List<Hypothesis> computePilotMetrics({
     Hypothesis(
       code: 'H5',
       title: 'Prazo vindo de fora aumenta a constância',
-      metrics: [_stepsOnTime(events, pct)],
+      metrics: [_stepsOnTime(events, pct), _stepsOnTimeSplit(events, pct)],
     ),
     Hypothesis(
       code: 'H6',
       title: 'Alunos se ajudam sem dinheiro',
       metrics: _communityMetrics(events, now, pct),
+    ),
+    Hypothesis(
+      code: 'H7',
+      title: 'A sugestão do acervo leva o estudante às questões',
+      metrics: _bankSuggestionMetrics(events, pct),
     ),
   ];
 }
@@ -386,6 +391,98 @@ List<PilotMetric> _communityMetrics(
       detail: members.isEmpty
           ? 'ainda sem atividade no Conecta'
           : '${helpedAuthors.length} de ${members.length} participantes',
+    ),
+  ];
+}
+
+/// H5 dividida: etapas concluídas até o prazo com sugestão do acervo, contra
+/// as sem sugestão, na mesma janela (todos os eventos). Evento antigo, sem
+/// `hadBankSuggestion`, conta como sem sugestão. Com 20 pessoas, é indício, não
+/// prova de causa.
+PilotMetric _stepsOnTimeSplit(
+  List<MetricEvent> events,
+  String Function(num) pct,
+) {
+  var onTimeWith = 0, totalWith = 0, onTimeWithout = 0, totalWithout = 0;
+  for (final e in events) {
+    final done = e.type == MetricEventType.directionStepDone;
+    if (!done && e.type != MetricEventType.directionStepMissed) continue;
+    final onTime = done && e.data['onTime'] == true;
+    if (e.data['hadBankSuggestion'] == true) {
+      totalWith++;
+      if (onTime) onTimeWith++;
+    } else {
+      totalWithout++;
+      if (onTime) onTimeWithout++;
+    }
+  }
+  final empty = totalWith == 0 || totalWithout == 0;
+  final withRate = totalWith == 0 ? 0.0 : onTimeWith * 100 / totalWith;
+  final withoutRate = totalWithout == 0
+      ? 0.0
+      : onTimeWithout * 100 / totalWithout;
+  return PilotMetric(
+    label: 'Etapas no prazo: com sugestão do acervo × sem sugestão',
+    value: empty ? '—' : '${pct(withRate)} × ${pct(withoutRate)}',
+    target: '$provisionalTargetPrefix: com sugestão, 10 pontos acima',
+    status: empty
+        ? MetricStatus.noData
+        : (withRate - withoutRate >= 10
+              ? MetricStatus.met
+              : MetricStatus.notMet),
+    detail:
+        '$onTimeWith de $totalWith com sugestão; '
+        '$onTimeWithout de $totalWithout sem',
+  );
+}
+
+/// H7: uso da sugestão. Etapas com sugestão em que a lista foi montada, contra
+/// todas as etapas com sugestão (`bankSuggestedSteps` das propostas); e listas
+/// montadas pelo Direciona que foram exportadas.
+List<PilotMetric> _bankSuggestionMetrics(
+  List<MetricEvent> events,
+  String Function(num) pct,
+) {
+  var suggested = 0;
+  final builtSteps = <String>{};
+  var exported = 0;
+  for (final e in events) {
+    switch (e.type) {
+      case MetricEventType.directionPlanCreated:
+        suggested += e.intData('bankSuggestedSteps') ?? 0;
+      case MetricEventType.directionBankListCreated:
+        // Uma etapa conta uma vez, mesmo se a lista foi refeita.
+        builtSteps.add('${e.uid}/${e.stringData('stepId') ?? e.at}');
+      case MetricEventType.listExported:
+        if (e.data['fromDirectionStep'] == true) exported++;
+      default:
+    }
+  }
+  final built = builtSteps.length;
+  final buildRate = suggested == 0 ? null : built * 100 / suggested;
+  final exportRate = built == 0 ? null : exported * 100 / built;
+  return [
+    PilotMetric(
+      label: 'Etapas com sugestão em que a lista foi montada',
+      value: buildRate == null ? '—' : pct(buildRate),
+      target: '$provisionalTargetPrefix: 40%',
+      status: buildRate == null
+          ? MetricStatus.noData
+          : (buildRate >= 40 ? MetricStatus.met : MetricStatus.notMet),
+      detail: suggested == 0
+          ? 'ainda sem etapas com sugestão'
+          : '$built de $suggested etapas com sugestão',
+    ),
+    PilotMetric(
+      label: 'Listas montadas pelo Direciona que foram exportadas',
+      value: exportRate == null ? '—' : pct(exportRate),
+      target: '$provisionalTargetPrefix: 50%',
+      status: exportRate == null
+          ? MetricStatus.noData
+          : (exportRate >= 50 ? MetricStatus.met : MetricStatus.notMet),
+      detail: built == 0
+          ? 'ainda sem listas montadas pelo Direciona'
+          : '$exported exportações para $built listas',
     ),
   ];
 }

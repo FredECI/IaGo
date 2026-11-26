@@ -1,0 +1,211 @@
+{"id":"enem-2014-50","subject":"Física","topic":"Óptica","confidence":"high"}
+{"id":"enem-2014-51","subject":"Química","topic":"Química ambiental","confidence":"medium"}
+{"id":"enem-2014-52","subject":"Química","topic":"Química orgânica","confidence":"high"}
+{"id":"enem-2014-53","subject":"Biologia","topic":"Evolução","confidence":"high"}
+{"id":"enem-2014-58","subject":"Química","topic":"Química orgânica","confidence":"medium"}
+{"id":"enem-2014-60","subject":"Biologia","topic":"Ecologia","confidence":"high"}
+{"id":"enem-2014-66","subject":"Física","topic":"Termologia","confidence":"medium"}
+{"id":"enem-2014-68","subject":"Física","topic":"Óptica","confidence":"high"}
+{"id":"enem-2014-70","subject":"Química","topic":"Funções inorgânicas","confidence":"medium"}
+{"id":"enem-2014-73","subject":"Biologia","topic":"Citologia","confidence":"high"}
+{"id":"enem-2014-75","subject":"Biologia","topic":"Bioquímica","confidence":"medium"}
+{"id":"enem-2014-76","subject":"Física","topic":"Ondulatória e acústica","confidence":"medium"}
+{"id":"enem-2014-77","subject":"Química","topic":"Química orgânica","confidence":"medium"}
+{"id":"enem-2014-78","subject":"Biologia","topic":"Ecologia","confidence":"medium"}
+{"id":"enem-2014-84","subject":"Física","topic":"Ondulatória e acústica","confidence":"high"}
+{"id":"enem-2014-86","subject":"Química","topic":"Funções inorgânicas","confidence":"medium"}
+{"id":"enem-2014-87","subject":"Física","topic":"Ondulatória e acústica","confidence":"high"}
+{"id":"enem-2014-88","subject":"Química","topic":"Estequiometria","confidence":"high"}
+{"id":"enem-2014-89","subject":"Biologia","topic":"Citologia","confidence":"medium"}
+{"id":"enem-2015-47","subject":"Biologia","topic":"Ecologia","confidence":"medium"}
+{"id":"enem-2015-51","subject":"Química","topic":"","confidence":"medium"}
+{"id":"enem-2015-52","subject":"Química","topic":"Funções inorgânicas","confidence":"medium"}
+{"id":"enem-2015-54","subject":"Biologia","topic":"Genética","confidence":"medium"}
+{"id":"enem-2015-55","subject":"Química","topic":"Soluções","confidence":"medium"}
+{"id":"enem-2015-57","subject":"Física","topic":"Termologia","confidence":"medium"}
+{"id":"enem-2015-58","subject":"Química","topic":"Eletroquímica","confidence":"medium"}
+{"id":"enem-2015-61","subject":"Biologia","topic":"Ecologia","confidence":"medium"}
+{"id":"enem-2015-62","subject":"Química","topic":"Funções inorgânicas","confidence":"medium"}
+{"id":"enem-2015-63","subject":"Física","topic":"Termologia","confidence":"medium"}
+{"id":"enem-2015-64","subject":"Física","topic":"Energia e trabalho","confidence":"high"}
+{"id":"enem-2015-66","subject":"Biologia","topic":"Genética","confidence":"high"}
+{"id":"enem-2015-67","subject":"Biologia","topic":"Fisiologia humana","confidence":"high"}
+{"id":"enem-2015-70","subject":"Física","topic":"Energia e trabalho","confidence":"medium"}
+{"id":"enem-2015-72","subject":"Biologia","topic":"Saúde e doenças","confidence":"high"}
+{"id":"enem-2015-73","subject":"Física","topic":"Física moderna","confidence":"high"}
+{"id":"enem-2015-74","subject":"Biologia","topic":"Biotecnologia","confidence":"high"}
+{"id":"enem-2015-75","subject":"Física","topic":"Óptica","confidence":"high"}
+{"id":"enem-2015-76","subject":"Química","topic":"Estequiometria","confidence":"high"}
+{"id":"enem-2015-79","subject":"Física","topic":"Termologia","confidence":"high"}
+{"id":"enem-2015-80","subject":"Química","topic":"Ligações e propriedades","confidence":"high"}
+{"id":"enem-2015-83","subject":"Biologia","topic":"Zoologia","confidence":"high"}
+{"id":"enem-2015-86","subject":"Física","topic":"Ondulatória e acústica","confidence":"high"}
+{"id":"enem-2015-87","subject":"Biologia","topic":"Citologia","confidence":"medium"}
+{"id":"enem-2016-46","subject":"Química","topic":"Ligações e propriedades","confidence":"high"}
+{"id":"enem-2016-50","subject":"Química","topic":"Termoquímica","confidence":"high"}
+{"id":"enem-2016-51","subject":"Química","topic":"Soluções","confidence":"medium"}
+{"id":"enem-2016-54","subject":"Física","topic":"Termologia","confidence":"medium"}
+{"id":"enem-2016-56","subject":"Biologia","topic":"Citologia","confidence":"high"}
+{"id":"enem-2016-57","subject":"Física","topic":"Ondulatória e acústica","confidence":"high"}
+{"id":"enem-2016-60","subject":"Química","topic":"Ligações e propriedades","confidence":"high"}
+{"id":"enem-2016-62","subject":"Biologia","topic":"Ecologia","confidence":"medium"}
+{"id":"enem-2016-64","subject":"Química","topic":"Eletroquímica","confidence":"high"}
+{"id":"enem-2016-65","subject":"Biologia","topic":"Zoologia","confidence":"medium"}
+{"id":"enem-2016-67","subject":"Química","topic":"Ligações e propriedades","confidence":"medium"}
+{"id":"enem-2016-68","subject":"Química","topic":"Soluções","confidence":"medium"}
+{"id":"enem-2016-69","subject":"Biologia","topic":"Bioquímica","confidence":"high"}
+{"id":"enem-2016-70","subject":"Química","topic":"Atomística e tabela periódica","confidence":"medium"}
+{"id":"enem-2016-71","subject":"Biologia","topic":"Ecologia","confidence":"high"}
+{"id":"enem-2016-73","subject":"Biologia","topic":"Ecologia","confidence":"high"}
+{"id":"enem-2016-80","subject":"Biologia","topic":"Ecologia","confidence":"medium"}
+{"id":"enem-2016-83","subject":"Biologia","topic":"Genética","confidence":"high"}
+{"id":"enem-2016-84","subject":"Física","topic":"Termologia","confidence":"medium"}
+{"id":"enem-2016-87","subject":"Biologia","topic":"Fisiologia humana","confidence":"high"}
+{"id":"enem-2016-88","subject":"Física","topic":"Magnetismo","confidence":"medium"}
+{"id":"enem-2017-92","subject":"Biologia","topic":"Saúde e doenças","confidence":"medium"}
+{"id":"enem-2017-94","subject":"Biologia","topic":"Botânica","confidence":"high"}
+{"id":"enem-2017-96","subject":"Biologia","topic":"Ecologia","confidence":"medium"}
+{"id":"enem-2017-97","subject":"Química","topic":"Atomística e tabela periódica","confidence":"high"}
+{"id":"enem-2017-100","subject":"Biologia","topic":"Saúde e doenças","confidence":"high"}
+{"id":"enem-2017-102","subject":"Química","topic":"Ligações e propriedades","confidence":"high"}
+{"id":"enem-2017-104","subject":"Química","topic":"Atomística e tabela periódica","confidence":"medium"}
+{"id":"enem-2017-106","subject":"Química","topic":"Ligações e propriedades","confidence":"medium"}
+{"id":"enem-2017-109","subject":"Biologia","topic":"Ecologia","confidence":"high"}
+{"id":"enem-2017-111","subject":"Biologia","topic":"Ecologia","confidence":"high"}
+{"id":"enem-2017-115","subject":"Física","topic":"Dinâmica","confidence":"medium"}
+{"id":"enem-2017-117","subject":"Biologia","topic":"Genética","confidence":"high"}
+{"id":"enem-2017-120","subject":"Química","topic":"Soluções","confidence":"high"}
+{"id":"enem-2017-123","subject":"Biologia","topic":"Botânica","confidence":"medium"}
+{"id":"enem-2017-124","subject":"Química","topic":"Termoquímica","confidence":"high"}
+{"id":"enem-2017-129","subject":"Física","topic":"Eletricidade","confidence":"high"}
+{"id":"enem-2017-131","subject":"Física","topic":"Cinemática","confidence":"high"}
+{"id":"enem-2017-132","subject":"Biologia","topic":"Citologia","confidence":"high"}
+{"id":"enem-2017-133","subject":"Física","topic":"Magnetismo","confidence":"high"}
+{"id":"enem-2017-135","subject":"Biologia","topic":"Saúde e doenças","confidence":"medium"}
+{"id":"enem-2017-146","subject":"Física","topic":"Cinemática","confidence":"medium"}
+{"id":"enem-2018-94","subject":"Biologia","topic":"Fisiologia humana","confidence":"high"}
+{"id":"enem-2018-96","subject":"Biologia","topic":"Fisiologia humana","confidence":"high"}
+{"id":"enem-2018-97","subject":"Física","topic":"Magnetismo","confidence":"high"}
+{"id":"enem-2018-98","subject":"Biologia","topic":"Ecologia","confidence":"high"}
+{"id":"enem-2018-100","subject":"Biologia","topic":"Citologia","confidence":"high"}
+{"id":"enem-2018-101","subject":"Biologia","topic":"Zoologia","confidence":"medium"}
+{"id":"enem-2018-102","subject":"Química","topic":"Cinética e equilíbrio","confidence":"medium"}
+{"id":"enem-2018-103","subject":"Física","topic":"Ondulatória e acústica","confidence":"medium"}
+{"id":"enem-2018-105","subject":"Química","topic":"Atomística e tabela periódica","confidence":"high"}
+{"id":"enem-2018-107","subject":"Biologia","topic":"Botânica","confidence":"medium"}
+{"id":"enem-2018-110","subject":"Biologia","topic":"Genética","confidence":"high"}
+{"id":"enem-2018-111","subject":"Biologia","topic":"Botânica","confidence":"high"}
+{"id":"enem-2018-113","subject":"Biologia","topic":"Biotecnologia","confidence":"medium"}
+{"id":"enem-2018-119","subject":"Biologia","topic":"Saúde e doenças","confidence":"high"}
+{"id":"enem-2018-122","subject":"Física","topic":"Dinâmica","confidence":"medium"}
+{"id":"enem-2018-124","subject":"Química","topic":"Química orgânica","confidence":"high"}
+{"id":"enem-2018-132","subject":"Química","topic":"Química orgânica","confidence":"high"}
+{"id":"enem-2018-133","subject":"Biologia","topic":"Zoologia","confidence":"high"}
+{"id":"enem-2018-134","subject":"Física","topic":"Hidrostática","confidence":"high"}
+{"id":"enem-2018-135","subject":"Química","topic":"Química ambiental","confidence":"medium"}
+{"id":"enem-2019-92","subject":"Física","topic":"Eletricidade","confidence":"medium"}
+{"id":"enem-2019-93","subject":"Biologia","topic":"Saúde e doenças","confidence":"high"}
+{"id":"enem-2019-97","subject":"Biologia","topic":"Ecologia","confidence":"high"}
+{"id":"enem-2019-99","subject":"Química","topic":"Química ambiental","confidence":"medium"}
+{"id":"enem-2019-101","subject":"Biologia","topic":"Fisiologia humana","confidence":"high"}
+{"id":"enem-2019-102","subject":"Física","topic":"Termologia","confidence":"high"}
+{"id":"enem-2019-104","subject":"Química","topic":"Química ambiental","confidence":"high"}
+{"id":"enem-2019-105","subject":"Química","topic":"Atomística e tabela periódica","confidence":"high"}
+{"id":"enem-2019-107","subject":"Biologia","topic":"Zoologia","confidence":"medium"}
+{"id":"enem-2019-108","subject":"Química","topic":"Ligações e propriedades","confidence":"high"}
+{"id":"enem-2019-110","subject":"Biologia","topic":"Genética","confidence":"high"}
+{"id":"enem-2019-111","subject":"Física","topic":"Dinâmica","confidence":"medium"}
+{"id":"enem-2019-114","subject":"Biologia","topic":"Saúde e doenças","confidence":"high"}
+{"id":"enem-2019-115","subject":"Química","topic":"Química ambiental","confidence":"medium"}
+{"id":"enem-2019-127","subject":"Biologia","topic":"Bioquímica","confidence":"high"}
+{"id":"enem-2019-130","subject":"Biologia","topic":"Citologia","confidence":"high"}
+{"id":"enem-2019-132","subject":"Física","topic":"Óptica","confidence":"high"}
+{"id":"enem-2019-133","subject":"Biologia","topic":"Fisiologia humana","confidence":"high"}
+{"id":"enem-2019-135","subject":"Física","topic":"Óptica","confidence":"high"}
+{"id":"enem-2019-141","subject":"Matemática","topic":"Álgebra e equações","confidence":"medium","area":"mathematics"}
+{"id":"enem-2020-92","subject":"Química","topic":"Química ambiental","confidence":"medium"}
+{"id":"enem-2020-95","subject":"Biologia","topic":"Ecologia","confidence":"high"}
+{"id":"enem-2020-96","subject":"Química","topic":"Cinética e equilíbrio","confidence":"high"}
+{"id":"enem-2020-97","subject":"Biologia","topic":"Ecologia","confidence":"medium"}
+{"id":"enem-2020-98","subject":"Física","topic":"Magnetismo","confidence":"high"}
+{"id":"enem-2020-103","subject":"Química","topic":"Química ambiental","confidence":"medium"}
+{"id":"enem-2020-104","subject":"Biologia","topic":"Zoologia","confidence":"medium"}
+{"id":"enem-2020-105","subject":"Física","topic":"Termologia","confidence":"high"}
+{"id":"enem-2020-108","subject":"Química","topic":"","confidence":"medium"}
+{"id":"enem-2020-109","subject":"Física","topic":"Termologia","confidence":"high"}
+{"id":"enem-2020-110","subject":"Química","topic":"Cinética e equilíbrio","confidence":"high"}
+{"id":"enem-2020-111","subject":"Física","topic":"Ondulatória e acústica","confidence":"high"}
+{"id":"enem-2020-114","subject":"Física","topic":"Ondulatória e acústica","confidence":"high"}
+{"id":"enem-2020-115","subject":"Biologia","topic":"Biotecnologia","confidence":"high"}
+{"id":"enem-2020-117","subject":"Biologia","topic":"Saúde e doenças","confidence":"medium"}
+{"id":"enem-2020-118","subject":"Biologia","topic":"Zoologia","confidence":"high"}
+{"id":"enem-2020-120","subject":"Química","topic":"Termoquímica","confidence":"medium"}
+{"id":"enem-2020-126","subject":"Física","topic":"Física moderna","confidence":"high"}
+{"id":"enem-2020-127","subject":"Biologia","topic":"Ecologia","confidence":"high"}
+{"id":"enem-2020-128","subject":"Física","topic":"Termologia","confidence":"high"}
+{"id":"enem-2020-131","subject":"Química","topic":"Química ambiental","confidence":"medium"}
+{"id":"enem-2020-132","subject":"Química","topic":"Química ambiental","confidence":"high"}
+{"id":"enem-2020-133","subject":"Física","topic":"Eletricidade","confidence":"high"}
+{"id":"enem-2020-135","subject":"Biologia","topic":"Genética","confidence":"high"}
+{"id":"enem-2021-95","subject":"Química","topic":"Cinética e equilíbrio","confidence":"medium"}
+{"id":"enem-2021-97","subject":"Química","topic":"Química orgânica","confidence":"high"}
+{"id":"enem-2021-98","subject":"Biologia","topic":"Zoologia","confidence":"medium"}
+{"id":"enem-2021-104","subject":"Biologia","topic":"Ecologia","confidence":"high"}
+{"id":"enem-2021-107","subject":"Física","topic":"Energia e trabalho","confidence":"high"}
+{"id":"enem-2021-108","subject":"Física","topic":"Hidrostática","confidence":"medium"}
+{"id":"enem-2021-110","subject":"Biologia","topic":"Bioquímica","confidence":"medium"}
+{"id":"enem-2021-111","subject":"Biologia","topic":"Ecologia","confidence":"medium"}
+{"id":"enem-2021-112","subject":"Biologia","topic":"Biotecnologia","confidence":"high"}
+{"id":"enem-2021-114","subject":"Biologia","topic":"Fisiologia humana","confidence":"high"}
+{"id":"enem-2021-117","subject":"Química","topic":"Química ambiental","confidence":"medium"}
+{"id":"enem-2021-118","subject":"Biologia","topic":"Zoologia","confidence":"medium"}
+{"id":"enem-2021-121","subject":"Biologia","topic":"Evolução","confidence":"medium"}
+{"id":"enem-2021-123","subject":"Biologia","topic":"Botânica","confidence":"high"}
+{"id":"enem-2021-127","subject":"Biologia","topic":"Ecologia","confidence":"high"}
+{"id":"enem-2021-128","subject":"Física","topic":"Eletricidade","confidence":"high"}
+{"id":"enem-2021-129","subject":"Biologia","topic":"Botânica","confidence":"high"}
+{"id":"enem-2021-132","subject":"Biologia","topic":"Genética","confidence":"high"}
+{"id":"enem-2022-93","subject":"Física","topic":"Energia e trabalho","confidence":"high"}
+{"id":"enem-2022-97","subject":"Química","topic":"Atomística e tabela periódica","confidence":"medium"}
+{"id":"enem-2022-98","subject":"Biologia","topic":"Biotecnologia","confidence":"high"}
+{"id":"enem-2022-99","subject":"Biologia","topic":"Ecologia","confidence":"high"}
+{"id":"enem-2022-102","subject":"Biologia","topic":"Biotecnologia","confidence":"medium"}
+{"id":"enem-2022-104","subject":"Biologia","topic":"Fisiologia humana","confidence":"high"}
+{"id":"enem-2022-105","subject":"Física","topic":"Dinâmica","confidence":"high"}
+{"id":"enem-2022-110","subject":"Biologia","topic":"Evolução","confidence":"medium"}
+{"id":"enem-2022-112","subject":"Física","topic":"Dinâmica","confidence":"high"}
+{"id":"enem-2022-114","subject":"Biologia","topic":"Citologia","confidence":"high"}
+{"id":"enem-2022-119","subject":"Física","topic":"Eletricidade","confidence":"high"}
+{"id":"enem-2022-122","subject":"Biologia","topic":"Fisiologia humana","confidence":"medium"}
+{"id":"enem-2022-123","subject":"Física","topic":"Dinâmica","confidence":"medium"}
+{"id":"enem-2022-124","subject":"Química","topic":"Funções inorgânicas","confidence":"medium"}
+{"id":"enem-2022-126","subject":"Química","topic":"Química ambiental","confidence":"medium"}
+{"id":"enem-2022-127","subject":"Biologia","topic":"Bioquímica","confidence":"high"}
+{"id":"enem-2022-130","subject":"Física","topic":"Óptica","confidence":"medium"}
+{"id":"enem-2022-132","subject":"Biologia","topic":"Saúde e doenças","confidence":"medium"}
+{"id":"enem-2022-133","subject":"Biologia","topic":"Saúde e doenças","confidence":"medium"}
+{"id":"enem-2023-91","subject":"Biologia","topic":"Ecologia","confidence":"high"}
+{"id":"enem-2023-92","subject":"Biologia","topic":"Saúde e doenças","confidence":"high"}
+{"id":"enem-2023-95","subject":"Biologia","topic":"Zoologia","confidence":"medium"}
+{"id":"enem-2023-99","subject":"Biologia","topic":"Saúde e doenças","confidence":"high"}
+{"id":"enem-2023-101","subject":"Biologia","topic":"Fisiologia humana","confidence":"high"}
+{"id":"enem-2023-102","subject":"Química","topic":"Química orgânica","confidence":"high"}
+{"id":"enem-2023-103","subject":"Biologia","topic":"Botânica","confidence":"high"}
+{"id":"enem-2023-104","subject":"Química","topic":"","confidence":"medium"}
+{"id":"enem-2023-105","subject":"Biologia","topic":"Botânica","confidence":"high"}
+{"id":"enem-2023-106","subject":"Biologia","topic":"Biotecnologia","confidence":"medium"}
+{"id":"enem-2023-107","subject":"Biologia","topic":"Fisiologia humana","confidence":"medium"}
+{"id":"enem-2023-108","subject":"Física","topic":"Magnetismo","confidence":"high"}
+{"id":"enem-2023-112","subject":"Física","topic":"Óptica","confidence":"medium"}
+{"id":"enem-2023-115","subject":"Biologia","topic":"Ecologia","confidence":"medium"}
+{"id":"enem-2023-117","subject":"Física","topic":"Física moderna","confidence":"medium"}
+{"id":"enem-2023-122","subject":"Física","topic":"Termologia","confidence":"high"}
+{"id":"enem-2023-124","subject":"Física","topic":"Cinemática","confidence":"high"}
+{"id":"enem-2023-125","subject":"Biologia","topic":"Genética","confidence":"high"}
+{"id":"enem-2023-134","subject":"Biologia","topic":"Citologia","confidence":"high"}
+{"id":"enem-2009-141","subject":"Matemática","topic":"Razão, proporção e porcentagem","confidence":"high"}
+{"id":"enem-2009-145","subject":"Matemática","topic":"Probabilidade e combinatória","confidence":"high"}
+{"id":"enem-2009-151","subject":"Matemática","topic":"Álgebra e equações","confidence":"medium"}
+{"id":"enem-2009-152","subject":"Matemática","topic":"Grandezas e medidas","confidence":"medium"}
+{"id":"enem-2009-154","subject":"Matemática","topic":"Geometria plana","confidence":"high"}
+{"id":"enem-2009-155","subject":"Matemática","topic":"Funções","confidence":"high"}

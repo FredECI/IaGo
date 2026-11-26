@@ -119,8 +119,15 @@ class ListActions {
       'assemblySeconds': ?assemblySeconds,
       'bankQuestionCount': origin.bankCount,
       'hadAcceptedListStep': origin.hadAcceptedListStep,
+      'fromDirectionStep': _fromDirectionStep(list),
     });
     return saved;
+  }
+
+  /// A lista foi montada por uma etapa do Direciona (`bankListId`).
+  bool _fromDirectionStep(QuestionList list) {
+    final steps = _ref.read(studyStepsProvider).value ?? const <StudyStep>[];
+    return steps.any((s) => s.bankListId == list.id);
   }
 
   /// Quantas questões da lista vêm do acervo (H2) e se há uma etapa

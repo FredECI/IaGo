@@ -34,10 +34,21 @@ List<ProposedStep> planDirection(
   ];
   // sort do Dart não é estável: o índice no catálogo desempata.
   final order = {for (var i = 0; i < candidates.length; i++) candidates[i]: i};
+  // Só rebaixa matéria sem material quando o acervo é conhecido (alguma
+  // matéria com `bankAvailable > 0`): sem resumo ou acervo vazio, vale a
+  // ordem do MVP.
+  final bankKnown = candidates.any((c) => c.bankAvailable > 0);
+  final deprioritize = tuning.deprioritizeEmptySubjects && bankKnown;
+  bool isEmpty(SubjectCoverage c) => c.saved == 0 && c.bankAvailable == 0;
   candidates.sort((a, b) {
     final fa = focus.contains(a.area) ? 0 : 1;
     final fb = focus.contains(b.area) ? 0 : 1;
     if (fa != fb) return fa.compareTo(fb);
+    if (deprioritize) {
+      final ea = isEmpty(a) ? 1 : 0;
+      final eb = isEmpty(b) ? 1 : 0;
+      if (ea != eb) return ea.compareTo(eb);
+    }
     final recent = a.savedLast14d.compareTo(b.savedLast14d);
     if (recent != 0) return recent;
     final total = a.saved.compareTo(b.saved);
@@ -76,6 +87,7 @@ List<ProposedStep> planDirection(
           limits,
           tuning,
         ),
+        bankAvailableAtProposal: c.bankAvailable,
       ),
     );
   }
@@ -131,7 +143,12 @@ String _rationale(
   PlannerTuning t,
 ) {
   final s = c.subject;
+  final bank = c.bankAvailable > 0;
   final text = switch (action) {
+    StepAction.collect when bank =>
+      '$s tem ${c.saved} salvas; o acervo tem ${c.bankAvailable} para escolher.',
+    StepAction.practice when bank =>
+      '$s tem ${c.saved} salvas: hora de praticar com questões novas do acervo.',
     StepAction.collect =>
       c.savedLast14d == 0
           ? '$s não teve questões salvas nos últimos $directionWindowDays dias e tem ${c.saved} salvas.'

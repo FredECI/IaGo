@@ -38,20 +38,20 @@ void main() {
 
     expect(find.text('Métricas do piloto'), findsOneWidget);
     expect(find.byKey(const Key('simulated-banner')), findsOneWidget);
-    for (final code in ['H1', 'H2', 'H3', 'H4', 'H5', 'H6']) {
+    for (final code in ['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'H7']) {
       expect(find.byKey(Key('hypothesis-$code')), findsOneWidget, reason: code);
     }
     // CA-M3: valores atuais da demo.
     expect(find.text('38%'), findsOneWidget);
     expect(find.text('0,8'), findsOneWidget);
-    // CA-M2: H5 (1) + H6 (2) com "meta provisória".
+    // CA-M2: H5 (2) + H6 (2) + H7 (2) com "meta provisória".
     expect(
       find.byWidgetPredicate(
         (w) => w is Text && (w.data ?? '').startsWith('meta provisória'),
       ),
-      findsNWidgets(3),
+      findsNWidgets(6),
     );
-    // CA-T11: 10 métricas; cada uma tem meta e situação ao lado do valor.
+    // CA-T11: 13 métricas; cada uma tem meta e situação ao lado do valor.
     final status = find.byWidgetPredicate(
       (w) =>
           w is Text &&
@@ -61,12 +61,12 @@ void main() {
             'Sem dados ainda',
           }.contains(w.data),
     );
-    expect(status, findsNWidgets(10));
+    expect(status, findsNWidgets(13));
     expect(
       find.byWidgetPredicate(
         (w) => w is Text && (w.data ?? '').startsWith('meta'),
       ),
-      findsNWidgets(10),
+      findsNWidgets(13),
     );
     expect(tester.takeException(), isNull);
   });

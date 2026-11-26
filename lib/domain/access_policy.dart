@@ -25,6 +25,7 @@ class AccessPolicy {
     this.conectaWritesEnabled = false,
     this.aiModel = defaultAiModel,
     this.aiDailyPerUser = defaultAiDailyPerUser,
+    this.directionBankEnabled = true,
   }) : assert(minAge >= termsMinAge, 'minAge nunca fica abaixo dos termos');
 
   /// Padrão seguro: sem rede ou sem documento, vale o comportamento do MVP.
@@ -60,6 +61,7 @@ class AccessPolicy {
       aiDailyPerUser: rawDaily is int && rawDaily > 0
           ? rawDaily
           : defaultAiDailyPerUser,
+      directionBankEnabled: flag('directionBankEnabled', true),
     );
   }
 
@@ -76,6 +78,10 @@ class AccessPolicy {
   final bool conectaWritesEnabled;
   final String aiModel;
   final int aiDailyPerUser;
+
+  /// Interruptor único do Direciona com o acervo (sugestão de lista, botões
+  /// e `bankAvailable`). Padrão `true`; `false` devolve o Direciona do MVP.
+  final bool directionBankEnabled;
 
   /// A idade mínima declarada atende à política de membros.
   bool acceptsDeclaredAge(int declaredMinAge) => declaredMinAge >= minAge;
@@ -106,7 +112,8 @@ class AccessPolicy {
       other.conectaEnabled == conectaEnabled &&
       other.conectaWritesEnabled == conectaWritesEnabled &&
       other.aiModel == aiModel &&
-      other.aiDailyPerUser == aiDailyPerUser;
+      other.aiDailyPerUser == aiDailyPerUser &&
+      other.directionBankEnabled == directionBankEnabled;
 
   @override
   int get hashCode => Object.hash(
@@ -118,5 +125,6 @@ class AccessPolicy {
     conectaWritesEnabled,
     aiModel,
     aiDailyPerUser,
+    directionBankEnabled,
   );
 }

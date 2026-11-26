@@ -26,6 +26,7 @@ class RawQuestion:
     alternatives: List[str]
     subject: Optional[str] = None  # só quando a fonte garante; senão a A2 classifica
     exclusions: List[str] = field(default_factory=list)  # motivos decididos pelo adaptador
+    variant: Optional[str] = None  # "ppl" ou "reaplicacao"; ausente = edição regular
 
 
 class SourceAdapter:

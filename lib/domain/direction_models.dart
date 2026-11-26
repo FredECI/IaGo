@@ -89,6 +89,10 @@ class StudyStep {
     required this.source,
     required this.rationale,
     required this.createdAt,
+    this.bankIds = const [],
+    this.difficultyTarget,
+    this.bankListId,
+    this.bankAvailableAtProposal,
   });
 
   /// Converte uma proposta validada em etapa. O prazo é o fim do dia local
@@ -118,6 +122,7 @@ class StudyStep {
       source: source,
       rationale: proposed.rationale,
       createdAt: createdAt,
+      bankAvailableAtProposal: proposed.bankAvailableAtProposal,
     );
   }
 
@@ -135,7 +140,54 @@ class StudyStep {
   final StepSource source;
   final String rationale;
   final DateTime createdAt;
+
+  /// Sugestão do acervo (só `buildList` e `practice`): ids `bankId`, nunca
+  /// enviados à IA. Vazio: sem sugestão.
+  final List<String> bankIds;
+
+  /// Faixa-alvo de dificuldade (1 a 3) usada na sugestão.
+  final int? difficultyTarget;
+
+  /// Lista criada a partir da sugestão (o botão vira "Abrir lista").
+  final String? bankListId;
+
+  /// `bankAvailable` da matéria na proposta (botão "Escolher no acervo").
+  final int? bankAvailableAtProposal;
+
+  /// Cópia com os campos do acervo trocados. Os demais ficam como estão.
+  /// `bankListId` com `null` explícito limpa a lista montada.
+  StudyStep withBank({
+    List<String>? bankIds,
+    Object? difficultyTarget = _keepField,
+    Object? bankListId = _keepField,
+    Object? bankAvailableAtProposal = _keepField,
+  }) => StudyStep(
+    id: id,
+    action: action,
+    area: area,
+    subject: subject,
+    targetCount: targetCount,
+    dueAt: dueAt,
+    status: status,
+    postponedAt: postponedAt,
+    doneAt: doneAt,
+    source: source,
+    rationale: rationale,
+    createdAt: createdAt,
+    bankIds: bankIds ?? this.bankIds,
+    difficultyTarget: identical(difficultyTarget, _keepField)
+        ? this.difficultyTarget
+        : difficultyTarget as int?,
+    bankListId: identical(bankListId, _keepField)
+        ? this.bankListId
+        : bankListId as String?,
+    bankAvailableAtProposal: identical(bankAvailableAtProposal, _keepField)
+        ? this.bankAvailableAtProposal
+        : bankAvailableAtProposal as int?,
+  );
 }
+
+const Object _keepField = Object();
 
 /// Etapa proposta (pelas regras ou pela IA), ainda sem data: só `dueInDays`.
 class ProposedStep {
@@ -146,6 +198,7 @@ class ProposedStep {
     required this.targetCount,
     required this.dueInDays,
     required this.rationale,
+    this.bankAvailableAtProposal,
   });
 
   final StepAction action;
@@ -154,6 +207,9 @@ class ProposedStep {
   final int targetCount;
   final int dueInDays;
   final String rationale;
+
+  /// Preenchido pelo planejador; não faz parte do JSON da IA.
+  final int? bankAvailableAtProposal;
 
   Map<String, Object?> toJson() => {
     'action': action.name,
@@ -235,6 +291,7 @@ class SubjectCoverage {
     this.saved = 0,
     this.savedLast14d = 0,
     this.listsExportedLast14d = 0,
+    this.bankAvailable = 0,
   });
 
   final Area area;
@@ -243,12 +300,17 @@ class SubjectCoverage {
   final int savedLast14d;
   final int listsExportedLast14d;
 
+  /// Questões do acervo da matéria menos as cópias já salvas (mínimo 0).
+  /// Só uma contagem: nunca ids nem texto (CA-D6).
+  final int bankAvailable;
+
   Map<String, Object?> toJson() => {
     'area': area.name,
     'subject': subject,
     'saved': saved,
     'savedLast14d': savedLast14d,
     'listsExportedLast14d': listsExportedLast14d,
+    'bankAvailable': bankAvailable,
   };
 }
 
@@ -319,6 +381,10 @@ List<SubjectCoverage> _mergeCoverage(Iterable<SubjectCoverage> items) {
             savedLast14d: prev.savedLast14d + c.savedLast14d,
             listsExportedLast14d:
                 prev.listsExportedLast14d + c.listsExportedLast14d,
+            // Dado do catálogo, não do usuário: maior valor, não soma.
+            bankAvailable: c.bankAvailable > prev.bankAvailable
+                ? c.bankAvailable
+                : prev.bankAvailable,
           );
   }
   return merged.values.toList();

@@ -1,4 +1,5 @@
 import '../domain/bank_source.dart';
+import '../domain/bank_summary.dart';
 import '../domain/question.dart';
 import '../domain/question_filter.dart';
 
@@ -21,6 +22,10 @@ abstract interface class BankCatalog {
 
   /// Fontes registradas, com atribuição.
   Future<List<BankSource>> sources();
+
+  /// Contagens por matéria e dificuldade, lidas do índice, sem carregar o
+  /// texto das questões.
+  Future<BankSummary> summary();
 }
 
 class BankPage {

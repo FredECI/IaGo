@@ -172,7 +172,7 @@ Todo especialista termina com:
 
 ## Pendências do Fred (e o que fazer em seguida)
 
-1. **Publicar (26/11):** `powershell -ExecutionPolicy Bypass -File tool\publicar-mvp.ps1`. Faz merge na `main`, deploy das regras e do site (o `build/web` já gerado), espera o CI e cria a release `v0.2.0` com o APK. O modo automático bloqueia esses passos para os agentes.
+1. **Publicado em 26/11** com `tool\publicar-mvp.ps1`, que faz merge na `main`, deploy das regras e do site (o `build/web` já gerado), espera o CI e cria a release `v0.2.0` com o APK. O modo automático bloqueia esses passos para os agentes.
 2. **IA e piloto em conta real (console, opcional):** `appConfig/runtime.aiEnabled = true` e `invites/<código>` (código fora do git). Sem isso, contas reais usam colagem e regras; a demo tem tudo.
 3. **Depois:** P2c (restringir chaves), e-mail do projeto (P4), D6 para ligar o Conecta, A2 (assuntos do acervo), P2b se quiser IA no APK.
 
@@ -181,4 +181,4 @@ Todo especialista termina com:
 | Fase | Situação |
 | --- | --- |
 | Beta 0.1 (fatias 1 a 8) | **Pronto (03/11)**: 97 testes Flutter e 6 de regras; demo offline e conta real verificadas a 360 px no site https://iago-beta.web.app; repositório público com CI verde; APK de 21 MB na release `v0.1.0-beta`, testado num celular em 04/11. O APK trocado em 05/11 (só o texto do card Conecta) ainda não foi testado no celular. Roteiro e plano B: [DEMO.md](DEMO.md) e `docs/demo/` |
-| MVP de 27/11 | **Pronto para publicar (26/11)** em `feat/mvp`: os três pilares, IA real na web (F1, F5b, I3, DI3), entrada no piloto sem o Conecta. 1.031 testes Flutter e 167 de regras verdes; demo offline conferida a 360 px no build de publicação. Falta o Fred rodar `tool/publicar-mvp.ps1`. Fora: IA no APK (P2b), A2/A6, DI5, vídeo do plano B, CP0 a CP3 sem registro |
+| MVP de 27/11 | **Publicado em 26/11**: `main` (merge de `feat/mvp`), regras e site 0.2.0 em https://iago-beta.web.app, release `v0.2.0` com o APK (22 MB): os três pilares, IA real na web (F1, F5b, I3, DI3), entrada no piloto sem o Conecta. 1.031 testes Flutter e 167 de regras verdes; demo offline conferida a 360 px no build de publicação. Fora: IA no APK (P2b), A2/A6, DI5, vídeo do plano B, CP0 a CP3 sem registro |
