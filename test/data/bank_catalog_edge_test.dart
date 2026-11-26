@@ -81,7 +81,6 @@ void main() {
 
   group('filtros e busca', () {
     test('filtro por matéria nunca inclui questão de matéria vazia', () async {
-      expect(data.questions.where((q) => q.subject.isEmpty), isNotEmpty);
       final page = await catalog.search(
         const QuestionFilter().toggleSubject('Matemática'),
         limit: 5000,

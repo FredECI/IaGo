@@ -343,6 +343,30 @@ class ClassifyTest(unittest.TestCase):  # BM2
         self.assertEqual(len(warnings), 1)
         self.assertTrue(any("JSON inválido" in p for p in problems))
 
+    def test_area_fix_is_accepted_when_subject_belongs_to_new_area(self):
+        entries, problems, warnings = self.run_merge([
+            {"id": "a", "area": "naturalSciences", "subject": "Biologia", "confidence": "high"},
+            {"id": "b", "area": "mathematics", "subject": "Matemática", "confidence": "high"},
+            {"id": "c", "area": "humanities", "subject": "Física", "confidence": "high"},
+        ])
+        self.assertEqual(entries[0]["area"], "naturalSciences")
+        # a matéria da fonte (Inglês) não vale quando a área muda
+        self.assertEqual((entries[1]["subject"], entries[1]["area"]), ("Matemática", "mathematics"))
+        self.assertEqual(len(entries), 2)
+        self.assertTrue(any("fora do catálogo de humanities" in p for p in problems))
+
+    def test_build_moves_question_to_fixed_area(self):
+        cls = {"enem-2022-1": {"id": "enem-2022-1", "area": "naturalSciences",
+                               "subject": "Biologia", "topic": "Genética", "by": "agent"}}
+        files, qs = ba.build_v2(SOURCES, [rq(1, "humanities", None)], v2.load_taxonomy(TAXONOMY),
+                                cls, "2026-11-26")
+        self.assertEqual((qs[0]["area"], qs[0]["subject"]), ("naturalSciences", "Biologia"))
+        self.assertEqual(json.loads(files["naturalSciences.json"])["questions"][0]["id"], "enem-2022-1")
+        self.assertEqual(json.loads(files["humanities.json"])["questions"], [])
+        bad = {"enem-2022-1": dict(cls["enem-2022-1"], subject="História")}
+        with self.assertRaises(v2.BuildError):
+            ba.build_v2(SOURCES, [rq(1)], v2.load_taxonomy(TAXONOMY), bad, "2026-11-26")
+
     def test_trim_keeps_start_and_end(self):
         text = "inicio " + "x" * 1000 + " fim"
         out = classify.trim_statement(text, 350)

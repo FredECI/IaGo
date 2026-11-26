@@ -36,7 +36,7 @@ void main() {
         withSubject.length,
       );
       expect(real.data.questions, hasLength(1687));
-      expect(summary.available('Matemática'), 216);
+      expect(summary.available('Matemática'), 221);
     });
 
     test('taxonomia do índice cobre o catálogo de matérias do app', () {
@@ -115,9 +115,9 @@ void main() {
       final summary = await catalog.summary();
       await catalog.sources();
       expect(bundle.paths, [bankIndexPath]);
-      expect(summary.available('Matemática'), 216);
+      expect(summary.available('Matemática'), 221);
       expect(summary.available('Inexistente'), 0);
-      expect(summary.availableAt('Matemática', null), 216);
+      expect(summary.availableAt('Matemática', null), 221);
       expect(summary.availableAt('Matemática', 2), 0);
       expect(summary.taxonomy['História'], isNotEmpty);
       expect(summary.generatedAt, isNotEmpty);
@@ -130,7 +130,7 @@ void main() {
         const QuestionFilter(subjects: {'Matemática'}),
         limit: 3,
       );
-      expect(page.total, 216);
+      expect(page.total, 221);
       final math = real.index.shards.firstWhere(
         (s) => s.area == Area.mathematics,
       );
@@ -156,7 +156,7 @@ void main() {
     test('MemoryBankCatalog calcula o resumo das questões', () async {
       final memory = MemoryBankCatalog(real.data);
       final summary = await memory.summary();
-      expect(summary.available('Matemática'), 216);
+      expect(summary.available('Matemática'), 221);
       expect(
         summary.counts.fold<int>(0, (n, c) => n + c.count),
         real.data.questions.where((q) => q.subject.isNotEmpty).length,

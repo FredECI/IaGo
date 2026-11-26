@@ -122,11 +122,19 @@ def merge(batch_rows, answer_rows, taxonomy):
             problems.append(f"{origin}: id desconhecido: {qid}")
             continue
         area = base[qid]["area"]
+        new_area = row.get("area")
+        if new_area and new_area != area:
+            if new_area not in taxonomy["areas"]:
+                problems.append(f"{origin}: {qid}: área '{new_area}' inválida")
+                continue
+            area = new_area  # correção de área: a matéria deve ser da área nova
+        else:
+            new_area = None
         subject = row.get("subject")
         if subject not in taxonomy["areas"][area]:
             problems.append(f"{origin}: {qid}: matéria '{subject}' fora do catálogo de {area}")
             continue
-        fixed = base[qid].get("subject")
+        fixed = None if new_area else base[qid].get("subject")
         if fixed and subject != fixed:
             warnings.append(f"{origin}: {qid}: matéria '{subject}' trocada por '{fixed}' (a fonte garante)")
             subject = fixed
@@ -144,6 +152,8 @@ def merge(batch_rows, answer_rows, taxonomy):
             "id": qid, "subject": subject, "topic": topic, "by": "agent",
             "confidence": confidence, "reviewed": False,
         }
+        if new_area:
+            chosen[qid]["area"] = new_area
     entries = [chosen[r["id"]] for r in batch_rows if r["id"] in chosen]
     for r in batch_rows:
         if r["id"] not in chosen:

@@ -33,6 +33,7 @@ Cada questão do acervo precisa de uma **matéria** (lista fechada por área) e,
 | `id` | Obrigatório. Exatamente o `id` da entrada. Todas as questões do lote devem ter uma linha |
 | `subject` | Obrigatório. Uma matéria de `areas[area]` em `taxonomy.json` (Linguagens: Português, Literatura, Redação, Inglês, Espanhol, Artes, Educação Física; Humanas: História, Geografia, Filosofia, Sociologia; Natureza: Biologia, Física, Química; Matemática: Matemática). Nunca de outra área |
 | `topic` | Um assunto de `subjects[subject]` em `taxonomy.json`, ou `""` se nenhum servir. **Não invente assunto e não use "Outros"** |
+| `area` | **Opcional.** Só para corrigir a área errada que a fonte trouxe (ex.: questão de Biologia rotulada como Humanas). A `subject` tem de ser do catálogo da área nova; a questão passa para a parte dessa área no asset. Omita quando a área estiver certa |
 | `confidence` | `"high"`, `"medium"` ou `"low"`. Use `low` quando o texto truncado não bastar para decidir |
 
 Formato do arquivo: JSON Lines em UTF-8, **uma linha por questão, sem linha em branco, sem comentário e sem texto fora do JSON**. Não grave gabarito, resposta, justificativa nem outros campos (o `merge` ignora o que não conhece).

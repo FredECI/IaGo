@@ -226,7 +226,8 @@ def build_v2(sources, kept, taxonomy, classification, generated_at,
         subject, topic, by = v2.resolve_question(q, classification.get(q.id), taxonomy, q.id)
         if subject is None:
             missing.append(q.id)
-        questions.append(v2.v2_question(q, subject, topic, by))
+        questions.append(v2.v2_question(
+            q, subject, topic, by, area=v2.fixed_area(q, classification.get(q.id))))
     if missing and not allow_unclassified:
         raise v2.BuildError(
             f"{len(missing)} questão(ões) sem matéria (rode a classificação ou use "

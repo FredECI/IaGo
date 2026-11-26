@@ -20,14 +20,25 @@
 "Matemática":["Números e operações","Razão, proporção e porcentagem","Grandezas e medidas","Geometria plana","Geometria espacial","Funções","Álgebra e equações","Estatística","Probabilidade e combinatória","Matemática financeira","Leitura de gráficos e tabelas"]
 },
 "shards":[
-{"area":"languages","path":"assets/acervo/v2/languages.json","count":512},
-{"area":"humanities","path":"assets/acervo/v2/humanities.json","count":637},
-{"area":"naturalSciences","path":"assets/acervo/v2/naturalSciences.json","count":322},
-{"area":"mathematics","path":"assets/acervo/v2/mathematics.json","count":216}
+{"area":"languages","path":"assets/acervo/v2/languages.json","count":543},
+{"area":"humanities","path":"assets/acervo/v2/humanities.json","count":573},
+{"area":"naturalSciences","path":"assets/acervo/v2/naturalSciences.json","count":350},
+{"area":"mathematics","path":"assets/acervo/v2/mathematics.json","count":221}
 ],
 "counts":[
-{"area":"languages","subject":"Espanhol","count":51},
-{"area":"languages","subject":"Inglês","count":42},
-{"area":"mathematics","subject":"Matemática","count":216}
+{"area":"languages","subject":"Artes","count":29},
+{"area":"languages","subject":"Educação Física","count":41},
+{"area":"languages","subject":"Espanhol","count":53},
+{"area":"languages","subject":"Inglês","count":45},
+{"area":"languages","subject":"Literatura","count":106},
+{"area":"languages","subject":"Português","count":269},
+{"area":"humanities","subject":"Filosofia","count":92},
+{"area":"humanities","subject":"Geografia","count":174},
+{"area":"humanities","subject":"História","count":202},
+{"area":"humanities","subject":"Sociologia","count":105},
+{"area":"naturalSciences","subject":"Biologia","count":166},
+{"area":"naturalSciences","subject":"Física","count":93},
+{"area":"naturalSciences","subject":"Química","count":91},
+{"area":"mathematics","subject":"Matemática","count":221}
 ]
 }

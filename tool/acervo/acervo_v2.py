@@ -90,18 +90,33 @@ def read_classification(directory):
     return result
 
 
+def fixed_area(q, cl):
+    """Área corrigida pela classificação (a fonte às vezes erra a área), ou a da questão."""
+    area = (cl or {}).get("area")
+    if area and area != q.area:
+        if area not in AREA_ORDER:
+            raise BuildError(f"{q.id}: área '{area}' inválida na classificação")
+        return area
+    return q.area
+
+
 def resolve_question(q, cl, taxonomy, who):
-    """(subject, topic, by) de uma questão, pela precedência. ``q`` é RawQuestion."""
+    """(subject, topic, by) de uma questão, pela precedência. ``q`` é RawQuestion.
+
+    Se a classificação corrige a área, a matéria da fonte deixa de valer (ela era
+    da área errada) e a validação usa a área corrigida.
+    """
+    area = fixed_area(q, cl)
     if cl is not None and cl["by"] == "human":
         subject, by = cl["subject"], "human"
-    elif q.subject:
+    elif q.subject and area == q.area:
         subject, by = q.subject, "source"
     elif cl is not None:
         subject, by = cl["subject"], cl["by"]
     else:
         return None, "", None
     topic = (cl or {}).get("topic") or ""
-    check_subject_topic(taxonomy, q.area, subject, topic, who)
+    check_subject_topic(taxonomy, area, subject, topic, who)
     return subject, topic, by
 
 
@@ -114,13 +129,13 @@ def check_classification_ids(classification, known_ids):
         )
 
 
-def v2_question(q, subject, topic, by):
+def v2_question(q, subject, topic, by, area=None):
     d = {"id": q.id, "source": q.source, "year": q.edition}
     variant = getattr(q, "variant", None)
     if variant:
         d["variant"] = variant
     d["number"] = q.number
-    d["area"] = q.area
+    d["area"] = area or q.area
     if subject:
         d["subject"] = subject
         if topic:
