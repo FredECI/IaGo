@@ -114,8 +114,8 @@ Todo especialista termina com:
   - **Exclusão em cascata (C5):** apaga também o Conecta (posts, respostas, "Ajudou", denúncias, limites) e as avaliações (`questionRatings`). Ver [CA-T7](docs/specs/mvp-27-11.md#critérios-de-aceite).
   - **`Source.server` na exclusão:** inventário e subcoleções são lidos do servidor, para não apagar só o que está no cache; sem fila offline e com timeout de 30 s (`firebase_auth_repository.dart`).
   - **Membro sem Conecta (10/11):** virar membro do piloto (convite + e-mail verificado) não depende de `conectaEnabled`: pela aba Conta e pelos avisos "Entrar no piloto" (`canOfferJoinProvider`, rota `/conecta/membro`). O fórum segue exigindo `conectaEnabled`. IA real: F5b, I3 e DI3 em `feat/mvp`; App Check ativado só quando conta real usa a IA, para a demo seguir offline.
-- **Moderador só na demo:** "Ver como moderador (demonstração)" liga o papel em memória (`demoModeratorModeProvider`) e volta a desligado a cada sessão. Em conta real, o papel é `moderators/{uid}`. Ver [Conecta](docs/specs/mvp-27-11.md#2-conecta).
-  - **Contato do projeto:** `AppInfo.projectContactEmail` ainda é `<e-mail do projeto>`, e `test/publish_ready_test.dart` está com `skip: true`. Antes de 26/11, trocar pelo e-mail da P4 e ligar o teste. Ver [CA-C11](docs/specs/mvp-27-11.md#critérios-de-aceite).
+  - **Moderador só na demo:** "Ver como moderador (demonstração)" liga o papel em memória (`demoModeratorModeProvider`) e volta a desligado a cada sessão. Em conta real, o papel é `moderators/{uid}`. Ver [Conecta](docs/specs/mvp-27-11.md#2-conecta).
+  - **Contato do projeto (26/11):** `AppInfo.projectContactEmail` aponta para as issues do repositório público até existir o e-mail da P4; trocar só ali. `test/publish_ready_test.dart` ligado. Ver [CA-C11](docs/specs/mvp-27-11.md#critérios-de-aceite).
   - **`hadAcceptedListStep` em `list_exported`:** `true` se a lista saiu com uma etapa "Montar lista" aceita (H3). A H2 usa só listas sem questões do acervo (`bankQuestionCount`). Ver [métricas](docs/specs/mvp-27-11.md#métricas).
   - **Limites da importação:** 5 arquivos por vez, 10 MB cada e 30 questões por lote (`maxImportFiles`, `maxImportFileBytes`, `maxExtractedQuestions`). PDF até 10 páginas (`maxImportPdfPages`, contagem em `core/pdf_page_count.dart`, com teto contra bomba de compressão; sem contagem possível, recusa). Limite diário de IA `aiDailyPerUser` contado no aparelho (`data/ai/ai_daily_limit.dart`). Ver [seção 3](docs/specs/mvp-27-11.md#3-importação-em-lote).
 - **Flutter:** o Material saiu do framework: use sempre `import 'package:material_ui/material_ui.dart';` e nunca `package:flutter/material.dart`, para não ter duas cópias de `Theme`. As localizações vêm de `GlobalMaterialLocalizations.delegates` do próprio `material_ui`.
@@ -172,15 +172,13 @@ Todo especialista termina com:
 
 ## Pendências do Fred (e o que fazer em seguida)
 
-A lista completa, em ordem, está na spec: [Ações do Fred, em ordem](docs/specs/mvp-27-11.md#ações-do-fred-em-ordem). As próximas:
-
-1. **P2a** pelo guia (cerca de 50 min), com prazo hoje, 09/11. Destrava a F1 e o CP0 de terça, 10/11, às 20h. Inclui o secret `FIREBASE_ENV_JSON` (F4). Depois: P2b (só para o APK) e P2c (antes de 26/11).
-2. **Publicação (26/11):** `deploy --only firestore` (O1), com OK do Fred. Claude gera o build com `--dart-define-from-file=env/firebase.json`; o Fred roda `firebase.cmd deploy --only hosting --project iago-beta`. Para ver as métricas reais, criar `admins/{uid}` no console.
-3. **Q2:** teste no celular (cerca de 30 min) com o APK candidato. **Ensaio:** seguir o [DEMO.md](DEMO.md); capturas e vídeo em `docs/demo/` são do beta e serão regenerados na O2, depois da IA.
+1. **Publicar (26/11):** `powershell -ExecutionPolicy Bypass -File tool\publicar-mvp.ps1`. Faz merge na `main`, deploy das regras e do site (o `build/web` já gerado), espera o CI e cria a release `v0.2.0` com o APK. O modo automático bloqueia esses passos para os agentes.
+2. **IA e piloto em conta real (console, opcional):** `appConfig/runtime.aiEnabled = true` e `invites/<código>` (código fora do git). Sem isso, contas reais usam colagem e regras; a demo tem tudo.
+3. **Depois:** P2c (restringir chaves), e-mail do projeto (P4), D6 para ligar o Conecta, A2 (assuntos do acervo), P2b se quiser IA no APK.
 
 ## Status
 
 | Fase | Situação |
 | --- | --- |
 | Beta 0.1 (fatias 1 a 8) | **Pronto (03/11)**: 97 testes Flutter e 6 de regras; demo offline e conta real verificadas a 360 px no site https://iago-beta.web.app; repositório público com CI verde; APK de 21 MB na release `v0.1.0-beta`, testado num celular em 04/11. O APK trocado em 05/11 (só o texto do card Conecta) ainda não foi testado no celular. Roteiro e plano B: [DEMO.md](DEMO.md) e `docs/demo/` |
-| MVP de 27/11 | **Spec aprovada em 07/11.** Em 09/11, 26 commits em `feat/mvp`: F2, F3, F5a, F6, F7; acervo (A1, A3, A4, A5; 1.687 questões); avaliação (AV1, AV2); colagem (I1, I2, I4); Direciona (DI1, DI2, DI4); Conecta (C1 a C6); métricas H1 a H6 (M1). Pendentes: P2a (Fred, hoje), F1, F5b, I3, I5, DI3, DI5, A2, A6, Q1 a Q4, O1 e O2 (falta o vídeo). Próximo: P2a e CP0, terça, 10/11, às 20h |
+| MVP de 27/11 | **Pronto para publicar (26/11)** em `feat/mvp`: os três pilares, IA real na web (F1, F5b, I3, DI3), entrada no piloto sem o Conecta. 1.031 testes Flutter e 167 de regras verdes; demo offline conferida a 360 px no build de publicação. Falta o Fred rodar `tool/publicar-mvp.ps1`. Fora: IA no APK (P2b), A2/A6, DI5, vídeo do plano B, CP0 a CP3 sem registro |
