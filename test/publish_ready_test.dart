@@ -8,9 +8,6 @@ import 'package:iago/features/community/community_state.dart';
 void main() {
   test(
     'o e-mail do projeto não é mais um marcador (CA-B7, CA-C11, termos)',
-    // pendente: e-mail do projeto (D6/P4), obrigatório antes da publicação de
-    // 26/11. Tirar o skip quando AppInfo.projectContactEmail for o real.
-    skip: true,
     () {
       expect(AppInfo.projectContactEmail, isNot(contains('<')));
     },

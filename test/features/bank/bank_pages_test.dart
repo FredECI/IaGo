@@ -1,3 +1,4 @@
+import 'package:iago/core/app_info.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:iago/app/app.dart';
@@ -311,7 +312,7 @@ void main() {
       expect(find.text('Provas do ENEM, INEP.'), findsOneWidget);
       expect(find.byKey(const Key('source-link-enem')), findsOneWidget);
       await reveal(tester, find.byKey(const Key('sources-removal')));
-      expect(find.textContaining('<e-mail do projeto>'), findsOneWidget);
+      expect(find.textContaining(AppInfo.projectContactEmail), findsOneWidget);
       await reveal(tester, find.byKey(const Key('sources-unclassified')));
       expect(find.text('Questões com imagem'), findsOneWidget);
       expect(find.text('Matérias ainda sem classificação'), findsOneWidget);

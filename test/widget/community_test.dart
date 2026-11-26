@@ -1,3 +1,4 @@
+import 'package:iago/core/app_info.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -465,7 +466,7 @@ void main() {
         find.textContaining('Contém ofensa a outro membro.'),
         findsOneWidget,
       );
-      expect(find.textContaining('<e-mail do projeto>'), findsOneWidget);
+      expect(find.textContaining(AppInfo.projectContactEmail), findsOneWidget);
 
       await pumpCommunity(
         tester,
@@ -473,7 +474,7 @@ void main() {
         location: '/conecta/reforco',
       );
       expect(find.textContaining('Em análise'), findsOneWidget);
-      expect(find.textContaining('<e-mail do projeto>'), findsOneWidget);
+      expect(find.textContaining(AppInfo.projectContactEmail), findsOneWidget);
     });
 
     testWidgets('banido não escreve e vê o aviso', (tester) async {

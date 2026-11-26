@@ -20,7 +20,9 @@ abstract final class AppInfo {
   /// (Conecta, acervo e termos). Ainda é um marcador: o e-mail real sai da
   /// D6/P4 e é obrigatório antes da publicação de 26/11 (veja
   /// `test/publish_ready_test.dart`).
-  static const String projectContactEmail = '<e-mail do projeto>';
+  /// Canal público de contato (dúvidas, remoção, contestação). Até existir o
+  /// e-mail do projeto (P4), são as issues do repositório público. Trocar aqui.
+  static const String projectContactEmail = 'github.com/FredECI/IaGo/issues';
 
   /// Meta de tempo para salvar uma questão (requisito do beta).
   static const Duration saveQuestionGoal = Duration(seconds: 30);
