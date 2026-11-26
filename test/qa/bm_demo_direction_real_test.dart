@@ -6,13 +6,10 @@ import 'package:material_ui/material_ui.dart';
 
 import '../helpers/test_app.dart';
 
-/// BUG: na demo (CA-BM19, spec 4.8), as etapas simuladas deveriam ganhar a
-/// sugestão do acervo. `DirectionDemoData` usa `planDirection`, que grava
-/// `bankAvailableAtProposal = 0` (não nulo); `attachBankToPendingSteps` só
-/// processa etapas com `null` (direction_providers.dart:266) e nunca anexa.
-/// Passa quando o bug for corrigido.
+/// Demo do Direciona com o acervo real (CA-BM19, spec 4.8): as etapas
+/// simuladas ganham a sugestão.
 void main() {
-  testWidgets('BUG: demo mostra "Montar lista com N do acervo" no Direciona', (
+  testWidgets('demo mostra "Montar lista com N do acervo" no Direciona', (
     tester,
   ) async {
     await initTestLocale();
