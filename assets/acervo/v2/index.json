@@ -1,0 +1,33 @@
+{"schemaVersion":2,"generatedAt":"2026-11-07","taxonomyVersion":1,
+"sources":[
+{"id":"enem","name":"ENEM (INEP)","via":"api.enem.dev","officialUrl":"https://www.gov.br/inep/pt-br/areas-de-atuacao/avaliacao-e-exames-educacionais/enem/provas-e-gabaritos","attribution":"Provas do ENEM, INEP.","notice":"Texto das provas do INEP, reproduzido para uso educacional. Formatação ajustada. Confira o original em https://www.gov.br/inep/pt-br/areas-de-atuacao/avaliacao-e-exames-educacionais/enem/provas-e-gabaritos","kind":"questions"}
+],
+"taxonomy":{
+"Português":["Interpretação de texto","Gêneros textuais","Variação linguística","Funções da linguagem","Figuras de linguagem","Coesão e coerência","Gramática no texto","Argumentação"],
+"Literatura":["Barroco e Arcadismo","Romantismo","Realismo e Naturalismo","Parnasianismo e Simbolismo","Pré-Modernismo","Modernismo","Literatura contemporânea","Poesia e recursos poéticos"],
+"Redação":[],
+"Inglês":["Interpretação de texto","Vocabulário em contexto","Gêneros textuais"],
+"Espanhol":["Interpretação de texto","Vocabulário em contexto","Gêneros textuais"],
+"Artes":["Artes visuais","Música","Teatro e dança","Arte contemporânea e tecnologia","Patrimônio cultural"],
+"Educação Física":["Corpo, saúde e atividade física","Esporte e sociedade","Práticas corporais e cultura"],
+"História":["Antiguidade e Idade Média","Idade Moderna","Revoluções e século XIX","Guerras mundiais e Guerra Fria","Brasil Colônia","Brasil Império","Primeira República","Era Vargas","Ditadura militar","Redemocratização e Brasil atual","África e povos indígenas","Cidadania e movimentos sociais"],
+"Geografia":["Cartografia","Climatologia","Relevo, solos e geologia","Hidrografia","Biomas e questões ambientais","População e migrações","Urbanização","Espaço rural e agropecuária","Indústria e energia","Globalização e geopolítica"],
+"Filosofia":["Filosofia antiga","Filosofia medieval","Filosofia moderna","Filosofia contemporânea","Ética e moral","Política e Estado","Teoria do conhecimento"],
+"Sociologia":["Clássicos da Sociologia","Cultura e identidade","Trabalho e sociedade","Movimentos sociais e cidadania","Desigualdade social","Política, poder e Estado","Comunicação e tecnologia"],
+"Biologia":["Ecologia","Genética","Evolução","Citologia","Fisiologia humana","Saúde e doenças","Botânica","Zoologia","Biotecnologia","Bioquímica"],
+"Física":["Cinemática","Dinâmica","Energia e trabalho","Hidrostática","Termologia","Óptica","Ondulatória e acústica","Eletricidade","Magnetismo","Física moderna"],
+"Química":["Atomística e tabela periódica","Ligações e propriedades","Funções inorgânicas","Estequiometria","Soluções","Termoquímica","Cinética e equilíbrio","Eletroquímica","Química orgânica","Química ambiental"],
+"Matemática":["Números e operações","Razão, proporção e porcentagem","Grandezas e medidas","Geometria plana","Geometria espacial","Funções","Álgebra e equações","Estatística","Probabilidade e combinatória","Matemática financeira","Leitura de gráficos e tabelas"]
+},
+"shards":[
+{"area":"languages","path":"assets/acervo/v2/languages.json","count":512},
+{"area":"humanities","path":"assets/acervo/v2/humanities.json","count":637},
+{"area":"naturalSciences","path":"assets/acervo/v2/naturalSciences.json","count":322},
+{"area":"mathematics","path":"assets/acervo/v2/mathematics.json","count":216}
+],
+"counts":[
+{"area":"languages","subject":"Espanhol","count":51},
+{"area":"languages","subject":"Inglês","count":42},
+{"area":"mathematics","subject":"Matemática","count":216}
+]
+}

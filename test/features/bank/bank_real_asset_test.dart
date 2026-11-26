@@ -1,13 +1,8 @@
-import 'dart:convert';
-import 'dart:io';
-
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:iago/app/app.dart';
 import 'package:iago/app/router.dart';
 import 'package:iago/data/bank_asset_catalog.dart';
-import 'package:iago/data/local/bank_asset_parser.dart';
 import 'package:iago/data/providers.dart';
 import 'package:iago/domain/area.dart';
 import 'package:iago/domain/question.dart';
@@ -18,23 +13,21 @@ import 'package:iago/features/lists/lists_providers.dart';
 import 'package:iago/features/questions/questions_providers.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../../helpers/real_bank.dart';
 import '../../helpers/test_app.dart';
 
-/// QA de A4/A5 com o asset REAL (`assets/acervo/acervo-v1.json`), sem catálogo
+/// QA de A4/A5 com o asset REAL (`assets/acervo/v2/`), sem catálogo
 /// falso: abre as telas, busca, salva e monta lista, a 360 px.
 void main() {
   setUpAll(initTestLocale);
 
-  final raw = jsonDecode(
-    File('assets/acervo/acervo-v1.json').readAsStringSync(),
-  ) as Map<String, Object?>;
-  final total = (raw['questions'] as List).length;
+  final real = RealBank.load();
+  final rawQuestions = real.rawQuestions;
+  final total = rawQuestions.length;
   // Mesmos dados e mesma lógica do catálogo real; só o transporte (rootBundle +
   // isolate) fica de fora, porque um 2º `compute` trava no flutter_test. O
   // transporte é provado no navegador (build web).
-  final realCatalog = MemoryBankCatalog(
-    parseBankAsset(File('assets/acervo/acervo-v1.json').readAsStringSync()),
-  );
+  final realCatalog = MemoryBankCatalog(real.data);
 
   ProviderContainer containerOf(WidgetTester tester) =>
       ProviderScope.containerOf(tester.element(find.byType(IagoApp)));
@@ -125,7 +118,7 @@ void main() {
   testWidgets('CA-B4 e CA-B8 no asset real: salvar, repetir e editar a cópia', (
     tester,
   ) async {
-    final first = (raw['questions'] as List).first as Map<String, Object?>;
+    final first = rawQuestions.first;
     final bankId = first['id'] as String;
     await openRealBank(tester, path: '/questoes/acervo/$bankId');
     await reveal(tester, find.byKey(const Key('bank-save')));
@@ -253,7 +246,7 @@ void main() {
   test(
     'CA-B9: busca e facetas no asset real em menos de 100 ms (após carregar)',
     () async {
-      final catalog = AssetBankCatalog(bundle: _FileBundle());
+      final catalog = AssetBankCatalog(bundle: FileAssetBundle());
       final sw = Stopwatch()..start();
       await catalog.search(const QuestionFilter(), limit: 40);
       final firstLoad = sw.elapsedMilliseconds;
@@ -277,19 +270,4 @@ void main() {
       }
     },
   );
-}
-
-/// Lê o asset direto do disco (a VM de teste não precisa do bundle).
-class _FileBundle extends AssetBundle {
-  @override
-  Future<ByteData> load(String key) async {
-    final bytes = File(key).readAsBytesSync();
-    return ByteData.sublistView(bytes);
-  }
-
-  @override
-  Future<T> loadStructuredData<T>(
-    String key,
-    Future<T> Function(String value) parser,
-  ) async => parser(await loadString(key));
 }

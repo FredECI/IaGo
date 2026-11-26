@@ -135,6 +135,12 @@ class _Body extends ConsumerWidget {
               label: question.type.label,
               icon: Icons.radio_button_checked,
             ),
+            if (question.autoClassified)
+              const InfoTag(
+                key: Key('bank-auto-classified'),
+                label: 'Classificação automática',
+                icon: Icons.auto_awesome_outlined,
+              ),
           ],
         ),
         const SizedBox(height: 16),

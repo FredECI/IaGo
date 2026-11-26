@@ -5,13 +5,16 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:iago/data/bank_asset_catalog.dart';
 import 'package:iago/data/local/bank_asset_parser.dart';
 import 'package:iago/data/local/memory_question_repository.dart';
+import 'package:iago/domain/area.dart';
 import 'package:iago/domain/question.dart';
 import 'package:iago/domain/question_filter.dart';
 
+import '../helpers/real_bank.dart';
+
 /// A3, casos-limite do QA: paginação, cópia pelo createMany, falhas e fontes.
 void main() {
-  final text = File('assets/acervo/acervo-v1.json').readAsStringSync();
-  final data = parseBankAsset(text);
+  final real = RealBank.load();
+  final data = real.data;
   final catalog = MemoryBankCatalog(data);
 
   group('paginação', () {
@@ -116,7 +119,7 @@ void main() {
     test(
       'ids estáveis: duas instâncias resolvem o mesmo bankId igual',
       () async {
-        final other = MemoryBankCatalog(parseBankAsset(text));
+        final other = MemoryBankCatalog(RealBank.load().data);
         final a = await catalog.byIds(['enem-2009-141']);
         final b = await other.byIds(['enem-2009-141']);
         expect(a.single.id, b.single.id);
@@ -178,35 +181,69 @@ void main() {
   group('AssetBankCatalog: falhas', () {
     TestWidgetsFlutterBinding.ensureInitialized();
 
-    test('asset com schemaVersion 2 falha e permite nova tentativa', () async {
-      final bundle = _SwitchBundle('{"schemaVersion": 2, "questions": []}');
+    test('índice com schemaVersion 1 falha e permite nova tentativa', () async {
+      final bundle = _SwitchBundle(real);
+      bundle.files[bankIndexPath] = '{"schemaVersion": 1, "questions": []}';
       final asset = AssetBankCatalog(bundle: bundle);
       await expectLater(
         asset.search(const QuestionFilter()),
         throwsFormatException,
       );
-      bundle.content = text;
+      bundle.files.clear();
       final page = await asset.search(const QuestionFilter(), limit: 3);
       expect(page.items, hasLength(3));
     });
 
     test('JSON corrompido falha sem travar o catálogo', () async {
-      final bundle = _SwitchBundle('{nao e json');
+      final bundle = _SwitchBundle(real);
+      bundle.files[bankIndexPath] = '{nao e json';
       final asset = AssetBankCatalog(bundle: bundle);
       await expectLater(asset.sources(), throwsA(isA<FormatException>()));
-      bundle.content = text;
+      bundle.files.clear();
       expect(await asset.sources(), isNotEmpty);
     });
 
-    test('chamadas concorrentes carregam o asset uma vez só', () async {
-      final bundle = _SwitchBundle(text);
+    test(
+      'parte corrompida falha só quando a área é pedida e depois recupera',
+      () async {
+        final bundle = _SwitchBundle(real);
+        final math = real.index.shards.firstWhere(
+          (s) => s.area.name == 'mathematics',
+        );
+        bundle.files[math.path] = '{nao e json';
+        final asset = AssetBankCatalog(bundle: bundle);
+        // O resumo e as outras áreas não dependem da parte quebrada.
+        expect((await asset.summary()).counts, isNotEmpty);
+        final humanities = await asset.search(
+          const QuestionFilter(areas: {Area.humanities}),
+          limit: 3,
+        );
+        expect(humanities.items, hasLength(3));
+        await expectLater(
+          asset.search(const QuestionFilter(areas: {Area.mathematics})),
+          throwsA(isA<FormatException>()),
+        );
+        bundle.files.clear();
+        final page = await asset.search(
+          const QuestionFilter(areas: {Area.mathematics}),
+          limit: 3,
+        );
+        expect(page.items, hasLength(3));
+      },
+    );
+
+    test('chamadas concorrentes carregam cada arquivo uma vez só', () async {
+      final bundle = _SwitchBundle(real);
       final asset = AssetBankCatalog(bundle: bundle);
       await Future.wait([
         asset.sources(),
         asset.facets(const QuestionFilter()),
         asset.search(const QuestionFilter()),
+        asset.summary(),
+        asset.byIds(['enem-2009-141']),
       ]);
-      expect(bundle.loads, 1);
+      expect(bundle.paths.toSet(), hasLength(bundle.paths.length));
+      expect(bundle.paths, hasLength(1 + real.index.shards.length));
     });
 
     test('fonte não registrada: questão é descartada, não quebra', () {
@@ -218,7 +255,9 @@ void main() {
     });
 
     test('asset sem a chave questions devolve acervo vazio', () async {
-      final empty = MemoryBankCatalog(parseBankAsset('{"schemaVersion":1}'));
+      final empty = MemoryBankCatalog(
+        const BankData(sources: [], questions: []),
+      );
       final page = await empty.search(const QuestionFilter());
       expect(page.total, 0);
       expect(page.nextCursor, isNull);
@@ -249,6 +288,7 @@ void main() {
         'lib/data/bank_catalog.dart',
         'lib/data/bank_asset_catalog.dart',
         'lib/data/local/bank_asset_parser.dart',
+        'lib/domain/bank_summary.dart',
         'lib/features/bank/bank_providers.dart',
       ]) {
         final s = File(p).readAsStringSync();
@@ -278,16 +318,21 @@ void main() {
   });
 }
 
+/// Serve o asset real, com arquivos trocáveis por caminho.
 class _SwitchBundle extends CachingAssetBundle {
-  _SwitchBundle(this.content);
-  String content;
-  int loads = 0;
+  _SwitchBundle(this.real);
+  final RealBank real;
+  final Map<String, String> files = {};
+  final List<String> paths = [];
 
   @override
   Future<String> loadString(String key, {bool cache = true}) async {
-    loads++;
+    paths.add(key);
     await Future<void>.delayed(const Duration(milliseconds: 5));
-    return content;
+    return files[key] ??
+        (key == bankIndexPath
+            ? File(key).readAsStringSync()
+            : real.shardJson[key]!);
   }
 
   @override

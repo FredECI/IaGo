@@ -213,6 +213,11 @@ class BankActions {
 
   final Ref _ref;
 
+  /// A cópia salva é do estudante: a dificuldade e o rótulo "Classificação
+  /// automática" são do acervo e não vão com ela (nem para o Firestore).
+  static Question _forSave(Question q) =>
+      q.copyWith(bankDifficulty: null, autoClassified: false);
+
   Future<Set<String>> _savedIds() async {
     final questions = await _ref.read(questionsProvider.future);
     return {for (final q in questions) q.id};
@@ -222,7 +227,9 @@ class BankActions {
   /// já existe: regravar apagaria as edições do aluno (CA-B4).
   Future<bool> save(Question question) async {
     if ((await _savedIds()).contains(question.id)) return false;
-    await _ref.read(questionRepositoryProvider).createMany([question]);
+    await _ref.read(questionRepositoryProvider).createMany([
+      _forSave(question),
+    ]);
     return true;
   }
 
@@ -242,7 +249,7 @@ class BankActions {
     final saved = await _savedIds();
     final fresh = [
       for (final q in questions)
-        if (!saved.contains(q.id)) q,
+        if (!saved.contains(q.id)) _forSave(q),
     ];
     if (fresh.isNotEmpty) {
       await _ref.read(questionRepositoryProvider).createMany(fresh);

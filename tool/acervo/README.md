@@ -1,6 +1,6 @@
 # Script do acervo
 
-Gera `assets/acervo/acervo-v1.json` (acervo de questões, só leitura) a partir das fontes autorizadas em `sources.json`. Só biblioteca padrão do Python 3.12; não há `requirements.txt`. Só este script acessa a rede: o app nunca acessa a API.
+Gera o asset do acervo de questões (só leitura), por padrão no formato v2 em `assets/acervo/v2/` (`index.json` mais uma parte por área; o `acervo-v1.json` antigo fica no repositório, fora do `pubspec.yaml`), a partir das fontes autorizadas em `sources.json`. Só biblioteca padrão do Python 3.12; não há `requirements.txt`. Só este script acessa a rede: o app nunca acessa a API.
 
 ## Gerar
 
@@ -13,7 +13,16 @@ python -I tool/acervo/build_acervo.py
 - Leva cerca de 1,5 min na primeira vez (cerca de 150 pedidos, a 1 por segundo) e menos de 1 s a partir do cache.
 - O cache fica em `build/acervo-cache/` (fora do git) e guarda a data de geração; a mesma entrada gera o mesmo arquivo, byte a byte. Para refazer do zero, apague a pasta.
 - O relatório (contagem por edição, por área e exclusões por motivo) é impresso e gravado em `build/acervo-report.md`.
-- Opções: `--offline` (só cache), `--generated-at AAAA-MM-DD`, `--cache-dir`, `--out`, `--report`, `--sources`, `--font`.
+- Opções: `--offline` (só cache), `--generated-at AAAA-MM-DD`, `--cache-dir`, `--out-dir`, `--report`, `--sources`, `--font`, `--format v1` (arquivo único antigo, em `--out`), `--allow-unclassified` (só até a classificação ficar pronta).
+
+## Classificação e formato v2
+
+- `taxonomy.json`: lista fechada de matérias (por área) e assuntos (por matéria), com `taxonomyVersion`. Única fonte da verdade; o índice do asset leva a lista.
+- `classification/enem.jsonl`: matéria e assunto de cada questão (gerado por `classify.py merge`). Sem ele, o build falha ("sem matéria"), a menos que se use `--allow-unclassified`. Precedência: `human` > `source` > `rule` > `agent`/`model`. Veja `classification/README.md`.
+- `classify.py batches | merge | sample`: lotes para os classificadores, validação e junção das respostas, amostra para conferência.
+- `ids-v1.txt` e `removed.json`: os 1.687 ids já publicados nunca somem sem uma entrada em `removed.json` (motivo e data).
+- Limites: 3 MiB por parte e 12 MiB no total; o build falha se passar.
+- `sources.json` aceita `kind` (`questions` ou `metadata`) e `adapters`; ausentes, valem `questions` e `[id]`.
 
 ## Testes
 

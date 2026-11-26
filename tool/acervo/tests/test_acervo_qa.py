@@ -54,7 +54,7 @@ class OfflineReproducibilityTest(unittest.TestCase):  # CA-F1
         with tempfile.TemporaryDirectory() as tmp:
             out, rep = os.path.join(tmp, "a.json"), os.path.join(tmp, "r.md")
             cmd = [sys.executable, "-I", os.path.join(ACERVO, "build_acervo.py"),
-                   "--offline", "--out", out, "--report", rep]
+                   "--offline", "--format", "v1", "--out", out, "--report", rep]
             r = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", timeout=300)
             self.assertEqual(r.returncode, 0, r.stderr)
             self.assertIn("Pedidos de rede: 0", r.stdout)
@@ -66,7 +66,8 @@ class OfflineReproducibilityTest(unittest.TestCase):  # CA-F1
     def test_offline_with_empty_cache_fails_cleanly(self):
         with tempfile.TemporaryDirectory() as tmp:
             cmd = [sys.executable, "-I", os.path.join(ACERVO, "build_acervo.py"), "--offline",
-                   "--cache-dir", os.path.join(tmp, "c"), "--out", os.path.join(tmp, "a.json"),
+                   "--cache-dir", os.path.join(tmp, "c"), "--format", "v1",
+                   "--out", os.path.join(tmp, "a.json"),
                    "--report", os.path.join(tmp, "r.md")]
             r = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", timeout=60)
             self.assertNotEqual(r.returncode, 0)

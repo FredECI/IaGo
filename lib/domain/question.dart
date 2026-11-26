@@ -64,6 +64,8 @@ class Question {
     this.bankId,
     this.myDifficulty,
     this.myQuality,
+    this.bankDifficulty,
+    this.autoClassified = false,
   }) : alternatives = List.unmodifiable(alternatives);
 
   /// Letras das alternativas das objetivas (até cinco, de A a E).
@@ -101,6 +103,15 @@ class Question {
 
   /// Avaliação privada de qualidade (1 a 3).
   final int? myQuality;
+
+  /// Faixa de dificuldade (1 a 3) do acervo, quando a fonte a informa. Só em
+  /// questões do acervo e **nunca gravada** (fora de [toMap], de [fromMap] e
+  /// da igualdade).
+  final int? bankDifficulty;
+
+  /// Matéria e assunto foram atribuídos por classificação automática (agente
+  /// ou modelo). Só em questões do acervo e nunca gravado, como [bankDifficulty].
+  final bool autoClassified;
 
   /// Texto normalizado usado na busca, calculado uma vez por instância.
   late final String searchText = buildSearchText([
@@ -141,6 +152,8 @@ class Question {
     Object? bankId = _unset,
     Object? myDifficulty = _unset,
     Object? myQuality = _unset,
+    Object? bankDifficulty = _unset,
+    bool? autoClassified,
   }) {
     return Question(
       id: id ?? this.id,
@@ -166,6 +179,10 @@ class Question {
       myQuality: identical(myQuality, _unset)
           ? this.myQuality
           : myQuality as int?,
+      bankDifficulty: identical(bankDifficulty, _unset)
+          ? this.bankDifficulty
+          : bankDifficulty as int?,
+      autoClassified: autoClassified ?? this.autoClassified,
     );
   }
 

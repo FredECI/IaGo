@@ -2,6 +2,10 @@
   "sources": [
     {
       "id": "enem",
+      "kind": "questions",
+      "adapters": [
+        "enem"
+      ],
       "name": "ENEM (INEP)",
       "via": "api.enem.dev",
       "officialUrl": "https://www.gov.br/inep/pt-br/areas-de-atuacao/avaliacao-e-exames-educacionais/enem/provas-e-gabaritos",
